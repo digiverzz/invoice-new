@@ -42,6 +42,7 @@ flask-bcrypt
 pyjwt==2.0.0
 datetime
 passlib==1.7.4
+elasticsearch==8.6.2
 python-jose
 python-multipart
 
