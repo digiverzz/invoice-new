@@ -461,7 +461,9 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <DarkModeSharpIcon /> : <FindInPageIcon onClick={handlesearch()} />}
+                  {index % 2 === 0 ? <DarkModeSharpIcon /> : <FindInPageIcon onClick={handlesearch} />}
+
+                  
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>

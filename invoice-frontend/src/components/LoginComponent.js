@@ -91,7 +91,7 @@ function Login() {
         } else {
           setTimeout(() => {
             navigate("/dashboard"); //this.props.navigation.navigate('Login')
-        }, 2000);
+        }, 200);
         }
       } else {
         setLoginstatus("error")
