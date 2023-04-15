@@ -2,7 +2,7 @@
 from elasticsearch import Elasticsearch
 
 from pymongo import MongoClient
-es = Elasticsearch(["https://localhost:9200"],basic_auth=("elastic","StG_wbro*q_QM8a9wuIS"),verify_certs=False)
+es = Elasticsearch(["https://localhost:9200"],basic_auth=("elastic","BUqzHF89F8LmpDIqh-0b"),verify_certs=False)
 
 
 

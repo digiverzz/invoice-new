@@ -37,6 +37,14 @@ function Login() {
           }
         }
       });
+
+    useEffect(()=>{
+      if (localStorage.getItem('uid')){
+        navigate('/dashboard')
+      }
+
+
+    },[]);
     //   const themeDark = createTheme({
     //     palette: {
     //       background: {
@@ -91,7 +99,7 @@ function Login() {
         } else {
           setTimeout(() => {
             navigate("/dashboard"); //this.props.navigation.navigate('Login')
-        }, 2000);
+        }, 200);
         }
       } else {
         setLoginstatus("error")
