@@ -43,11 +43,13 @@ from nltk.corpus import stopwords
 import user_management
 from text_categorizing import categorize
 import crop_endpoint
+import routes.elastic_search as elastic
 
 
 app = FastAPI()
 app.include_router(user_management.userrouter)
 app.include_router(crop_endpoint.croprouter)
+app.include_router(elastic.router)
 
 
 origins = ["*"]

@@ -2,11 +2,13 @@
 #by rk
 
 from fastapi import APIRouter,Request,HTTPException,status
+import pytesseract
 
 from datetime import datetime
 
 from creds import es
 import usables
+
 
 router = APIRouter(
     prefix='/elastic'
@@ -16,6 +18,8 @@ router = APIRouter(
 @router.post('/upload')
 async def upload(request: Request):
     data = await request.json()
+
+    print(data)
 
 
     if not (data.get('filename',False) and data.get('size',False) and data.get('dataurl',False) and data.get('username',False)):
@@ -31,10 +35,13 @@ async def upload(request: Request):
     res = []
     for fname,size,url in zip(data['filename'],data['size'],data['dataurl']):
         # print(fname)
+
+        context = usables.data_url_to_image(url,fname)
         format = {
             "username":username,
             "filename":fname,
             "size":size,
+            "context":context,
             "datetime":datetime.now(),
             "dataurl":url
         }
@@ -68,7 +75,7 @@ async def search(request: Request):
     query = {
         "query_string":{
         "query":f"*{data['query']}*",
-        "fields":["filename"]
+        "fields":["filename","context"]
     }
     }
     result = es.search(index=indexname,query=query)['hits']['hits']

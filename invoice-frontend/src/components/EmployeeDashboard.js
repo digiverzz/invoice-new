@@ -141,6 +141,13 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
 
 
 export default function MiniDrawer() {
+
+  useEffect(()=>{
+    
+    if (!localStorage.getItem('uid')){
+      navigate('/login')
+    }
+  },[]);
   const theme = useTheme();
   const navigate = useNavigate();
   const [page, setPage] = React.useState(0);

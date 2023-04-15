@@ -37,6 +37,14 @@ function Login() {
           }
         }
       });
+
+    useEffect(()=>{
+      if (localStorage.getItem('uid')){
+        navigate('/dashboard')
+      }
+
+
+    },[]);
     //   const themeDark = createTheme({
     //     palette: {
     //       background: {

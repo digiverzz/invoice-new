@@ -1,7 +1,7 @@
 import logo from './logo.svg';
 import './App.css';
 import Login from './components/LoginComponent'
-import {Routes,Route} from 'react-router-dom'
+import {Routes,Route,Navigate} from 'react-router-dom'
 import EmpDashboard from './components/EmployeeDashboard';
 import CreateClaimRecord from './components/CreateClaim';
 import UploadFileComp from './components/UploadFile';
@@ -17,6 +17,8 @@ function App() {
           <Route path="/createclaim" element={<CreateClaimRecord />}></Route>
           <Route path='/uploadfile' element={<UploadFileComp />}></Route>
           <Route path='/filemanager' element={<FileManager />}></Route>
+          
+          <Route path="/" element={<Navigate replace to="/login" />} />
         </Routes>
     </div>
   );
