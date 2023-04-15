@@ -16,6 +16,8 @@ import CircularProgress from '@mui/material/CircularProgress';
 import Typography from '@mui/material/Typography';
 import InvoiceData from './InvoiceData';
 import { Link, useNavigate } from "react-router-dom";
+import loader from "../images/loader.gif"
+
 
 export default function UploadFileComp() {
   const navigate = useNavigate();
@@ -129,8 +131,8 @@ export default function UploadFileComp() {
                   <Grid container
         direction="row"
         justifyContent="center"
-        alignItems="center" spacing={3}>
-                <CircularProgress /></Grid>
+        alignItems="center" spacing={5}>
+                <img src={loader} alt="" style={{width:"17rem"}}/></Grid>
               </Box>
               )}
               
