@@ -3,6 +3,8 @@ import Carousel from 'react-material-ui-carousel';
 import { Paper, Button } from '@mui/material';
 import { useCallback, useMemo } from 'react';
 import MaterialReactTable from 'material-react-table';
+import Divider from '@mui/material/Divider';
+import Chip from '@mui/material/Chip';
 import {
   Dialog,
   DialogActions,
@@ -15,8 +17,11 @@ import {
   Tooltip,
   Box
 } from '@mui/material';
+import DoubleArrowSharpIcon from '@mui/icons-material/DoubleArrowSharp';
 import AddIcon from '@mui/icons-material/Add';
 import { Delete, Edit } from '@mui/icons-material';
+import Navbar from "./Navbar";
+import Fab from '@mui/material/Fab';
 
 
 
@@ -65,7 +70,7 @@ export const CreateNewAccountModal = ({ open, columns, onClose, onSubmit }) => {
       </DialogContent>
       <DialogActions sx={{ p: '1.25rem' }}>
         <Button onClick={onClose}>Cancel</Button>
-        <Button color="secondary" onClick={handleSubmit} variant="contained">
+        <Button color="primary" onClick={handleSubmit} variant="contained">
           Create New Account
         </Button>
       </DialogActions>
@@ -80,24 +85,35 @@ const validateRequired = (value) => !!value.length;
 
 export default function InvoiceData(props) {
   const [itemdata,setItemData] = useState([]);
-
   //table
-
   const [createModalOpen, setCreateModalOpen] = useState(false);
   const [tableData, setTableData] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
-
+  const [indexupdate,setIndexupdate] = useState()
   const handleCreateNewRow = (values) => {
-    tableData.push(values);
+    var indexval = indexupdate;
+    tableData[indexval].push(values);
     setTableData([...tableData]);
+    console.log("create",tableData)
   };
+  
 
-  const handleSaveRowEdits = async ({ exitEditingMode, row, values }) => {
+  const handleindexvariable = (index) => {
+      setIndexupdate(index)
+  }
+  const delay = ms => new Promise(
+    resolve => setTimeout(resolve, ms)
+  );
+  const handleSaveRowEdits = async ({exitEditingMode, row, values}) => {
     if (!Object.keys(validationErrors).length) {
-      console.log("row",row,values)
-      tableData[row.index] = values;
+      var indexval = indexupdate;
+      console.log("row data",indexval)
+      tableData[indexval][row.index] = values
+      console.log("tabledata",tableData)
       //send/receive api updates here, then refetch or update local table data for re-render
       setTableData([...tableData]);
+      
+      
       exitEditingMode(); //required to exit editing mode and close modal
     }
   };
@@ -140,14 +156,20 @@ export default function InvoiceData(props) {
         accessorKey: 'label',
         header: 'Label',
         size: 120,
+        minSize: 80,
+        maxSize: 140,
+        enableEditing: true,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
       },
       {
         accessorKey: 'text',
-        header: 'Label',
+        header: 'Text',
         size: 120,
+        minSize: 80,
+        maxSize: 140,
+        enableEditing: true,
         muiTableBodyCellEditTextFieldProps: ({ cell }) => ({
           ...getCommonEditTextFieldProps(cell),
         }),
@@ -158,7 +180,18 @@ export default function InvoiceData(props) {
 
 
 
-  
+  const capitalizeWords = (str) => {
+    var tempstr = str;
+
+    // tempstr = tempstr.replace("_"," ")
+
+    return tempstr
+      .toLowerCase()
+      .split('_')
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(' ');
+  };
+
   useEffect(() => {
     var tempdata = props.responsedata;
     var templist = [];
@@ -168,7 +201,10 @@ export default function InvoiceData(props) {
       templabels.push(Object.keys(tempdata[i]))
       var temp = []
       for (let key in tempdata[i]) {
-        temp.push({"label":key,"text":tempdata[i][key]})
+        if(key!=="logo" && key!=="bill_of_materials" && key!=="name" && key!=="image" && key!=="barcode" && key!=="custom"){
+          temp.push({"label":capitalizeWords(key),"text":tempdata[i][key]})
+        }
+        
     }
     tempTable.push(temp)
    }
@@ -187,27 +223,46 @@ export default function InvoiceData(props) {
 
 
   return (
-     <div className='container'>
+     <div className='container-fluid' style={{backgroundColor:"#F6F1F1"}}>
+           <Navbar />
             <Carousel
              autoPlay={false}
              swipe={false}
-             indicators={true}
+             indicators={false}
              navButtonsAlwaysVisible = {true}
              indicatorContainerProps={{
                 style: {
                   zIndex: 1,
-                  marginTop: "-20px",
+                  marginTop: "-100px",
                  
                 }
               }}
+              navButtonsProps={{          // Change the colors and radius of the actual buttons. THIS STYLES BOTH BUTTONS
+                style: {
+                    backgroundColor: 'cornflowerblue',
+                    borderRadius: 0
+                }
+            }} 
+            navButtonsWrapperProps={{   // Move the buttons to the bottom. Unsetting top here to override default style.
+                style: {
+                    bottom: 'unset',
+                    top: '0'
+                }
+            }} 
+            
             >
             {
                 itemdata.map( (item, i) =>  (
                   <div className='row mt-3'>
-                    <div className="col-lg-5">
-                     <img src={item.image} alt="" style={{width:"460px",height:"700px"}} />
+                    <div className="col-lg-5 mt-3">
+                     <img src={item.image} alt="" style={{width:"560px",height:"620px"}} />
                     </div>
-                    <div className="col-lg-7">
+                    <div className="col-lg-1">
+                    <Divider orientation="vertical">
+    <Chip label="Extract" color="primary" variant="outlined"/>
+  </Divider>
+                    </div>
+                    <div className="col-lg-6 mt-3">
                        <MaterialReactTable
         displayColumnDefOptions={{
           'mrt-row-actions': {
@@ -216,27 +271,34 @@ export default function InvoiceData(props) {
         }}
         columns={columns}
         data={tableData[i]}
-        editingMode="modal" //default
+        editingMode="modal"
         enableEditing
+        enableRowVirtualization
+        enableColumnResizing
+        columnResizeMode="onEnd"
+        enableStickyHeader
         onEditingRowSave={handleSaveRowEdits}
         onEditingRowCancel={handleCancelRowEdits}
+        muiTableContainerProps={{ sx: { maxHeight: '500px' } }}
         renderRowActions={({ row, table }) => (
           <Box sx={{ display: 'flex', gap: '0.5rem' }}>
             <Tooltip arrow placement="left" title="Edit">
-              <IconButton onClick={() => table.setEditingRow(row)}>
+              <IconButton onClick={() => {
+                handleindexvariable(i);
+                table.setEditingRow(row);
+                }}
+                >
                 <Edit />
               </IconButton>
             </Tooltip>
           </Box>
         )}
         renderTopToolbarCustomActions={() => (
-          <IconButton
-            color="secondary"
-            onClick={() => setCreateModalOpen(true)}
-            variant="contained"
-          >
-            <AddIcon />
-          </IconButton>
+          
+            <Fab color="primary" aria-label="add"   onClick={() => setCreateModalOpen(true)}>
+        <AddIcon />
+      </Fab>
+         
         )}
       />
       <CreateNewAccountModal
@@ -250,8 +312,12 @@ export default function InvoiceData(props) {
                 ))
             }
         </Carousel>
-
-
+        <div className="row d-flex align-items-end flex-column mt-4">
+          <div className="col-lg-3">
+             <Button variant="contained">Submit<DoubleArrowSharpIcon /></Button>
+          </div>
+        </div>
+        
         </div>
   
   )

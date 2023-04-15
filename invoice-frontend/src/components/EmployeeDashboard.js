@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { styled, useTheme } from '@mui/material/styles';
-import { useState, useEffect } from "react";
+import { useState, useEffect} from "react";
 import Box from '@mui/material/Box';
 import MuiDrawer from '@mui/material/Drawer';
 import MuiAppBar from '@mui/material/AppBar';
@@ -44,6 +44,8 @@ import { useNavigate } from 'react-router-dom';
 import URI from "../utils/request";
 import axios, * as others from "axios";
 import FindInPageIcon from '@mui/icons-material/FindInPage';
+import Chip from '@mui/material/Chip';
+import Avatar from '@mui/material/Avatar';
 const drawerWidth = 240;
 ChartJS.register(ArcElement, Tooltip, Legend);
 
@@ -150,6 +152,7 @@ export default function MiniDrawer() {
   },[]);
   const theme = useTheme();
   const navigate = useNavigate();
+  
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
   const [open, setOpen] = React.useState(true);
@@ -315,7 +318,7 @@ export default function MiniDrawer() {
           console.log(JSON.parse(res['data'][i].data).category)
           const cat = JSON.parse(res['data'][i].data).category
           const parseddata = JSON.parse(res['data'][i].data)
-          tempTable.push({"Date":getCurrentDate(),"Category":cat,"Amount":Number(parseddata.total).toFixed(2),"currency":parseddata.currency})
+          tempTable.push({"Date":getCurrentDate(),"Category":cat,"Amount":Number(parseddata.total).toFixed(2),"currency":parseddata.currency,"status":res['data'][i].status[0].toUpperCase() + res['data'][i].status.slice(1)})
           
           if(cat=='Automotive'){
             Automotive+=1
@@ -369,11 +372,27 @@ export default function MiniDrawer() {
     }
     fetchData()
   },[]);
+  const styles = {
+    paper: {
+      background: "blue"
+    }
+  }
+  const useStyles = {
+    list: {
+      width: 250
+    },
+    fullList: {
+      width: "auto"
+    },
+    paper: {
+      background: "blue"
+    }
+  };
 
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="absolute" open={open}>
+      <AppBar position="absolute" open={open} style={{backgroundColor:"#ffff",color:"#000000"}}>
           <Toolbar
             sx={{
               pr: '24px', // keep right padding when drawer closed
@@ -400,17 +419,13 @@ export default function MiniDrawer() {
             >
               Dashboard
             </Typography>
-            <Button     style={{
-        backgroundColor:"#fff",
+            <Button     color="primary" style={{
+
         marginRight:"15px",
-        color:"#000000",
         borderRadius:"5px",
-        ':hover': {
-          backgroundColor: '#fff',
-          color: '#3c52b2',
-      },
+        
     }}
-    variant="outlined" onClick={()=> navigate('/uploadfile')}>Create Claim</Button>
+    variant="contained" onClick={()=> navigate('/uploadfile')}>Create Claim</Button>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
                 <AccountCircleSharpIcon />
@@ -419,21 +434,45 @@ export default function MiniDrawer() {
             
           </Toolbar>
         </AppBar>
-      <Drawer variant="permanent" open={open}>
+      <Drawer variant="permanent" open={open} PaperProps={{
+            sx: {
+              backgroundColor: "#1e2833",
+              width: 300,
+              color:"#6b7682"
+            },
+          }}>
         <DrawerHeader>
-          <IconButton onClick={handleDrawerClose}>
-            {theme.direction === 'rtl' ? <ChevronRightIcon /> : <ChevronLeftIcon />}
+          <IconButton style={{color:"#ffff"}} onClick={handleDrawerClose}>
+            {theme.direction === 'rtl' ? <ChevronRightIcon style={{ color:"#ffff" }}/> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
         <Divider />
         <List>
           {['Drafts'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+            <ListItem key={text} disablePadding sx={{ display: 'block',
+            '&& .Mui-selected, && .Mui-selected:hover': {
+              bgcolor: 'red',
+              '&, & .MuiListItemIcon-root': {
+                color: 'pink',
+              },
+            },
+            
+            '& .MuiListItemButton-root:hover': {
+              bgcolor: '#6b7682',
+              '&, & .MuiListItemIcon-root': {
+                color: 'white'
+           
+              },
+            },
+          }}
+            
+           >
               <ListItemButton
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
+                  
                 }}
               >
                 <ListItemIcon
@@ -441,19 +480,35 @@ export default function MiniDrawer() {
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
+                    
                   }}
                 >
-                  {index % 2 === 0 ? <DraftsOutlinedIcon /> : <FindInPageIcon />}
+                  {index % 2 === 0 ? <DraftsOutlinedIcon style={{ color:"#ffff" }}/> : <FindInPageIcon style={{ color:"#ffff" }}/>}
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
           ))}
         </List>
-        <Divider />
+        <Divider color="white"/>
         <List>
           {['Dark Mode',"Search"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block' }}>
+            <ListItem key={text} disablePadding sx={{ display: 'block',
+            '&& .Mui-selected, && .Mui-selected:hover': {
+              bgcolor: 'red',
+              '&, & .MuiListItemIcon-root': {
+                color: 'pink',
+
+              },
+            },
+            
+            '& .MuiListItemButton-root:hover': {
+              bgcolor: '#6b7682',
+              '&, & .MuiListItemIcon-root': {
+                color: '#e3e8eb',
+              },
+            },
+            }}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
@@ -468,9 +523,7 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <DarkModeSharpIcon /> : <FindInPageIcon onClick={handlesearch} />}
-
-                  
+                  {index % 2 === 0 ? <DarkModeSharpIcon /> : <FindInPageIcon onClick={handlesearch()} />}
                 </ListItemIcon>
                 <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -485,7 +538,7 @@ export default function MiniDrawer() {
         <div class="card" id="storageCard">
           <div class="card-title">Total Claim Requests</div>
           <div class="card-icon"><AccountBalanceWalletIcon /></div>
-          <div class="card-data">{total}</div>
+          <div class="card-data"><h4>{total}</h4></div>
           
         </div>
   </Grid>
@@ -493,7 +546,7 @@ export default function MiniDrawer() {
   <div class="card" id="loveCard" >
           <div class="card-title">Total claim Approved</div>
           <div class="card-icon"><CheckCircleIcon /></div>
-          <div class="card-data">{acctotal}</div>
+          <div class="card-data"><h4>{acctotal}</h4></div>
           
         </div>
   </Grid>
@@ -501,7 +554,7 @@ export default function MiniDrawer() {
   <div class="card" id="pizzaCard">
           <div class="card-title">Total claim Rejected</div>
           <div class="card-icon"><DangerousIcon /></div>
-          <div class="card-data">{rejtotal}</div>
+          <div class="card-data"><h4>{rejtotal}</h4></div>
           
         </div>
   </Grid>
@@ -509,57 +562,52 @@ export default function MiniDrawer() {
   <div class="card" id="gameCard">
           <div class="card-title">Total claim Pending</div>
           <div class="card-icon"><PendingActionsIcon /></div>
-          <div class="card-data">{pentotal}</div>
+          <div class="card-data"><h4>{pentotal}</h4></div>
           
         </div>
   </Grid>
   
 </Grid>
 <Grid container spacing={5} id="charttype">
-<Grid item xs={4}>
-     <div class="card">
-     <Doughnut data={{
-      labels: [ 'Automobile', 'Electronics','Appliances', 'industry','food' , 'Health Care', 'beauty'],
-      datasets: [{
-        label: 'claim Category',
-        data: [automobileCount,electronicsCount,appliancesCount,industryCount,foodCount,healthcareCount,beautyCount],
-        backgroundColor: [
-          'rgb(255, 99, 132)',
-          'rgb(54, 162, 235)',
-          'rgb(255, 205, 86)',
-          '#ff00ff',
-          '#0099ff',
-          '#ff0000',
-          '#ffff00'
-        ],
-        hoverOffset: 2
-      }]
-     }}/>
-     </div>
-  </Grid>
-  <Grid item xs={8}>
+
+  <Grid item xs={12}>
    <div class="card1">
    <Paper sx={{ width: '100%', overflow: 'hidden' }}>
   <TableContainer>
       <Table sx={{ minWidth: 440 }} aria-label="sticky table">
         <TableHead>
           <TableRow id="tableheader">
-            <StyledTableCell>Date</StyledTableCell>
-            <StyledTableCell align="right">Category</StyledTableCell>
-            <StyledTableCell align="right">Amount</StyledTableCell>
-            <StyledTableCell align="right">Currency</StyledTableCell>
+            <StyledTableCell align="left" style={{width: 200}}>Date</StyledTableCell>
+            <StyledTableCell align="left" style={{width: 200}}>Category</StyledTableCell>
+            <StyledTableCell align="left" style={{width: 200}}>Amount</StyledTableCell>
+            <StyledTableCell align="left" style={{width: 200}}>Approvers</StyledTableCell>
+            <StyledTableCell align="left" style={{width: 200}}>Status</StyledTableCell>
+            <StyledTableCell align="left" style={{width: 200}}>Currency</StyledTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {tabData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
             <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
+              <StyledTableCell align="left" style={{width: 200}}>
                 {row.Date}
               </StyledTableCell>
               
-              <StyledTableCell align="right">{row.Category}</StyledTableCell>
-              <StyledTableCell align="right">{row.Amount}</StyledTableCell>
-              <StyledTableCell align="right">{row.currency}</StyledTableCell>
+              <StyledTableCell align="left" style={{width: 200}}>{row.Category}</StyledTableCell>
+              <StyledTableCell align="left" style={{width: 200}}>{row.Amount}</StyledTableCell>
+              <StyledTableCell align="left" style={{width: 200}}>
+                <div className='d-flex align-items-center'>
+                
+                <Avatar  alt="Remy Sharp" src="https://mui.com/static/images/avatar/3.jpg" sx={{ width: 24, height: 24 }} align="left"/>
+                <Avatar
+  alt="Remy Sharp"
+  src="https://mui.com/static/images/avatar/2.jpg"
+  sx={{ width: 24, height: 24,marginLeft:"5px" }} align="left"
+/>
+                </div>
+                
+                </StyledTableCell>
+              <StyledTableCell align="left" style={{width: 200}}><Chip label={row.status} color={row.status=="Accepted" ? "success" : row.status=="Rejected" ? "error" : "warning"} /></StyledTableCell>
+              <StyledTableCell align="left" style={{width: 200}}>{row.currency}</StyledTableCell>
             </StyledTableRow>
           ))}
         </TableBody>
