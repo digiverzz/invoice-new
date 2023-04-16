@@ -22,7 +22,7 @@ import MailIcon from '@mui/icons-material/Mail';
 function Nav() {
     
     const navigate = useNavigate();
-    const drawerWidth = 240;
+    const drawerWidth = 200;
     return (
             <Drawer anchor='left'
             variant='permanent'

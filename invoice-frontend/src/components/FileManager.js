@@ -1,7 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
+
+import Button from '@mui/material/Button';
 import axios from 'axios';
+import ArrowUpwardIcon from '@mui/icons-material/ArrowUpward';
 import SearchIcon from '@mui/icons-material/Search';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import { Container, Grid, TextField } from '@mui/material';
+import { MoreVert, Padding } from '@mui/icons-material';
+import { Card, CardContent, CardMedia, Checkbox } from '@mui/material';
 import AppsIcon from '@mui/icons-material/Apps';
 import InputAdornment from '@mui/material/InputAdornment';
 import { InsertDriveFileOutlined, PictureAsPdfOutlined, DescriptionOutlined, ImageOutlined } from '@mui/icons-material';
@@ -29,6 +35,7 @@ import { makeStyles } from '@mui/styles';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { height } from '@mui/system';
+import { fontGrid } from '@mui/material/styles/cssUtils';
 
 
 
@@ -215,6 +222,31 @@ export default function FileManager() {
     setfileList(temp)
   }
 
+  async function fetchData() {
+
+    console.log("fetching data")
+    if (dataFetchedRef.current) return;
+    dataFetchedRef.current = true;
+    console.log("useeffect")
+    try {
+      const response = await axios.post("http://127.0.0.1:5000/elastic/getallfiles", { 'username': localStorage.getItem('uid') });
+      console.log(response.data)
+      response.data.forEach((Source) => {
+        setfileList(fileList => [...fileList, {
+          "name": Source['_source']['filename'],
+          "date": Source['_source']['datetime'],
+          "dataurl": Source['_source']['dataurl'],
+          "size": Source['_source']['size'],
+          "status": Source['_source']['status']
+        }])
+      })
+
+      console.log(fileList)
+    } catch (error) {
+      console.error(error);
+    }
+  }
+
   useEffect(() => {
     const intervalId = setInterval(() => {
       setPlaceholderIndex((prevIndex) => (prevIndex + 1) % placeholders.length);
@@ -224,46 +256,21 @@ export default function FileManager() {
 
 
   useEffect(() => {
-
-
-    async function fetchData() {
-
-
-      if (dataFetchedRef.current) return;
-      dataFetchedRef.current = true;
-      console.log("useeffect")
-      try {
-        const response = await axios.post("http://127.0.0.1:5000/elastic/getallfiles", { 'username': localStorage.getItem('uid') });
-        console.log(response.data)
-        response.data.forEach((Source) => {
-          setfileList(fileList => [...fileList, {
-            "name": Source['_source']['filename'],
-            "date": Source['_source']['datetime'],
-            "dataurl": Source['_source']['dataurl'],
-            "size": Source['_source']['size']
-          }])
-        })
-
-        console.log(fileList)
-      } catch (error) {
-        console.error(error);
-      }
-    }
     fetchData();
-  }, []);
+  }, [fileList]);
 
 
 
   const getFileIcon = (type) => {
     switch (type) {
       case 'pdf':
-        return <PictureAsPdfOutlined className={classes.pdf} sx={{ fontSize: "70%" }} />;
+        return <PictureAsPdfOutlined className={classes.pdf} sx={{ fontSize: 25 }} />;
       case 'docx':
-        return <DescriptionOutlined className={classes.docx} sx={{ fontSize: "70%" }} />;
+        return <DescriptionOutlined className={classes.docx} sx={{ fontSize: 25 }} />;
       case 'jpg':
-        return <ImageOutlined className={classes.jpg} sx={{ fontSize: "70%" }} />;
+        return <ImageOutlined className={classes.jpg} sx={{ fontSize: 25 }} />;
       case 'png':
-        return <ImageOutlined className={classes.png} sx={{ fontSize: "70%" }} />;
+        return <ImageOutlined className={classes.png} sx={{ fontSize: 25 }} />;
       default:
         return <InsertDriveFileOutlined />;
     }
@@ -275,13 +282,41 @@ export default function FileManager() {
     setIsLargeView(!isLargeView);
   };
 
+  const [anchorElsort, setAnchorElsort] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [currentName, setCurrentName] = React.useState(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event) => {
+  const opensort = Boolean(anchorElsort);
+  const [seed, setSeed] = useState(1);
+  const [field, setfield] = useState('Name');
+  const [order, setorder] = useState('asc');
+  const [isdesc, setisdesc] = useState(false);
+  const handleClick = (event, name) => {
     setAnchorEl(event.currentTarget);
+    setCurrentName(name)
   };
   const handleClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleClicksort = (event, name) => {
+    setAnchorElsort(event.currentTarget);
+    // setCurrentName(name)
+  };
+  const handleClosesort = () => {
+    setAnchorElsort(null);
+  };
+
+
+  const handleDelete = async () => {
+    console.log(currentName)
+
+
+    const response = await axios.post("http://127.0.0.1:5000/elastic/delete", { "filename": currentName, "username": localStorage.getItem('uid') })
+    await fetchData();
+    setSeed(Math.random())
+    setAnchorEl(null);
+
   };
 
   const placeholder = placeholders[placeholderIndex];
@@ -295,63 +330,174 @@ export default function FileManager() {
       sx={{ bgcolor: "#F9FAFB" }}
     >
 
-      <Grid container spacing={2} sx={{ padding: "2%", justifyContent: "right", overflow: "scroll" }}>
+      <Grid container spacing={2} xs={12} sx={{ padding: "2%", paddingRight: 0, justifyContent: "right" }}>
         <Nav></Nav>
         <Grid container xs={10} sx={{ justifyContent: "center" }}>
-          <Grid xs={8} paddingBottom={3} >
-            <TextField
-              onChange={searching}
-              className={classes.textField}
-              InputProps={{
-                classes: {
-                  root: classes.searchBarRoot,
-                  notchedOutline: classes.searchBarOutline,
-                },
-                placeholder,
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton>
-                      <SearchIcon />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }} />
+          <Grid container xs={12} paddingBottom={3} sx={{ justifyContent: "right" }} >
+            <Grid xs={8}>
+              <TextField
+                onChange={searching}
+                className={classes.textField}
+                InputProps={{
+                  classes: {
+                    root: classes.searchBarRoot,
+                    notchedOutline: classes.searchBarOutline,
+                  },
+                  placeholder,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton>
+                        <SearchIcon />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }} />
+            </Grid>
+            <Grid container p={1} xs={2} sx={{ justifyContent: "right" }}>
+              <Box pt={0.5}>      
+              <Button
+                
+                id="sort-button"
+                aria-controls={opensort ? 'sort-menu' : undefined}
+                aria-haspopup="true"
+                aria-expanded={opensort ? 'true' : undefined}
+                onClick={handleClicksort}
+              >
+                {field}
+              </Button>
+              </Box>
+              <Box >
+                <IconButton>
+                  <ArrowUpwardIcon />
+                </IconButton>
+              </Box>
+
+            </Grid>
           </Grid>
 
-          <Grid spacing={3} xs={12} className={classes.root} height={"80vh"} >
+          <Box sx={{
+            p: 3, overflow: "auto", borderRadius: 3, width: "100%", height: "80vh", bgcolor: "white",
 
-            <Grid container xs={12} sx={{justifyContent:"right"}}>
-              <IconButton size="large" onClick={handleToggleView} sx={{ color: "black", ":hover": { background: "#6b7682" } }}>
-                {isLargeView? <AppsIcon />: <DensitySmallIcon/>}
-              </IconButton>
-            </Grid>
-            <List className={classes.list}>
-              {fileList.map((file) => (<HtmlTooltip
-                title={
-                  <React.Fragment>
-                    <p>name: {file.name}<br></br>
-                      status: {file.name}<br></br>
-                      size: {file.size} bytes<br></br>
-                      Date Uploaded: {file.date}</p>
-                  </React.Fragment>
-                }
-              >
+            '&::-webkit-scrollbar': {
+              width: '0.5em',
+            },
+            '&::-webkit-scrollbar-track': {
+              boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+              webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(0,0,0,.1)',
+              outline: '0px solid slategrey'
+            }
+          }}>
 
-                <ListItem key={file.name} className={`${classes.listItem} ${isLargeView ? classes.listItemSmall : ""
+            <Grid container xs={12} sx={{ justifyContent: "right" }}>
+              <Grid xs={12} sx={{ width: "100%" }} bgcolor={"red"} >
+
+                <IconButton size="large" onClick={handleToggleView} sx={{ color: "black", ":hover": { background: "#6b7682" } }}>
+                  {isLargeView ? <AppsIcon color='action' /> : <DensitySmallIcon color='action' />}
+                </IconButton>
+              </Grid>
+              <Grid container xs={12} sx={{ p: 1 }}>
+
+                {fileList.map((file, index) => (<HtmlTooltip
+                  title={
+                    <React.Fragment>
+                      <p>name: {file.name}<br></br>
+                        status: {file.status}<br></br>
+                        size: {file.size} bytes<br></br>
+                        Date Uploaded: {file.date}</p>
+                    </React.Fragment>
+                  }
+                >
+                  <Box spacing={3} sx={{ p: 2 }}  >
+                    <Card
+
+                      sx={{ pb: 2, background: "#F9FAFB", border: '1px ', width: 200, height: 200, borderRadius: '8px', '&:hover': { boxShadow: '0px 0px 8px 2px grey' } }}
+
+                    >
+                      <CardContent sx={{ p: 1, display: "flex", justifyContent: "left" }}>
+                        <Box pr={1}>
+                          {getFileIcon(getExtension(file.name))}
+
+                        </Box>
+                        <Box flexGrow={1}>
+                          <Typography variant='small' sx={{ fontSize: 12 }}>{file.name}</Typography>
+                        </Box>
+                        <Box>
+
+                          <IconButton
+                            id="basic-button"
+                            aria-controls={open ? 'basic-menu' : undefined}
+                            aria-haspopup="true"
+                            aria-expanded={open ? 'true' : undefined}
+                            onClick={(e) => handleClick(e, file.name)}>
+                            <MoreVert sx={{ fontSize: 15 }} />
+                          </IconButton>
+
+
+                        </Box>
+                      </CardContent>
+
+                      <Box sx={{ borderRadius: 5, paddingLeft: 1, paddingRight: 1, justifyContent: "center", bgcolor: "#F9FAFB" }}>
+                        <CardMedia
+
+                          onClick={() => { fileClick(file) }} component="img" image={file.dataurl} sx={{ height: 140, width: 180 }} />
+                      </Box></Card>
+                  </Box>
+
+
+
+                  {/* <ListItem key={file.name} className={`${classes.listItem} ${isLargeView ? classes.listItemSmall : ""
                   }`} onClick={() => { fileClick(file) }} >
                   <ListItemIcon className={classes.icon} >
                     {getFileIcon(getExtension(file.name))}
                   </ListItemIcon>
                   <ListItemText primary={file.name.length > 10 ? file.name.substring(0, 10) + "..." : file.name} sx={{ boxSizing: "20px" }} size="small" />
-                </ListItem>
+                </ListItem> */}
 
-              </HtmlTooltip>
-              ))}
-            </List>
-          </Grid>
+                </HtmlTooltip>
+                ))}
+
+
+              </Grid>
+
+            </Grid>
+          </Box>
         </Grid>
       </Grid>
 
+
+      <Menu
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      ><Box>
+
+          <MenuItem onClick={handleDelete}>
+            <Box flexGrow={1}>
+              <DeleteOutlineIcon color="action" sx={{ fontSize: 20 }} />
+            </Box></MenuItem>
+        </Box>
+      </Menu>
+
+      <Menu
+        id="sort-menu"
+        anchorEl={anchorElsort}
+        open={opensort}
+        onClose={handleClosesort}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        <MenuItem onClick={handleClosesort}>Profile</MenuItem>
+        <MenuItem onClick={handleClosesort}>My account</MenuItem>
+        <MenuItem onClick={handleClosesort}>Logout</MenuItem>
+      </Menu>
 
 
 
