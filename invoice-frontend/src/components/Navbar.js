@@ -16,7 +16,7 @@ const styles = {
     return (
       <>
         <Box sx={styles.flex}>
-          <AppBar position='sticky' disablegutters='true' style={{backgroundColor:"#F6F1F1",color:"#000000"}}>
+          <AppBar position='sticky' sx={{ borderRadius: '10px' }} disablegutters='true' style={{backgroundColor:"#ffff",color:"#000000"}}>
             <Toolbar>
               
               <Typography variant="h5" sx={{

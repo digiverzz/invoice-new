@@ -46,8 +46,10 @@ import axios, * as others from "axios";
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
+import LogoutIcon from '@mui/icons-material/Logout';
+
 const drawerWidth = 240;
-ChartJS.register(ArcElement, Tooltip, Legend);
+
 
 
 const openedMixin = (theme) => ({
@@ -419,6 +421,16 @@ export default function MiniDrawer() {
             >
               Dashboard
             </Typography>
+            {
+              localStorage.getItem('role')=="Practice Lead" ?
+              <Button     color="primary" style={{
+
+                marginRight:"15px",
+                borderRadius:"5px",
+                
+                }}
+                variant="contained" onClick={()=> navigate('/approve')}>Pending Approvals </Button> : ""
+            }
             <Button     color="primary" style={{
 
         marginRight:"15px",
@@ -448,8 +460,7 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Divider />
         <List>
-          {['Drafts'].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block',
+        <ListItem key="Drafts" disablePadding sx={{ display: 'block',
             '&& .Mui-selected, && .Mui-selected:hover': {
               bgcolor: 'red',
               '&, & .MuiListItemIcon-root': {
@@ -483,17 +494,54 @@ export default function MiniDrawer() {
                     
                   }}
                 >
-                  {index % 2 === 0 ? <DraftsOutlinedIcon style={{ color:"#ffff" }}/> : <FindInPageIcon style={{ color:"#ffff" }}/>}
+                  <DraftsOutlinedIcon style={{ color:"#ffff" }}/>
                 </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary="Drafts" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-          ))}
+            <ListItem key="Search" disablePadding sx={{ display: 'block',
+            '&& .Mui-selected, && .Mui-selected:hover': {
+              bgcolor: 'red',
+              '&, & .MuiListItemIcon-root': {
+                color: 'pink',
+              },
+            },
+            
+            '& .MuiListItemButton-root:hover': {
+              bgcolor: '#6b7682',
+              '&, & .MuiListItemIcon-root': {
+                color: 'white'
+           
+              },
+            },
+          }}
+            
+           >
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  
+                }} onClick={handlesearch}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                    
+                  }}
+                >
+                  <FindInPageIcon style={{ color:"#ffff" }}/>
+                </ListItemIcon>
+                <ListItemText primary="Search" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
         </List>
         <Divider color="white"/>
         <List>
-          {['Dark Mode',"Search"].map((text, index) => (
-            <ListItem key={text} disablePadding sx={{ display: 'block',
+        <ListItem key="Dark Mode" disablePadding sx={{ display: 'block',
             '&& .Mui-selected, && .Mui-selected:hover': {
               bgcolor: 'red',
               '&, & .MuiListItemIcon-root': {
@@ -514,6 +562,44 @@ export default function MiniDrawer() {
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
+                }} 
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <DarkModeSharpIcon style={{ color:"#ffff" }}/>
+                </ListItemIcon>
+                <ListItemText primary="Dark Mode" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+            </ListItem>
+            <ListItem key="Logout" disablePadding sx={{ display: 'block',
+            '&& .Mui-selected, && .Mui-selected:hover': {
+              bgcolor: 'red',
+              '&, & .MuiListItemIcon-root': {
+                color: 'pink',
+
+              },
+            },
+            
+            '& .MuiListItemButton-root:hover': {
+              bgcolor: '#6b7682',
+              '&, & .MuiListItemIcon-root': {
+                color: '#e3e8eb',
+              },
+            },
+            }}>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                }} onClick={() => {
+                  window.localStorage.clear();
+                  navigate("/login");
                 }}
               >
                 <ListItemIcon
@@ -523,12 +609,11 @@ export default function MiniDrawer() {
                     justifyContent: 'center',
                   }}
                 >
-                  {index % 2 === 0 ? <DarkModeSharpIcon style={{ color:"#ffff" }}/> : <FindInPageIcon onClick={handlesearch} style={{ color:"#ffff" }}/>}
+                  <LogoutIcon style={{ color:"#ffff" }}/>
                 </ListItemIcon>
-                <ListItemText primary={text} sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
-          ))}
         </List>
       </Drawer>
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>

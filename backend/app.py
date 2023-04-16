@@ -44,6 +44,9 @@ import user_management
 from text_categorizing import categorize
 import crop_endpoint
 import routes.elastic_search as elastic
+import pytesseract
+
+pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
 
 
 app = FastAPI()
@@ -190,8 +193,11 @@ def predict(file_input,lang_input):
                predicted_response['currency'] = currency
         elif label == 'invoice_number':
             predicted_response['invoice_number'] = invoice_number(cropped_image,lang_input)
-        elif label == 'date':
-            date_extract(cropped_image,lang_input)
+        elif label == 'invoice_date' or label == 'due_date':
+            if label=="invoice_date":
+               predicted_response['invoice_date'] = date_extract(cropped_image,lang_input)
+            if label=="due_date":
+               predicted_response['due_date'] = date_extract(cropped_image,lang_input)
         elif label == 'company_name':
              predicted_response['company_name'] = company_name_extract(cropped_image)
         elif label == 'qty_col':
