@@ -1,8 +1,10 @@
 #by rk
 from elasticsearch import Elasticsearch
+import imaplib
 
+import email
 from pymongo import MongoClient
-es = Elasticsearch(["https://localhost:9200"],basic_auth=("elastic","BUqzHF89F8LmpDIqh-0b"),verify_certs=False)
+es = Elasticsearch(["https://localhost:9200"],basic_auth=("elastic","854bgbrEznFOZOJrE_hj"),verify_certs=False)
 
 
 
@@ -12,3 +14,10 @@ uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites
 client = MongoClient(uri)
 database = client['invoice']
 collection = database['users']
+
+
+mail = imaplib.IMAP4_SSL("imap.gmail.com",993)
+
+mail.login("digiverzinvoiceclaim@gmail.com","wvkvofuvbewbhdku")
+
+mail.select('Inbox')

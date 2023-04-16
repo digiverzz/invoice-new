@@ -45,4 +45,5 @@ passlib==1.7.4
 elasticsearch
 python-jose
 python-multipart
+fastapi-utils
 

@@ -19,10 +19,10 @@ router = APIRouter(
 async def upload(request: Request):
     data = await request.json()
 
-    print(data)
+    # print(data)
 
 
-    if not (data.get('filename',False) and data.get('size',False) and data.get('dataurl',False) and data.get('username',False)):
+    if not (data.get('filename',False) and data.get('size',False) and data.get('status',False) and data.get('dataurl',False) and data.get('username',False)):
         raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,detail="provide both field and order key")
 
     username = data['username']
@@ -31,7 +31,7 @@ async def upload(request: Request):
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
     
     indexname = usables.getIndex(username)
-
+    status = data['status']
     res = []
     for fname,size,url in zip(data['filename'],data['size'],data['dataurl']):
         # print(fname)
@@ -42,8 +42,9 @@ async def upload(request: Request):
             "filename":fname,
             "size":size,
             "context":context,
-            "datetime":datetime.now(),
-            "dataurl":url
+            "datetime":usables.getdatetime(),
+            "dataurl":url,
+            "status":status
         }
 
         res.append(es.index(index=indexname,document=format))
@@ -134,6 +135,33 @@ async def sort(request:Request):
     query={f"{data['field']}":{"order":{data['order']}}}
 
     return es.search(index=indexname,sort=query)['hits']['hits'] 
+
+
+
+@router.post('/delete')
+async def delete(request:Request):
+    data = await request.json()
+
+    if not (data.get('filename',False) and data.get('username',False)):
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,detail="provide filename,username key")
+
+    
+    username = data['username']
+    if not usables.IsValidUser(username):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    
+    
+    indexname = usables.getIndex(username)
+
+
+    query = {
+    "match_phrase":{
+    "filename":data['filename']
+    }
+    }
+
+    return es.delete_by_query(index=indexname,query=query)
+
 
 
     

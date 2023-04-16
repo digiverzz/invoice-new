@@ -48,11 +48,20 @@ import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
 
+from fastapi_utils.tasks import repeat_every
+import usables
+
 
 app = FastAPI()
 app.include_router(user_management.userrouter)
 app.include_router(crop_endpoint.croprouter)
 app.include_router(elastic.router)
+
+@app.on_event("startup")
+@repeat_every(seconds=1060) 
+def tasks():
+    usables.fetchMail()
+
 
 
 origins = ["*"]
