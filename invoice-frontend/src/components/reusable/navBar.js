@@ -46,7 +46,7 @@ function Nav() {
                         </Grid>
                         <Grid container xs={12} justifyContent={"center"} padding={2} sx={{alignItems:"center"}}>
                     
-                            <Avatar sx={{ width: 80, height: 80, background:"#3498DB" }}>{localStorage.getItem('uid')[0]}</Avatar>
+                            <Avatar sx={{ width: 80, height: 80, background:"#D3D3D3" }}><Typography sx={{color:"#1e2833"}}>{localStorage.getItem('uid')[0]}</Typography></Avatar>
                         </Grid>
                     
                         <Grid xs={12} textAlign={"center"} padding={1}>

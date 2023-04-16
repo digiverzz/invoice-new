@@ -316,6 +316,8 @@ export default function FileManager() {
     await fetchData();
     setSeed(Math.random())
     setAnchorEl(null);
+    
+    window.location.reload(false);
 
   };
 
@@ -333,7 +335,7 @@ export default function FileManager() {
       <Grid container spacing={2} xs={12} sx={{ padding: "2%", paddingRight: 0, justifyContent: "right" }}>
         <Nav></Nav>
         <Grid container xs={10} sx={{ justifyContent: "center" }}>
-          <Grid container xs={12} paddingBottom={3} sx={{ justifyContent: "right" }} >
+          <Grid container xs={12} paddingBottom={3} sx={{ justifyContent: "center" }} >
             <Grid xs={8}>
               <TextField
                 onChange={searching}
@@ -353,10 +355,10 @@ export default function FileManager() {
                   ),
                 }} />
             </Grid>
-            <Grid container p={1} xs={2} sx={{ justifyContent: "right" }}>
+            {/* <Grid container p={1} xs={2} sx={{ justifyContent: "right" }}>
               <Box pt={0.5}>      
               <Button
-                
+
                 id="sort-button"
                 aria-controls={opensort ? 'sort-menu' : undefined}
                 aria-haspopup="true"
@@ -372,7 +374,7 @@ export default function FileManager() {
                 </IconButton>
               </Box>
 
-            </Grid>
+            </Grid> */}
           </Grid>
 
           <Box sx={{
@@ -394,9 +396,9 @@ export default function FileManager() {
             <Grid container xs={12} sx={{ justifyContent: "right" }}>
               <Grid xs={12} sx={{ width: "100%" }} bgcolor={"red"} >
 
-                <IconButton size="large" onClick={handleToggleView} sx={{ color: "black", ":hover": { background: "#6b7682" } }}>
+                {/* <IconButton size="large" onClick={handleToggleView} sx={{ color: "black", ":hover": { background: "#6b7682" } }}>
                   {isLargeView ? <AppsIcon color='action' /> : <DensitySmallIcon color='action' />}
-                </IconButton>
+                </IconButton> */}
               </Grid>
               <Grid container xs={12} sx={{ p: 1 }}>
 

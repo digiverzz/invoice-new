@@ -125,7 +125,7 @@ def fetchMail():
 
     
 
-async def status_update(filename,uid,status):
+async def status_update(filename:str,uid:str,status:str):
     
     
     indexname = getIndex(uid)
@@ -136,9 +136,39 @@ async def status_update(filename,uid,status):
     "filename":filename
     }
     }
-    id = creds.es.search(index=indexname,query=query)['hits']['hits'][0]['_id']
+    try:
+        id = creds.es.search(index=indexname,query=query)['hits']['hits'][0]['_id']
 
-    result = await creds.es.update(index=indexname,id=id,doc={"status":status})
+        result = await creds.es.update(index=indexname,id=id,doc={"status":status})
+    except:
+        result=[]
+        pass    
     return result
+
+
+
+async def elastic_upload(username:str,status:str,filename:list,Size:list,dataurl:list):
+
+    # print(data)
+    indexname = getIndex(username)
+    res = []
+    for fname,size,url in zip(filename,Size,dataurl):
+        # print(fname)
+
+        context = data_url_to_image(url,fname)
+        format = {
+            "username":username,
+            "filename":fname,
+            "size":size,
+            "context":context,
+            "datetime":getdatetime(),
+            "dataurl":url,
+            "status":status
+        }
+
+        res.append(creds.es.index(index=indexname,document=format))
+        # print(res[-1])
+
+    return {"result":res}
 
 
