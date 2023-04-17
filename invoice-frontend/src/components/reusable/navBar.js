@@ -120,6 +120,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
                     <Grid container xs={11} justifyContent={"center"}>
                         <Grid container xs={11} justifyContent={"center"} padding={2} sx={{alignItems:"center"}}>
                     
+
                             <Avatar sx={{ width: 80, height: 80, background:"#3498DB" }}>{localStorage.getItem('name')[0]}</Avatar>
                         </Grid>
                     
