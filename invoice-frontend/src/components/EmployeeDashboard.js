@@ -394,7 +394,7 @@ export default function MiniDrawer() {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="absolute" open={open} style={{backgroundColor:"#ffff",color:"#000000"}}>
+      <AppBar position="fixed" open={open} style={{backgroundColor:"#ffff",color:"#000000"}}>
           <Toolbar
             sx={{
               pr: '24px', // keep right padding when drawer closed
@@ -458,6 +458,19 @@ export default function MiniDrawer() {
             {theme.direction === 'rtl' ? <ChevronRightIcon style={{ color:"#ffff" }}/> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
+        <Box>
+                    <Grid container xs={11} justifyContent={"center"}>
+                        <Grid container xs={11} justifyContent={"center"} padding={2} sx={{alignItems:"center"}}>
+                    
+                            <Avatar sx={{ width: 80, height: 80, background:"#3498DB" }}>{localStorage.getItem('name')[0]}</Avatar>
+                        </Grid>
+                    
+                        <Grid xs={12} textAlign={"center"} padding={2}>
+                            <Typography color={"#FFFFFF"}>{localStorage.getItem('name')}</Typography>
+                        </Grid>
+                    </Grid>
+                </Box>  
+            
         <Divider />
         <List>
         <ListItem key="Drafts" disablePadding sx={{ display: 'block',

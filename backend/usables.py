@@ -7,10 +7,11 @@ import pytesseract
 import io
 from creds import mail
 import email
-
 from PIL import Image
 from pptx import Presentation
 from pdf2image import convert_from_bytes
+from predict_data import predict as hi
+
 
 
 #comment down while deploying
@@ -84,8 +85,7 @@ def getdatetime():
 
 
 def fetchMail():
-
-    type, data = mail.search(None, 'UNSEEN')
+    type, data = mail.search(None, 'ALL')
     mail_ids = data[0]
     id_list = mail_ids.split()
     mailbox = []
@@ -142,3 +142,24 @@ async def status_update(filename,uid,status):
     return result
 
 
+
+# def predict_from_mail():
+#     # print(predict_data.lang_input_glob)
+#     data = fetchMail()
+#     response = []
+#     dict = {
+#         "response":"",
+#         "emailid":"",
+#     }
+#     for i in range(len(data)):
+#         emailid = data[i]['from'].split("<")[-1].replace(">","")
+        
+#         for j in range(len(data[i]['contents'])):
+#             response.append({"response":hi(data[i]['contents'][j]['content'],"english")})
+    
+    
+#     print(response)
+
+
+
+    
