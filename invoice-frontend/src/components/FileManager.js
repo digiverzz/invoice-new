@@ -358,7 +358,6 @@ export default function FileManager() {
             {/* <Grid container p={1} xs={2} sx={{ justifyContent: "right" }}>
               <Box pt={0.5}>      
               <Button
-
                 id="sort-button"
                 aria-controls={opensort ? 'sort-menu' : undefined}
                 aria-haspopup="true"
@@ -394,7 +393,7 @@ export default function FileManager() {
           }}>
 
             <Grid container xs={12} sx={{ justifyContent: "right" }}>
-              <Grid xs={12} sx={{ width: "100%" }} bgcolor={"red"} >
+              <Grid xs={12} sx={{ width: "100%",boxShadow: "rgba(149, 157, 165, 0.2) 0px 8px 24px" }} bgcolor={"white"} >
 
                 {/* <IconButton size="large" onClick={handleToggleView} sx={{ color: "black", ":hover": { background: "#6b7682" } }}>
                   {isLargeView ? <AppsIcon color='action' /> : <DensitySmallIcon color='action' />}

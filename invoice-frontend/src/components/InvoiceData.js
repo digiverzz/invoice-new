@@ -398,11 +398,7 @@ export default function InvoiceData(props) {
                 <Edit />
               </IconButton>
             </Tooltip>
-            <Tooltip arrow placement="right" title="Delete">
-              <IconButton color="error" onClick={() => handleDeleteRow(row)}>
-                <Delete />
-              </IconButton>
-            </Tooltip>
+
           </Box>
         )}
         renderTopToolbarCustomActions={() => (
