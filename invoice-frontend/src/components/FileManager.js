@@ -312,7 +312,7 @@ export default function FileManager() {
     console.log(currentName)
 
 
-    const response = await axios.post("http://127.0.0.1:5000/elastic/delete", { "filename": currentName, "username": localStorage.getItem('uid') })
+    const response = await axios.post(URI+"elastic/delete", { "filename": currentName, "username": localStorage.getItem('uid') })
     await fetchData();
     setSeed(Math.random())
     setAnchorEl(null);
