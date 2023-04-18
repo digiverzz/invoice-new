@@ -187,10 +187,11 @@ def predict(file_input,lang_input):
                predicted_response['currency'] = currency
         elif label == 'invoice_number':
             predicted_response['invoice_number'] = invoice_number(cropped_image,lang_input)
-        elif label == 'invoice_date' or label == 'due_date':
-            if label=="invoice_date":
+        elif label == 'date':
+            data_res = date_extract(cropped_image,lang_input)
+            if list(data_res.keys())[list(data_res.values()).index("invoice_date")]=="invoice_date":
                predicted_response['invoice_date'] = date_extract(cropped_image,lang_input)
-            if label=="due_date":
+            if list(data_res.keys())[list(data_res.values()).index("due_date")]=="due_date":
                predicted_response['due_date'] = date_extract(cropped_image,lang_input)
         elif label == 'company_name':
              predicted_response['company_name'] = company_name_extract(cropped_image)

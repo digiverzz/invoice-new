@@ -86,10 +86,9 @@ def date_extract(img,lang_input):
         try:
             for i in ['due','end']:
                 if i in " ".join(d).lower():
-                    predicted_response['due_date']=d[-1].split(" ")[-1]
-                
+                    return {"due_date":d[-1].split(" ")[-1]}
             else:
-                    predicted_response['invoice_date']=d[-1].split(" ")[-1]
+                    return {"invoice_date":d[-1].split(" ")[-1]}
         except:
             pass
     elif lang_input=='arabic':

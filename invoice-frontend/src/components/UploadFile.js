@@ -31,7 +31,7 @@ export default function UploadFileComp() {
     // Update chosen files
     setFiles([ ...files ])
     console.log("files",files)
-    
+
    for (var i = 0; i < files.length; i++){
     var format = {
       name: '',
@@ -51,10 +51,19 @@ export default function UploadFileComp() {
     // Create a form and post it to server
     console.log("files input formdata",files.length)
     var tempfiles = fileBase
-    
+    const dataUrls = [];
+    const FileName = [];
+    const FileSize = [];
+    files.forEach((item)=>{
+       dataUrls.push(item.path)
+       FileName.push(item.name)
+       FileSize.push(item.size)
+    })
     console.log("filebase",tempfiles)
     setSpinner(true)
     try{
+      const elastic = await axios.post(URI+"elastic/upload",{"filename":FileName,"dataurl":dataUrls,"size":FileSize,"username":localStorage.getItem("uid"),"status":"pending"})
+      console.log(elastic)
       const tempres = await axios.post(URI+"predict",tempfiles,{
         headers: {
           'content-Type': 'application/json'

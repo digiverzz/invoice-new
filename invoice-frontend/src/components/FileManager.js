@@ -36,7 +36,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import { height } from '@mui/system';
 import { fontGrid } from '@mui/material/styles/cssUtils';
-
+import URI from "../utils/request";
 
 
 const placeholders = ['Search for...', 'Find...', 'Explore...'];
@@ -209,7 +209,7 @@ export default function FileManager() {
   const searching = async (e) => {
     console.log(e.target.value)
     var temp = [];
-    const response = await axios.post("http://127.0.0.1:5000/elastic/search", { "query": e.target.value, "username": localStorage.getItem('uid') })
+    const response = await axios.post(URI+"elastic/search", { "query": e.target.value, "username": localStorage.getItem('uid') })
     response.data.forEach((Source) => {
       temp.push({
         "name": Source['_source']['filename'],
@@ -229,7 +229,7 @@ export default function FileManager() {
     dataFetchedRef.current = true;
     console.log("useeffect")
     try {
-      const response = await axios.post("http://127.0.0.1:5000/elastic/getallfiles", { 'username': localStorage.getItem('uid') });
+      const response = await axios.post(URI+"elastic/getallfiles", { 'username': localStorage.getItem('uid') });
       console.log(response.data)
       response.data.forEach((Source) => {
         setfileList(fileList => [...fileList, {

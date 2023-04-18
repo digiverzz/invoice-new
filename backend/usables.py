@@ -10,9 +10,10 @@ import email
 from PIL import Image
 from pptx import Presentation
 from pdf2image import convert_from_bytes
-from predict_data import predict as hi
-
-
+from predict_data import predict
+from datetime import datetime
+import json
+import pymongo
 
 #comment down while deploying
 pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
@@ -85,7 +86,7 @@ def getdatetime():
 
 
 def fetchMail():
-    type, data = mail.search(None, 'ALL')
+    type, data = mail.search(None, 'UNSEEN')
     mail_ids = data[0]
     id_list = mail_ids.split()
     mailbox = []
@@ -171,19 +172,50 @@ async def elastic_upload(username:str,status:str,filename:list,Size:list,dataurl
 
     return {"result":res}
 
-# def predict_from_mail():
-#     # print(predict_data.lang_input_glob)
-#     data = fetchMail()
-#     response = []
-#     dict = {
-#         "response":"",
-#         "emailid":"",
-#     }
-#     for i in range(len(data)):
-#         emailid = data[i]['from'].split("<")[-1].replace(">","")
+
+def predict_from_mail():
+    data = fetchMail()
+    response = []
+    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
+    client = pymongo.MongoClient(uri)
+    database = client['invoice']
+    print("data",len(data))
+    try:
+        for i in range(len(data)):
+            emailid = data[i]['from'].split("<")[-1].replace(">","")
+            collection = database['users']
+            user_data = collection.find_one({"email":emailid},{"_id":0,"id":1,"email":1,"dept":1,"name":1,"uid":1,"role":1,"status":1})    
+            print(user_data,i)
+            if user_data!="None" or type(user_data)!=None or user_data!='':
+                for j in range(len(data[i]['contents'])):
+                    d = {
+            "response":"",
+                }
+                    data_res = predict(data[i]['contents'][j]['content'],"english")
+                    d['response'] = json.dumps(data_res)
+                    if user_data["role"] == "Associate Practice Lead":
+                        user_data["l1"] = "yes"
+                        user_data["l2"] = "no"
+                    if user_data["role"] == "Employee" :
+                        user_data["l1"] = "no"                
+                        user_data["l2"] =  "no"
+
+                    if user_data["role"] == "Practice Lead":
+                        user_data["l2"] = "yes"
+                        user_data["l1"] = "yes"
+
+                    user_data["l3"] = "no"
+                    user_data['submitted'] = datetime.today().strftime('%d/%m/%Y')
+                    z = {**d, **user_data}
+                    response.append(z)
+                    print("__________________________________________________________")
+                
+        else:
+            pass
         
-#         for j in range(len(data[i]['contents'])):
-#             response.append({"response":hi(data[i]['contents'][j]['content'],"english")})
-    
-    
-#     print(response)
+    except TypeError:
+        pass
+
+    collection1 = database['request']
+    for i in range(len(response)):
+        collection1.insert_one(response[i])
