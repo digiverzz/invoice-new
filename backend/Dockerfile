@@ -11,6 +11,9 @@ RUN apt-get install -y -qq \
   tesseract-ocr-ara \
   tesseract-ocr-script-deva
 
+
+RUN apt-get install -y poppler-utils 
+
 WORKDIR /app
 
 ENV FLASK_APP=app.py 

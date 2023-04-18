@@ -46,4 +46,7 @@ elasticsearch
 python-jose
 python-multipart
 fastapi-utils
+python-docx
+python-pptx
+pdf2image
 
