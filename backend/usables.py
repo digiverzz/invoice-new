@@ -16,7 +16,7 @@ import json
 import pymongo
 
 #comment down while deploying
-pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
 
 def IsValidUser(name):
     if creds.collection.find_one({"uid":name}):

@@ -46,7 +46,7 @@ import crop_endpoint
 import routes.elastic_search as elastic
 import pytesseract
 from predict_data import predict
-pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
 import predict_data
 from fastapi_utils.tasks import repeat_every
 import usables

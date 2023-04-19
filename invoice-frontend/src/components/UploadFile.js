@@ -62,7 +62,11 @@ export default function UploadFileComp() {
     console.log("filebase",tempfiles)
     setSpinner(true)
     try{
-      const elastic = await axios.post(URI+"elastic/upload",{"filename":FileName,"dataurl":dataUrls,"size":FileSize,"username":localStorage.getItem("uid"),"status":"pending"})
+      const elastic = await axios.post(URI+"elastic/upload",{"filename":FileName,"dataurl":dataUrls,"size":FileSize,"username":localStorage.getItem("uid"),"status":"pending"},{
+        headers: {
+          'content-Type': 'application/json'
+        }
+      })
       console.log(elastic)
       const tempres = await axios.post(URI+"predict",tempfiles,{
         headers: {
