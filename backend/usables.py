@@ -86,9 +86,9 @@ def getdatetime():
 
 
 def fetchMail():
-    type, data = mail.search(None, 'UNSEEN')
+    type, data = mail.search(None, 'ALL')
     mail_ids = data[0]
-    id_list = mail_ids.split()
+    id_list = mail_ids.split()[::-1]
     mailbox = []
 
     for msgnum in id_list[::-1]:
@@ -107,7 +107,7 @@ def fetchMail():
             # extract the filename and content of the attachment
             filename = part.get_filename()
             content = part.get_payload(decode=True)
-            # print(filename)
+            # #print(filename)
             
             if filename.endswith('.png') or filename.endswith(".jpeg") or filename.endswith(".jpg") and content is not None:
 
@@ -119,7 +119,7 @@ def fetchMail():
 
         mailbox.append(mailObj)
     
-    print([i['from'] for i in mailbox])
+    #print([i['from'] for i in mailbox])
 
     return mailbox
 
@@ -150,11 +150,11 @@ async def status_update(filename:str,uid:str,status:str):
 
 async def elastic_upload(username:str,status:str,filename:list,Size:list,dataurl:list):
 
-    # print(data)
+    # #print(data)
     indexname = getIndex(username)
     res = []
     for fname,size,url in zip(filename,Size,dataurl):
-        # print(fname)
+        # #print(fname)
 
         context = data_url_to_image(url,fname)
         format = {
@@ -168,7 +168,7 @@ async def elastic_upload(username:str,status:str,filename:list,Size:list,dataurl
         }
 
         res.append(creds.es.index(index=indexname,document=format))
-        # print(res[-1])
+        # #print(res[-1])
 
     return {"result":res}
 
@@ -179,13 +179,13 @@ def predict_from_mail():
     uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
     client = pymongo.MongoClient(uri)
     database = client['invoice']
-    print("data",len(data))
+    #print("data",len(data))
     try:
         for i in range(len(data)):
             emailid = data[i]['from'].split("<")[-1].replace(">","")
             collection = database['users']
             user_data = collection.find_one({"email":emailid},{"_id":0,"id":1,"email":1,"dept":1,"name":1,"uid":1,"role":1,"status":1})    
-            print(user_data,i)
+            #print(user_data,i)
             if user_data!="None" or type(user_data)!=None or user_data!='':
                 for j in range(len(data[i]['contents'])):
                     d = {
@@ -208,7 +208,7 @@ def predict_from_mail():
                     user_data['submitted'] = datetime.today().strftime('%d/%m/%Y')
                     z = {**d, **user_data}
                     response.append(z)
-                    print("__________________________________________________________")
+                    #print("__________________________________________________________")
                 
         else:
             pass

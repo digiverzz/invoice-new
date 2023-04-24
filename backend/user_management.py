@@ -6,6 +6,8 @@ from fastapi import APIRouter
 from token_authentication import token_required,SECRET_KEY
 from passlib.context import CryptContext
 import datetime
+import creds
+
 
 userrouter = APIRouter()
 
@@ -16,16 +18,13 @@ password_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 @userrouter.post('/login')
 def login(uid:str = Form(),password:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['users']
+    collection = creds.database['users']
     flag = False
     name = ''
     role = ''
     uid1 = ''
     for post in collection.find():
-        print(uid,password)
+        #print(uid,password)
         if (post['uid'] == uid and password_context.verify(password, post['password'])):
             flag = True
             name = post['name']
@@ -45,10 +44,7 @@ def login(uid:str = Form(),password:str = Form()):
 
 @userrouter.post('/register',dependencies=[Depends(token_required)])
 def data(name:str = Form(),password:str = Form(),uid:str = Form(),role:str = Form(),dept:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['users']
+    collection = creds.database['users']
     data = {}
     myquery = {"uid": uid}
     data['name'] = name
@@ -56,30 +52,24 @@ def data(name:str = Form(),password:str = Form(),uid:str = Form(),role:str = For
     data['uid'] = uid
     data['role'] = role
     data['dept'] = dept
-    collection1 = database['profile']
+    collection1 = creds.database['profile']
     collection1.delete_one(myquery)
     collection.insert_one(data)
     return "Success"
 
 @userrouter.post('/deleteuser')
 def data111(uid:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['users']
+    collection = creds.database['users']
     data = {}
     myquery = {"uid": uid}
     collection.delete_one(myquery)
-    collection1 = database['profile']
+    collection1 = creds.database['profile']
     collection1.delete_one(myquery)
     return "Success"
 
 @userrouter.post('/request',dependencies=[Depends(token_required)])
 def data2(l1:str= Form(),l2:str= Form(),l3:str= Form(),dept:str = Form(),submitted:str = Form(),id:str = Form(),name:str = Form(),uid:str = Form(),role:str = Form(),status:str = Form(),data:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['request']
+    collection = creds.database['request']
     data1 = {}
     data1['id'] = id
     data1['name'] = name
@@ -98,13 +88,10 @@ def data2(l1:str= Form(),l2:str= Form(),l3:str= Form(),dept:str = Form(),submitt
 
 @userrouter.post('/requests',dependencies=[Depends(token_required)])
 def data3(uid:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection1 = database['request']
+    collection1 = creds.database['request']
     lst = []
     uid = uid
-    print(uid)
+    #print(uid)
     for x in collection1.find({"$and": [{"uid": {"$eq": uid}}]},
                                 {"_id": 0, "id": 1, "name": 1, "uid": 1, "role": 1, "status": 1,"submitted": 1, "data": 1,"l1":1,"l2":1,"l3":1,"dept":1}):
         lst.append(x)
@@ -113,10 +100,7 @@ def data3(uid:str = Form()):
 
 @userrouter.post('/allrequests',dependencies=[Depends(token_required)])
 def data4(token:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection1 = database['request']
+    collection1 = creds.database['request']
     lst = []
     for x in collection1.find({"$and": [{}]},
                                 {"_id": 0, "id": 1, "name": 1, "uid": 1, "role": 1, "status": 1, "submitted":1 , "data": 1, "l1": 1,
@@ -126,10 +110,7 @@ def data4(token:str = Form()):
 
 @userrouter.post('/update',dependencies=[Depends(token_required)])
 def data5(data:str = Form(),dept:str = Form(),id:str = Form(),name:str = Form(),uid:str = Form(),role:str = Form(),status:str = Form(),l1:str = Form(),l2:str = Form(),l3:str = Form(),submitted:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection1 = database['request']
+    collection1 = creds.database['request']
     lst = []
     data1 = {}
     myquery = {"id": id}
@@ -151,10 +132,7 @@ def data5(data:str = Form(),dept:str = Form(),id:str = Form(),name:str = Form(),
 
 @userrouter.post('/profile',dependencies=[Depends(token_required)])
 def data6(fname:str = Form(),lname:str = Form(),uid:str = Form(),email:str = Form(),bday:str = Form(),gender:str = Form(),add1:str = Form(),add2:str = Form(),phno1:str = Form(),phno2:str = Form(),state:str = Form(),linkedin:str = Form(),img:str = Form(),country:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection1 = database['profile']
+    collection1 = creds.database['profile']
     lst = []
     myquery = {"uid": uid}
     collection1.delete_one(myquery)
@@ -181,13 +159,10 @@ def data6(fname:str = Form(),lname:str = Form(),uid:str = Form(),email:str = For
 
 @userrouter.post('/getprofile',dependencies=[Depends(token_required)])
 def data10(uid:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection1 = database['profile']
+    collection1 = creds.database['profile']
     lst = []
     uid = uid
-    print(uid)
+    #print(uid)
     for x in collection1.find({"$and": [{"uid": {"$eq": uid}}]},
                                 {"_id": 0, "uid": 1, "fname": 1, "lname": 1, "bday": 1, "email": 1, "gender": 1,
                                 "country": 1, "add1": 1, "phno1": 1, "phno2": 1, "add2": 1, "state": 1, "linkedin": 1, "img": 1}):
@@ -198,10 +173,7 @@ def data10(uid:str = Form()):
 
 @userrouter.post('/getallemp',dependencies=[Depends(token_required)])
 def data22(token:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection1 = database['users']
+    collection1 = creds.database['users']
     lst = []
     for x in collection1.find({"$and": [{}]},
                                 {"_id": 0, "uid": 1, "name": 1, "role": 1, "dept": 1}):
@@ -210,22 +182,16 @@ def data22(token:str = Form()):
 
 @userrouter.post('/getalldept',dependencies=[Depends(token_required)])
 def data23(token:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection1 = database['departments']
+    collection1 = creds.database['departments']
     lst = list(collection1.find({"$and": [{}]},
                                 {"_id": 0, "dept": 1}))
-    print(lst)
+    #print(lst)
 
     return lst
 
 @userrouter.post('/adddept',dependencies=[Depends(token_required)])
 def data28(token:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection1 = database['departments']
+    collection1 = creds.database['departments']
     lst = []
     # myquery = {"id": request.form.get("id")}
     # collection1.delete_one(myquery)
@@ -236,14 +202,11 @@ def data28(token:str = Form()):
 
 @userrouter.post('/deleteemp',dependencies=[Depends(token_required)])
 def data29(uid:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['users']
+    collection = creds.database['users']
     data = {}
     myquery = {"uid": uid}
     collection.delete_one(myquery)
-    collection1 = database['profile']
+    collection1 = creds.database['profile']
     collection1.delete_one(myquery)
     return "Success"
 
@@ -251,12 +214,9 @@ def data29(uid:str = Form()):
 
 @userrouter.post('/makeemp',dependencies=[Depends(token_required)])
 def data534(uid:str = Form(),nuid:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['users']
-    collection1 = database['request']
-    collection3 = database['profile']
+    collection = creds.database['users']
+    collection1 = creds.database['request']
+    collection3 = creds.database['profile']
     uid = uid
     myquery = {"uid": uid}
     newvalues = {"$set": {"uid": nuid,"role":"Employee"}}
@@ -270,12 +230,9 @@ def data534(uid:str = Form(),nuid:str = Form()):
 
 @userrouter.post('/regrade',dependencies=[Depends(token_required)])
 def data535(uid:str = Form(),nuid:str = Form(),role:str = Form(),name:str = Form(),dept:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['users']
-    collection1 = database['request']
-    collection3 = database['profile']
+    collection = creds.database['users']
+    collection1 = creds.database['request']
+    collection3 = creds.database['profile']
     uid = uid
     myquery = {"uid": uid}
     newvalues = {"$set": {"uid": nuid, "role": role,"name": name,"dept": dept}}
@@ -289,22 +246,16 @@ def data535(uid:str = Form(),nuid:str = Form(),role:str = Form(),name:str = Form
 
 @userrouter.post('/totalemp',dependencies=[Depends(token_required)])
 def data5378(token:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['total']
+    collection = creds.database['total']
     lst = list(collection.find({"$and": [{"id": {"$eq": 1}}]},
                                 {"_id": 0, "total": 1}))
 
-    print(lst)
+    #print(lst)
     return lst
 
 @userrouter.post('/addtotal',dependencies=[Depends(token_required)])
 def data5359(total:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['total']
+    collection = creds.database['total']
     myquery = {"id": 1}
     newvalues = {"$set": {"total": total}}
     collection.update_one(myquery, newvalues)
@@ -312,10 +263,7 @@ def data5359(total:str = Form()):
 
 @userrouter.post('/totalreq',dependencies=[Depends(token_required)])
 def data5379(token:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['total']
+    collection = creds.database['total']
     lst = list(collection.find({"$and": [{"id": {"$eq": 2}}]},
                                 {"_id": 0, "total": 1}))
 
@@ -323,10 +271,7 @@ def data5379(token:str = Form()):
 
 @userrouter.post('/addtotalreq',dependencies=[Depends(token_required)])
 def data5389(total:str = Form()):
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
-    client = pymongo.MongoClient(uri)
-    database = client['invoice']
-    collection = database['total']
+    collection = creds.database['total']
     myquery = {"id": 2}
     newvalues = {"$set": {"total": total}}
     collection.update_one(myquery, newvalues)

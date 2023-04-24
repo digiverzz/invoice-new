@@ -71,8 +71,9 @@ const handleDrawerOpen = () => {
     setOpen(true);
   };
 
-  const handleClose = () => {
-    navigate('/dashboard')
+  const handleDrawerClose = () => {
+    // setOpen(false);
+    navigate("/dashboard")
   };
   const handlesearch = () =>{
     console.log("hi at handle search")
@@ -132,7 +133,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
             
         <Divider />
         <List>
-        <ListItem key="Drafts" disablePadding sx={{ display: 'block',
+        <ListItem key="Dashboard" disablePadding sx={{ display: 'block',
             '&& .Mui-selected, && .Mui-selected:hover': {
               bgcolor: 'red',
               '&, & .MuiListItemIcon-root': {
@@ -156,7 +157,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
                   
-                }}
+                }} onClick={()=>{navigate("/dashboard")}}
               >
                 <ListItemIcon
                   sx={{
@@ -168,7 +169,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
                 >
                   <DraftsOutlinedIcon style={{ color:"#ffff" }}/>
                 </ListItemIcon>
-                <ListItemText primary="Drafts" sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
             <ListItem key="Search" disablePadding sx={{ display: 'block',

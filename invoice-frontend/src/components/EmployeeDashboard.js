@@ -47,6 +47,8 @@ import FindInPageIcon from '@mui/icons-material/FindInPage';
 import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
 import LogoutIcon from '@mui/icons-material/Logout';
+import Skeleton from '@mui/material/Skeleton';
+
 
 const drawerWidth = 240;
 
@@ -473,7 +475,7 @@ export default function MiniDrawer() {
             
         <Divider />
         <List>
-        <ListItem key="Drafts" disablePadding sx={{ display: 'block',
+        <ListItem key="Dashboard" disablePadding sx={{ display: 'block',
             '&& .Mui-selected, && .Mui-selected:hover': {
               bgcolor: 'red',
               '&, & .MuiListItemIcon-root': {
@@ -509,7 +511,7 @@ export default function MiniDrawer() {
                 >
                   <DraftsOutlinedIcon style={{ color:"#ffff" }}/>
                 </ListItemIcon>
-                <ListItemText primary="Drafts" sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
             <ListItem key="Search" disablePadding sx={{ display: 'block',
@@ -554,7 +556,7 @@ export default function MiniDrawer() {
         </List>
         <Divider color="white"/>
         <List>
-        <ListItem key="Dark Mode" disablePadding sx={{ display: 'block',
+        {/* <ListItem key="Dark Mode" disablePadding sx={{ display: 'block',
             '&& .Mui-selected, && .Mui-selected:hover': {
               bgcolor: 'red',
               '&, & .MuiListItemIcon-root': {
@@ -588,7 +590,7 @@ export default function MiniDrawer() {
                 </ListItemIcon>
                 <ListItemText primary="Dark Mode" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
-            </ListItem>
+            </ListItem> */}
             <ListItem key="Logout" disablePadding sx={{ display: 'block',
             '&& .Mui-selected, && .Mui-selected:hover': {
               bgcolor: 'red',
@@ -632,98 +634,147 @@ export default function MiniDrawer() {
       <Box component="main" sx={{ flexGrow: 1, p: 3 }}>
         <DrawerHeader />
         <Grid container spacing={4}   id="portfolio">
-  <Grid item xs={3}>
-        <div class="card" id="storageCard">
-          <div class="card-title">Total Claim Requests</div>
-          <div class="card-icon"><AccountBalanceWalletIcon /></div>
-          <div class="card-data"><h4>{total}</h4></div>
-          
-        </div>
-  </Grid>
-  <Grid item xs={3}>
-  <div class="card" id="loveCard" >
-          <div class="card-title">Total claim Approved</div>
-          <div class="card-icon"><CheckCircleIcon /></div>
-          <div class="card-data"><h4>{acctotal}</h4></div>
-          
-        </div>
-  </Grid>
-  <Grid item xs={3}>
-  <div class="card" id="pizzaCard">
-          <div class="card-title">Total claim Rejected</div>
-          <div class="card-icon"><DangerousIcon /></div>
-          <div class="card-data"><h4>{rejtotal}</h4></div>
-          
-        </div>
-  </Grid>
-  <Grid item xs={3}>
-  <div class="card" id="gameCard">
-          <div class="card-title">Total claim Pending</div>
-          <div class="card-icon"><PendingActionsIcon /></div>
-          <div class="card-data"><h4>{pentotal}</h4></div>
-          
-        </div>
-  </Grid>
+  {
+    total ? (
+      <Grid item xs={3}>
+      <div class="card" id="storageCard">
+        <div class="card-title">Total Claim Requests</div>
+        <div class="card-icon"><AccountBalanceWalletIcon /></div>
+        <div class="card-data"><h4>{total}</h4></div>
+        
+      </div>
+</Grid>
+    ) :     (<Grid item xs={3}><Skeleton sx={
+      {
+        borderRadius:4
+      }
+    }  variant="rounded" animation="wave" width={240} height={120} /></Grid>)
+
+  }
+    {
+    acctotal ? (
+      <Grid item xs={3}>
+      <div class="card" id="loveCard" >
+              <div class="card-title">Total claim Approved</div>
+              <div class="card-icon"><CheckCircleIcon /></div>
+              <div class="card-data"><h4>{acctotal}</h4></div>
+              
+            </div>
+      </Grid>
+    ) :     (<Grid item xs={3}><Skeleton sx={
+      {
+        borderRadius:4
+      }
+    }  variant="rounded" animation="wave" width={240} height={120} /></Grid>)
+
+  }
+      {
+    rejtotal ? (
+      <Grid item xs={3}>
+      <div class="card" id="pizzaCard">
+              <div class="card-title">Total claim Rejected</div>
+              <div class="card-icon"><DangerousIcon /></div>
+              <div class="card-data"><h4>{rejtotal}</h4></div>
+              
+            </div>
+      </Grid>
+    ) :     (<Grid item xs={3}><Skeleton sx={
+      {
+        borderRadius:4
+      }
+    }  variant="rounded" animation="wave" width={240} height={120} /></Grid>)
+
+  }
+        {
+    rejtotal ? (
+
+      <Grid item xs={3}>
+      <div class="card" id="gameCard">
+              <div class="card-title">Total claim Pending</div>
+              <div class="card-icon"><PendingActionsIcon /></div>
+              <div class="card-data"><h4>{pentotal}</h4></div>
+              
+            </div>
+      </Grid>
+    ) :     (<Grid item xs={3}><Skeleton sx={
+      {
+        borderRadius:4
+      }
+    }  variant="rounded" animation="wave" width={240} height={120} /></Grid>)
+
+  }
   
 </Grid>
-<Grid container spacing={5} id="charttype">
 
-  <Grid item xs={12}>
-   <div class="card1">
-   <Paper sx={{ width: '100%', overflow: 'hidden' }}>
-  <TableContainer>
-      <Table sx={{ minWidth: 440 }} aria-label="sticky table">
-        <TableHead>
-          <TableRow id="tableheader">
-            <StyledTableCell align="left" style={{width: 200}}>Date</StyledTableCell>
-            <StyledTableCell align="left" style={{width: 200}}>Category</StyledTableCell>
-            <StyledTableCell align="left" style={{width: 200}}>Amount</StyledTableCell>
-            <StyledTableCell align="left" style={{width: 200}}>Approvers</StyledTableCell>
-            <StyledTableCell align="left" style={{width: 200}}>Status</StyledTableCell>
-            <StyledTableCell align="left" style={{width: 200}}>Currency</StyledTableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {tabData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell align="left" style={{width: 200}}>
-                {row.Date}
-              </StyledTableCell>
-              
-              <StyledTableCell align="left" style={{width: 200}}>{row.Category}</StyledTableCell>
-              <StyledTableCell align="left" style={{width: 200}}>{row.Amount}</StyledTableCell>
-              <StyledTableCell align="left" style={{width: 200}}>
-                <div className='d-flex align-items-center'>
-                
-                <Avatar  alt="Remy Sharp" src="https://mui.com/static/images/avatar/3.jpg" sx={{ width: 24, height: 24 }} align="left"/>
-                <Avatar
-  alt="Remy Sharp"
-  src="https://mui.com/static/images/avatar/2.jpg"
-  sx={{ width: 24, height: 24,marginLeft:"5px" }} align="left"
-/>
-                </div>
-                
-                </StyledTableCell>
-              <StyledTableCell align="left" style={{width: 200}}><Chip label={row.status} color={row.status=="Accepted" ? "success" : row.status=="Rejected" ? "error" : "warning"} /></StyledTableCell>
-              <StyledTableCell align="left" style={{width: 200}}>{row.currency}</StyledTableCell>
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
-    <TablePagination
-        rowsPerPageOptions={[5,10,15]}
-        component="div"
-        count={tabData.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-      />
-      </Paper>
-   </div>
-  
-  </Grid>
+
+<Grid container spacing={5} id="charttype">
+{
+    tabData.length>0 ? (
+      <Grid item xs={12}>
+      <div class="card1">
+      <Paper sx={{ width: '100%', overflow: 'hidden' }}>
+     <TableContainer>
+         <Table sx={{ minWidth: 440 }} aria-label="sticky table">
+           <TableHead>
+             <TableRow id="tableheader">
+               <StyledTableCell align="left" style={{width: 200}}>Date</StyledTableCell>
+               <StyledTableCell align="left" style={{width: 200}}>Category</StyledTableCell>
+               <StyledTableCell align="left" style={{width: 200}}>Amount</StyledTableCell>
+               <StyledTableCell align="left" style={{width: 200}}>Approvers</StyledTableCell>
+               <StyledTableCell align="left" style={{width: 200}}>Status</StyledTableCell>
+               <StyledTableCell align="left" style={{width: 200}}>Currency</StyledTableCell>
+             </TableRow>
+           </TableHead>
+           <TableBody>
+             {tabData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
+               <StyledTableRow key={row.name}>
+                 <StyledTableCell align="left" style={{width: 200}}>
+                   {row.Date}
+                 </StyledTableCell>
+                 
+                 <StyledTableCell align="left" style={{width: 200}}>{row.Category}</StyledTableCell>
+                 <StyledTableCell align="left" style={{width: 200}}>{row.Amount}</StyledTableCell>
+                 <StyledTableCell align="left" style={{width: 200}}>
+                   <div className='d-flex align-items-center'>
+                   
+                   <Avatar  alt="Remy Sharp" src="https://mui.com/static/images/avatar/3.jpg" sx={{ width: 24, height: 24 }} align="left"/>
+                   <Avatar
+     alt="Remy Sharp"
+     src="https://mui.com/static/images/avatar/2.jpg"
+     sx={{ width: 24, height: 24,marginLeft:"5px" }} align="left"
+   />
+                   </div>
+                   
+                   </StyledTableCell>
+                 <StyledTableCell align="left" style={{width: 200}}><Chip label={row.status} color={row.status=="Accepted" ? "success" : row.status=="Rejected" ? "error" : "warning"} /></StyledTableCell>
+                 <StyledTableCell align="left" style={{width: 200}}>{row.currency}</StyledTableCell>
+               </StyledTableRow>
+             ))}
+           </TableBody>
+         </Table>
+       </TableContainer>
+       <TablePagination
+           rowsPerPageOptions={[5,10,15]}
+           component="div"
+           count={tabData.length}
+           rowsPerPage={rowsPerPage}
+           page={page}
+           onPageChange={handleChangePage}
+           onRowsPerPageChange={handleChangeRowsPerPage}
+         />
+         </Paper>
+      </div>
+     
+     </Grid>
+
+    ) :     (<Grid item xs={3}><Grid ></Grid><Skeleton variant="rounded"  sx={
+      {
+        borderRadius:1
+      }
+    }  animation="wave" width={1060} height={400} /></Grid>)
+
+  }
+
 </Grid>
       </Box>
     </Box>

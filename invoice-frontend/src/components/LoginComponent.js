@@ -20,6 +20,9 @@ import axios, * as others from "axios";
 import jwt_decode from "jwt-decode";
 import { Link,useNavigate } from 'react-router-dom';
 import Alert from '@mui/material/Alert';
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
+
 
 function Login() {
     const navigate = useNavigate();
@@ -74,10 +77,19 @@ function Login() {
       res = await axios.post(URI + "login", data);
       console.log("login submit res",res)
       if (res.data.message == "Success") {
-        setLoginstatus("success")
         setalertcontent("Login Successfull")
         setshowalert(true)
-
+        setLoginstatus("success")
+        toast.success("Login Successfull", {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
         let decoded = {
           name: "",
           uid: "",
@@ -99,18 +111,38 @@ function Login() {
         } else {
           setTimeout(() => {
             navigate("/dashboard"); //this.props.navigation.navigate('Login')
-        }, 200);
+        }, 2000);
         }
       } else {
         setLoginstatus("error")
         setalertcontent("Invalid Username or Password")
         setshowalert(true)
+        toast.error(alertcontent, {
+          position: "top-right",
+          autoClose: 2000,
+          hideProgressBar: true,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "colored",
+          });
       }
     };
 
     return (
     <ThemeProvider theme={themeLight}>
-      { showalert ? <div className='container'><div className='col-lg-4'><Alert size="small" severity={Loginstatus}>{alertcontent}</Alert></div></div> : ''}
+      { showalert ? <ToastContainer
+position="top-right"
+autoClose={2000}
+hideProgressBar
+newestOnTop
+closeOnClick
+rtl={false}
+draggable
+theme="colored"
+/>
+ : ''}
       <div className='container-fluid py-5 my-3'>
        <div className='row'>
         <div className='col-lg-6 text-center text-start d-flex flex-column justify-content-center'>
@@ -119,10 +151,7 @@ function Login() {
             <span className="text-primary">for your business</span>
           </h1>
           <p className='px-3' style={{color: 'hsl(217, 10%, 50.8%)'}}>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Eveniet, itaque accusantium odio, soluta, corrupti aliquam
-            quibusdam tempora at cupiditate quis eum maiores libero
-            veritatis? Dicta facilis sint aliquid ipsum atque?
+          Simplify your invoicing workflow with our app, allowing you to focus on growing your business.
           </p>
         </div>
          <div className='col-lg-6 my-5 px-5'>
