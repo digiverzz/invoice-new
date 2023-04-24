@@ -25,14 +25,14 @@ croprouter = APIRouter()
 def crop(file_input: bytes = File(),label_input: str = Form()):
     image = file_input
     label = label_input
-    print("image",file_input)
+    #print("image",file_input)
     image = io.BytesIO(image)
     cropped_image = np.asarray(Image.open(image).convert('RGB'))
     cropped_image = cv2.cvtColor(cropped_image, cv2.COLOR_RGB2BGR)
-    print("label at crop",label)
+    #print("label at crop",label)
     if label == 'from_address' or label=='to_address':
-        print("address")
-        # print(cropped_image.shape)
+        #print("address")
+        # #print(cropped_image.shape)
         # s = requests.post(url='https://ocr-tesseract-api2.herokuapp.com/predictocr',
         #                   json={"text_nlp[]": cropped_image.tolist(), "label": label})
         s = address(cropped_image,lang_input_glob)
@@ -42,7 +42,7 @@ def crop(file_input: bytes = File(),label_input: str = Form()):
     elif label == 'company_name':
         s = company_name_extract(cropped_image)
         text  = s
-        print("inside company",text)
+        #print("inside company",text)
         return text        
     elif label == 'total':
         s = total(cropped_image,lang_input_glob)
@@ -50,7 +50,7 @@ def crop(file_input: bytes = File(),label_input: str = Form()):
         #                   json={"text_nlp[]": cropped_image.tolist(), "label": label})
         # s = address(cropped_image)
         text = s
-        print(text)
+        #print(text)
         return text
     elif label == 'invoice_number':
         # s = invoice_number(cropped_image)
@@ -58,7 +58,7 @@ def crop(file_input: bytes = File(),label_input: str = Form()):
         #                   json={"text_nlp[]": cropped_image.tolist(), "label": label})
         # s = address(cropped_image)
         s = invoice_number(cropped_image,lang_input_glob)
-        print(s)
+        #print(s)
         text = s
         return text
     elif label == 'invoice_date' or label == 'due_date':
@@ -125,7 +125,7 @@ def crop(file_input: bytes = File(),label_input: str = Form()):
 
     # else:
     #     s = address(cropped_image,lang_input_glob)
-    #     print(s)
+    #     #print(s)
     #     return s
 
 

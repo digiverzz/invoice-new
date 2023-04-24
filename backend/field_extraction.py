@@ -38,7 +38,7 @@ def address(img,lang_input):
         canny = get_grayscale(img)
         ignore_words = [ 'SHIPTO', 'BILLEDTO', 'YOURCOMPANYNAME', 'FROM', 'TO', 'SHIP', 'SHIPPING', 'BILLOF', 'ADDRESS', 'BILLING', 'BILLTO', 'SHIPTO', 'SHIPPINGTO', 'BILLINGTO','SHIP TO', 'BILLED TO', 'YOUR COMPANY NAME', 'FROM', 'TO', 'SHIP', 'SHIPPING', 'BILL OF', 'ADDRESS', 'BILLING', 'BILL TO', 'SHIP TO', 'SHIPPING TO', 'BILLING TO',"ship to","billed to",'your company name','from','to','ship','shipping','bill of','address','billing','bill to','ship to','shipping to','billing to','shipto', 'billedto', 'yourcompanyname', 'from', 'to', 'ship', 'shipping', 'billof', 'address', 'billing', 'billto', 'shipto', 'shippingto', 'billingto']
         d = pytesseract.image_to_string(canny, config=custom_config,output_type=Output.DICT)
-        print(d['text'])
+        #print(d['text'])
         d = d['text'].replace('\n',' ')
         d = d.split(' ')
         d = [x for x in d if x.lower() not in ignore_words]
@@ -59,9 +59,9 @@ def invoice_number(img,lang_input):
         canny = get_grayscale(img)
         d = pytesseract.image_to_data(canny, config=custom_config, output_type=Output.DICT)
         # d = correction(d['text'])
-        print(d['text'])
+        #print(d['text'])
         d = seperate(d['text'])
-        print("after sep",d)
+        #print("after sep",d)
         try:
            return " ".join(d[1:]) if len(d)>1 else d[0].split(" ")[-1]
         except:
@@ -81,7 +81,7 @@ def date_extract(img,lang_input):
         keywords = ['due','end']
         canny = get_grayscale(img)
         d = pytesseract.image_to_data(img, config=custom_config, output_type=Output.DICT)
-        print("date",d['text'])
+        #print("date",d['text'])
         d = seperate(d['text'])
         try:
             for i in ['due','end']:
@@ -96,7 +96,7 @@ def date_extract(img,lang_input):
         keywords = ['due','end']
         canny = get_grayscale(img)
         d = pytesseract.image_to_data(img, config=custom_config, output_type=Output.DICT)
-        print("date",d['text'])
+        #print("date",d['text'])
         d = seperate(d['text'])
         try:
             for i in ['due','end']:
@@ -115,7 +115,7 @@ def currency_extract(img,lang_input):
     if lang_input=='english':
         custom_config = r'-l eng --oem 3 --psm 6 -c tessedit_char_whitelist="$£€¥₹"'
         d = pytesseract.image_to_data(img, config=custom_config, output_type=Output.DICT)
-        print("currency",d['text'])
+        #print("currency",d['text'])
         # d = correction(d['text'])
         d = "".join(d['text'])
         d = "".join(d)
@@ -123,7 +123,7 @@ def currency_extract(img,lang_input):
     elif lang_input=='arabic':
         custom_config = r'-l eng --oem 3 --psm 11 -c tessedit_char_whitelist="د.إ"'
         d = pytesseract.image_to_data(img, config=custom_config, output_type=Output.DICT)
-        print("currency",d['text'])
+        #print("currency",d['text'])
         # d = correction(d['text'])
         d = "".join(d['text'])
         d = "".join(d)
@@ -137,7 +137,7 @@ def col_extract(img):
     custom_config = r'-l eng --oem 3 --psm 6 -c tessedit_char_whitelist="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-:.$%.,/@& *"'
     d = pytesseract.image_to_data(img_rgb, config=custom_config, output_type=Output.DICT)
     df = pd.DataFrame(d)
-    print(df)
+    #print(df)
     df1 = df[(df.conf != '-1') & (df.text != ' ') & (df.text != '')]
     pd.set_option('display.max_rows', None)
     pd.set_option('display.max_columns', None)
@@ -185,7 +185,7 @@ def company_name_extract(img):
     custom_config = r'-l eng --psm 11 --oem 3'
     canny = get_grayscale(img)
     d = pytesseract.image_to_string(canny, config=custom_config)
-    print("company",d)
+    #print("company",d)
     d = "".join(d)
     return d
 
@@ -193,7 +193,7 @@ def phone_number(img,lang_input):
     custom_config = r'-l eng --psm 11 --oem 3 -c tessedit_char_whitelist="0123456789+"'
     canny = get_grayscale(img)
     d = pytesseract.image_to_data(img, config=custom_config, output_type=Output.DICT)
-    print("phone number",d['text'])
+    #print("phone number",d['text'])
     # d = correction(d['text'])
     d = "".join(d['text'])
     return d
@@ -205,7 +205,7 @@ def tax_extract(img,lang_input):
         custom_config = r'-l eng --psm 11 --oem 3 -c tessedit_char_whitelist="0123456789%,."'
         canny = get_grayscale(img)
         d = pytesseract.image_to_data(canny, config=custom_config, output_type=Output.DICT)
-        print("hello",d['text'])
+        #print("hello",d['text'])
         d = seperate(d['text'])
         d = "".join(d[-1])
         return d
@@ -221,9 +221,9 @@ def discount_extract(img,lang_input):
         custom_config = r'-l eng --psm 11 --oem 3 -c tessedit_char_whitelist="0123456789,."'
         canny = get_grayscale(img)
         d = pytesseract.image_to_data(canny, config=custom_config, output_type=Output.DICT)
-        print("hello",d['text'])
+        #print("hello",d['text'])
         #d = seperate(d['text'])
-        print(d)
+        #print(d)
         return "".join(d['text'])
     elif lang_input == 'arabic':
         custom_config = r"--psm 11 --oem 3 -c tessedit_char_whitelist=1234567890%.)("
@@ -252,7 +252,7 @@ def table(img):
     custom_config = r'-l eng --oem 3 --psm 6 -c tessedit_char_whitelist="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-:.$%.,/@& *"'
     d = pytesseract.image_to_data(img_rgb, config=custom_config, output_type=Output.DICT)
     df = pd.DataFrame(d)
-    print(df)
+    #print(df)
     df1 = df[(df.conf != '-1') & (df.text != ' ') & (df.text != '')]
     pd.set_option('display.max_rows', None)
     pd.set_option('display.max_columns', None)

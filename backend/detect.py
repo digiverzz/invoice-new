@@ -22,7 +22,7 @@ def detect(opt,save_img=False):
     #    ('rtsp://', 'rtmp://', 'http://', 'https://'))
     save_img = True
     webcam = False
-    # print("weights",weights)
+    # #print("weights",weights)
     # Directories
     # save_dir = Path(increment_path(Path(opt.project) / opt.name, exist_ok=opt.exist_ok))  # increment run
     # (save_dir / 'labels' if save_txt else save_dir).mkdir(parents=True, exist_ok=True)  # make dir
@@ -56,7 +56,7 @@ def detect(opt,save_img=False):
         cudnn.benchmark = True  # set True to speed up constant image size inference
         dataset = LoadStreams(source, img_size=imgsz, stride=stride)
     else:
-        print("source",source)
+        #print("source",source)
         dataset = LoadImages(source, img_size=imgsz, stride=stride).next()
 
     # Get names and colors
@@ -113,7 +113,7 @@ def detect(opt,save_img=False):
                 # Rescale boxes from img_size to im0 size
                 det[:, :4] = scale_coords(img.shape[2:], det[:, :4], im0.shape).round()
 
-                # Print results
+                # #print results
                 for c in det[:, -1].unique():
                     n = (det[:, -1] == c).sum()  # detections per class
                     s += f"{n} {names[int(c)]}{'s' * (n > 1)}, "  # add to string
@@ -128,7 +128,7 @@ def detect(opt,save_img=False):
                     if save_txt:  # Write to file
                         xywh = (xyxy2xywh(torch.tensor(xyxy).view(1, 4)) / gn).view(-1).tolist()
                           # normalized xywh
-                        # print(xywh)
+                        # #print(xywh)
                         line = (cls, *xywh, conf) if opt['save_conf'] else (cls, *xywh)  # label format
 
                         co_ordinates.append([float(cls), *xywh, float(conf)])
@@ -140,8 +140,8 @@ def detect(opt,save_img=False):
                         label = f'{names[int(cls)]} {conf:.2f}'
                         plot_one_box(xyxy, im0, label=label, color=colors[int(cls)], line_thickness=1)
 
-            # Print time (inference + NMS)
-            print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
+            # #print time (inference + NMS)
+            #print(f'{s}Done. ({(1E3 * (t2 - t1)):.1f}ms) Inference, ({(1E3 * (t3 - t2)):.1f}ms) NMS')
 
             # Stream results
             if view_img:
@@ -156,10 +156,10 @@ def detect(opt,save_img=False):
 
     # if save_txt or save_img:
         # s = f"\n{len(list(save_dir.glob('labels/*.txt')))} labels saved to {save_dir / 'labels'}" if save_txt else ''
-        #print(f"Results saved to {save_dir}{s}")
+        ##print(f"Results saved to {save_dir}{s}")
 
-    print(f'Done. ({time.time() - t0:.3f}s)')
-    print(co_ordinates)
+    #print(f'Done. ({time.time() - t0:.3f}s)')
+    #print(co_ordinates)
     return co_ordinates,im0
 
 
@@ -193,7 +193,7 @@ def start(weights,source,img_size=640,conf_thres=0.75,iou_thres=0.75):
     # parser.add_argument('--no-trace',default=True, help='don`t trace model')
     # unknown = parser.parse_known_args()
     # opt = parser.parse_args()
-    # print(opt)
+    # #print(opt)
     # ,view_img,save_txt,save_conf,nosave,classes,agnostic_nms,augment,update,project,name,exist_ok,no_trace
     return detect(opt)
 
@@ -219,7 +219,7 @@ def start(weights,source,img_size=640,conf_thres=0.75,iou_thres=0.75):
 #     parser.add_argument('--exist-ok', action='store_true', help='existing project/name ok, do not increment')
 #     parser.add_argument('--no-trace', action='store_true', help='don`t trace model')
 #     opt = parser.parse_args()
-#     print(opt)
+#     #print(opt)
 #     #check_requirements(exclude=('pycocotools', 'thop'))
 #
 #     with torch.no_grad():
@@ -228,5 +228,5 @@ def start(weights,source,img_size=640,conf_thres=0.75,iou_thres=0.75):
 #                 detect()
 #                 strip_optimizer(opt.weights)
 #         else:
-#             print("normal")
+#             #print("normal")
 #             detect()

@@ -127,12 +127,12 @@ def predict(file_input,lang_input):
         binary = base64.b64decode(base_str)
         image = np.asarray(bytearray(binary), dtype=np.uint8)
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
-    print("image",image)
+    #print("image",image)
     global lang_input_glob
     lang_input_glob = lang_input
     # choice = ['invono','date','total','table','address']
     exist_classes = []
-    #print(os.path.join(UPLOAD_FOLDER, filename))
+    ##print(os.path.join(UPLOAD_FOLDER, filename))
     #image.save(os.path.join('/tmp',filename))]
     classes = ['company_name', 'from_address', 'to_address', 'date', 'phone_number', 'invoice_number', 'total', 'sub_total', 'tax', 'discount', 'barcode', 'logo', 'description_col', 'qty_col', 'price_col', 'unitprice_col', 'header', 'table']
     # read input image
@@ -141,7 +141,7 @@ def predict(file_input,lang_input):
     # image2 = cv2.cvtColor(image2, cv2.COLOR_RGB2BGR)
     # image3 = cv2.cvtColor(image3, cv2.COLOR_RGB2BGR)
     cv2.imwrite("sample.png",image2)
-    print("image2",image2)
+    #print("image2",image2)
     values, img = start('best_1000.pt', image2)
     COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
     dw = image2.shape[1]
@@ -151,7 +151,7 @@ def predict(file_input,lang_input):
     header = []
     column_count = 0
     header_len = 0
-    print("label index:",[i[0] for i in values])
+    #print("label index:",[i[0] for i in values])
     for i in values:
         class_id = int(i[0])
         w = i[3]
@@ -159,7 +159,7 @@ def predict(file_input,lang_input):
         x = i[1]
         y = i[2]
         confidence = i[5]
-        print(class_id)
+        #print(class_id)
         label = str(classes[class_id])
         x_center, y_center, w, h = float(x), float(y), float(w), float(h)
         x_center = round(x_center * dw)
@@ -170,11 +170,11 @@ def predict(file_input,lang_input):
         y = round(y_center - h / 2)
         cropped_image = image3[y:y + h, x:x + w]
         # color = COLORS[int(class_id)]
-        # print("+",x+w, y+h)
+        # #print("+",x+w, y+h)
         # cv2.rectangle(image, (x, y), (x+w, y+h), color, 2)
         #cv2.imwrite(os.path.join(app.config['CROPPED_FOLDER'], str(classes[class_id]) + '.png'), cropped_image)
         #cv2.putText(img, label, (x - 10, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 1, color, 2)
-        print("label->",label)
+        #print("label->",label)
         if label == 'from_address':
             # s = address(cropped_image)
             predicted_response['from_address'] = address(cropped_image,lang_input)
@@ -188,11 +188,12 @@ def predict(file_input,lang_input):
         elif label == 'invoice_number':
             predicted_response['invoice_number'] = invoice_number(cropped_image,lang_input)
         elif label == 'date':
-            data_res = date_extract(cropped_image,lang_input)
-            if list(data_res.keys())[list(data_res.values()).index("invoice_date")]=="invoice_date":
-               predicted_response['invoice_date'] = date_extract(cropped_image,lang_input)
-            if list(data_res.keys())[list(data_res.values()).index("due_date")]=="due_date":
-               predicted_response['due_date'] = date_extract(cropped_image,lang_input)
+            date_res = date_extract(cropped_image,lang_input)
+            print("date_res",date_res)
+            if list(date_res.keys())[0]=="invoice_date":
+               predicted_response['invoice_date'] = date_res['invoice_date']
+            if list(date_res.keys())[0]=="due_date":
+               predicted_response['due_date'] = date_res['due_date']
         elif label == 'company_name':
              predicted_response['company_name'] = company_name_extract(cropped_image)
         elif label == 'qty_col':
@@ -248,7 +249,7 @@ def predict(file_input,lang_input):
                predicted_response['currency'] = currency
         elif label == 'header':
              header = table(cropped_image)[0]
-             print("headers 1",header)
+             #print("headers 1",header)
              header_len = len(header)
         elif label == 'table':
             table_img = cropped_image
@@ -258,15 +259,15 @@ def predict(file_input,lang_input):
 
     # if header_len!=column_count and column_count<4:
     #    table_values = table(table_img)[1]
-    #    print("values",table_values)
-    #    print("header",header)
-    #    print("column",column_count)
+    #    #print("values",table_values)
+    #    #print("header",header)
+    #    #print("column",column_count)
 
     # if header_len>column_count and column_count<4:
     #     for i,j in enumerate(predicted_response['bill_of_materials'][0]):
     #         if len(predicted_response['bill_of_materials'][0][j])==0:
     #             if len(table_values[0])==header_len:
-    #                 print(i)
+    #                 #print(i)
     #                 predicted_response['bill_of_materials'][0][j]=[x[i] for x in table_values if len(x)>=i]
     #             elif len(table_values[0])>header_len:
     #                  table_values = [x[1::] for x in table_values]

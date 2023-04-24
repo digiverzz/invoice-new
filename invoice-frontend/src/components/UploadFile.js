@@ -1,158 +1,165 @@
-import React from 'react'
+import React from "react";
 import { useState } from "react";
-import { Button } from '@mui/material';
-import UploadFileStyles from '../components/UploadFileStyles.css'
+import { Button } from "@mui/material";
+import UploadFileStyles from "../components/UploadFileStyles.css";
 import URI from "../utils/request";
-import FileUpload from "react-mui-fileuploader"
-import NavigateNextTwoToneIcon from '@mui/icons-material/NavigateNextTwoTone';
-import Grid  from '@mui/material/Grid';
-import Container from '@mui/material/Container';
-import Box from '@mui/material/Box';
-import { UploadFile } from '@mui/icons-material';
+import NavigateNextTwoToneIcon from "@mui/icons-material/NavigateNextTwoTone";
+import Grid from "@mui/material/Grid";
+import Container from "@mui/material/Container";
+import Box from "@mui/material/Box";
+import { UploadFile } from "@mui/icons-material";
 import axios, * as others from "axios";
-import {Buffer} from 'buffer';
-import PropTypes from 'prop-types';
-import CircularProgress from '@mui/material/CircularProgress';
-import Typography from '@mui/material/Typography';
-import InvoiceData from './InvoiceData';
+import { Buffer } from "buffer";
+import PropTypes from "prop-types";
+import CircularProgress from "@mui/material/CircularProgress";
+import Typography from "@mui/material/Typography";
+import InvoiceData from "./InvoiceData";
 import { Link, useNavigate } from "react-router-dom";
-import loader from "../images/loader.gif"
-
+import loader from "../images/loader.gif";
+import FileUpload from "react-material-file-upload";
 
 export default function UploadFileComp() {
   const navigate = useNavigate();
-  const [spinner, setSpinner] = useState(false);    
+  const [spinner, setSpinner] = useState(false);
   const [files, setFiles] = useState([]);
-  const [errorUpload,setErrorUpload] = useState(false);
-  const [resData,setResData] = useState();
-  const [fileBase,setfilesBase] = useState([])
-  const handleFilesChange = async (files) => {
-    var tempfiles2 = []
-    // Update chosen files
-    setFiles([ ...files ])
-    console.log("files",files)
+  const [errorUpload, setErrorUpload] = useState(false);
+  const [resData, setResData] = useState();
+  const [fileBase, setfilesBase] = useState([]);
 
-   for (var i = 0; i < files.length; i++){
-    var format = {
-      name: '',
-      data: ''
-   }
-     format['name'] = files[i].name
-     format['data'] = files[i].path
-     tempfiles2.push(format)
-   }
-   setfilesBase([...tempfiles2])
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader();
+      fileReader.readAsDataURL(file);
+      fileReader.onload = () => {
+        resolve(fileReader.result);
+      };
+      fileReader.onerror = (error) => {
+        reject(error);
+      };
+    });
   };
-  const handleFileUploadError = (err) => {
-    setErrorUpload(true)
-  }
 
   const uploadFiles = async () => {
-    // Create a form and post it to server
-    console.log("files input formdata",files.length)
-    var tempfiles = fileBase
+    
+    setSpinner(true);
+    const tempfiles = [];
+    // setfilesBase([...tempfiles2]);
+
+    console.log("files input formdata", files.length);
+    // var tempfiles = [];
     const dataUrls = [];
     const FileName = [];
     const FileSize = [];
-    files.forEach((item)=>{
-       dataUrls.push(item.path)
-       FileName.push(item.name)
-       FileSize.push(item.size)
-    })
-    console.log("filebase",tempfiles)
-    setSpinner(true)
-    try{
-      const elastic = await axios.post(URI+"elastic/upload",{"filename":FileName,"dataurl":dataUrls,"size":FileSize,"username":localStorage.getItem("uid"),"status":"pending"},{
-        headers: {
-          'content-Type': 'application/json'
-        }
-      })
-      console.log(elastic)
-      const tempres = await axios.post(URI+"predict",tempfiles,{
-        headers: {
-          'content-Type': 'application/json'
-        }
-      })
-        .then((response) => {
-           let data = response.data.response
-           console.log("response",data)
-           setResData(data)
-           setSpinner(false)
-        })
+    files.forEach(async (item) => {
+      
+      const reader = new FileReader();
+      reader.onload = (event) => {
         
-    }
-      catch{
-        console.error("error");
+        var format = {
+          name: "",
+          data: "",
+        };  
+        
+        format["name"] = item.name;
+        format["data"] = event.target.result;
+
+        tempfiles.push(format)
+        dataUrls.push(event.target.result);
+        FileName.push(item.name);
+        FileSize.push(item.size);
+        if (dataUrls.length === files.length) {
+          // All files have been converted to data URLs
+          // axios.post("http://127.0.0.1:5000/elastic/upload",{"filename":FileName,"dataurl":dataUrls,"size":FileSize,"username":"emp001","status":"pending"})
+          console.log(tempfiles.length)
+          axios
+          .post(URI + "predict", tempfiles, {
+            headers: {
+              "content-Type": "application/json",
+            },
+          })
+          .then((response) => {
+            let data = response.data.response;
+            console.log("response", data);
+            setResData(data);
+            setSpinner(false);
+          });
+
+          setfilesBase([...tempfiles])
+          console.log(FileName);
+          // navigate('/');
+        }
       };
-      
-     
-      
-  }
+      reader.readAsDataURL(item);
+    });
+      // const elastic = await axios.post(URI+"elastic/upload",{"filename":FileName,"dataurl":dataUrls,"size":FileSize,"username":localStorage.getItem("uid"),"status":"pending"},{
+      //   headers: {
+      //     'content-Type': 'application/json'
+      //   }
+      // })
+      // console.log(elastic)
+
+
+  };
 
   return (
     <div>
-      {
-        !resData  && fileBase?(
-          <>
+      {!resData && fileBase ? (
+        <>
           {spinner === false ? (
-            <Box>
-            <Grid container
-        direction="row"
-        justifyContent="center"
-        alignItems="center"  spacing={3}>
+            <Box sx={{
+              marginTop:15
+
+            }}>
+              <Grid
+                container
+                spacing={5}
+                direction="column"
+                alignItems="center"
+                justifyContent="center"
+
+              >
                 <Grid item xs={10}>
-                <FileUpload
-          getBase64={true}
-          multiFile={true}
-          disabled={false}
-          title="Upload only image or PDF"
-          header="Drag to drop"
-          rightLabel=''
-          buttonLabel="Click to Upload"
-          buttonRemoveLabel="Remove all"
-          maxFileSize={10}
-          maxUploadFiles={0}
-          maxFilesContainerHeight={457}
-          acceptedType={'image/*'}
-          errorSizeMessage={'fill it or remove it to use the default error message'}
-          allowedExtensions={['jpg', 'jpeg','png','pdf']}
-          onFilesChange={handleFilesChange}
-          onError={handleFileUploadError}
-          imageSrc={'path/to/custom/image'}
-          BannerProps={{ elevation: 0, variant: "outlined",sx: {backgroundColor: '#0d6efd'}}}
-          showPlaceholderImage={false}
-          PlaceholderGridProps={{ md: 4 }}
-          LabelsGridProps={{ md: 8 }}
-          onContextReady={context => {
-            // access to component context here
-          }}
-          ContainerProps={{
-            elevation: 0,
-            variant: "outlined",
-            sx: { width:700,p: 10 ,color: 'primary',marginTop:10,marginLeft:25,backgroundColor:"#F6F1F1",border: '2px dashed grey' },
-            
-          }}
-        />
+                  <FileUpload value={files} onChange={setFiles} sx={{width:500,height:250,backgroundColor:"#edf2f7",
+                    borderStyle: "dashed",
+                    borderColor: "#cbd5e0",
+                    borderWidth: 1,
+                }}/>
                 </Grid>
-                <Grid item xs={3} >
-        <Button variant="outlined" onClick={()=>{uploadFiles()}}>Extract<NavigateNextTwoToneIcon /></Button>
-        </Grid> 
-            </Grid>
-      </Box>
-              ) : (
-                <Box sx={{ mt:30 }}>
-                  <Grid container
-        direction="row"
-        justifyContent="center"
-        alignItems="center" spacing={5}>
-                <img src={loader} alt="" style={{width:"17rem"}}/></Grid>
-              </Box>
-              )}
-              
-              </>
-        ): (<InvoiceData images={fileBase} responsedata={resData}/>)
-      }
+                <Grid item xs={3} sx={{
+              marginLeft:1
+
+            }}>
+                  <Button
+                    variant="contained"
+                    onClick={() => {
+                      uploadFiles();
+                    }}
+                    sx={ { borderRadius: 28,backgroundColor:"#000000" } }
+                    disabled={files.length<=0}
+                  >
+                    Extract
+                    <NavigateNextTwoToneIcon />
+                  </Button>
+                </Grid>
+              </Grid>
+            </Box>
+          ) : (
+            <Box sx={{ mt: 30 }}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={5}
+              >
+                <img src={loader} alt="" style={{ width: "17rem" }} />
+              </Grid>
+            </Box>
+          )}
+        </>
+      ) : (
+        <InvoiceData images={fileBase} responsedata={resData} />
+      )}
     </div>
-    
-  )
+  );
 }
