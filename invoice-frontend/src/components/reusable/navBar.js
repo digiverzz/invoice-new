@@ -35,7 +35,7 @@ function Nav() {
     const theme = useTheme();
     const navigate = useNavigate();
     const drawerWidth = 240;
-    const [open, setOpen] = React.useState(true);
+    const [open, setOpen] = React.useState(false);
 
 
 const openedMixin = (theme) => ({
@@ -71,8 +71,8 @@ const handleDrawerOpen = () => {
     setOpen(true);
   };
 
-  const handleDrawerClose = () => {
-    setOpen(false);
+  const handleClose = () => {
+    navigate('/dashboard')
   };
   const handlesearch = () =>{
     console.log("hi at handle search")
@@ -112,21 +112,21 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
             },
           }}>
         <DrawerHeader>
-          <IconButton style={{color:"#ffff"}} onClick={handleDrawerClose}>
+          <IconButton style={{color:"#ffff"}} onClick={handleClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon style={{ color:"#ffff" }}/> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
         <Box>
                     <Grid container xs={11} justifyContent={"center"}>
-                        <Grid container xs={11} justifyContent={"center"} padding={2} sx={{alignItems:"center"}}>
+                        <Grid container xs={11} justifyContent={"center"} padding={2} sx={{alignItems:"center",paddingRight:1}} >
                     
 
-                            <Avatar sx={{ width: 80, height: 80, background:"#3498DB" }}>{localStorage.getItem('name')[0]}</Avatar>
+                            <Avatar sx={{ width: 30, height: 30, background:"#3498DB" }}>{localStorage.getItem('name')[0]}</Avatar>
                         </Grid>
                     
-                        <Grid xs={12} textAlign={"center"} padding={2}>
-                            <Typography color={"#FFFFFF"}>{localStorage.getItem('name')}</Typography>
-                        </Grid>
+                      {open?<Grid xs={12} textAlign={"center"} padding={2}>
+                            <Typography color={"#FFFFFF"} sx={{fontSize:10}}>{localStorage.getItem('name')}</Typography>
+                        </Grid>:<Grid/>}
                     </Grid>
                 </Box>  
             

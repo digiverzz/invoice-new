@@ -120,7 +120,9 @@ async def getall(request: Request):
 async def sort(request:Request):
     data = await request.json()
 
-    if not (data.get('field',False) and data.get('order',False) and data.get('username',False)):
+    print(data)
+
+    if not (data.get('name',False) and data.get('ord',False) and data.get('username',False)):
         raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,detail="provide field,order,username key")
 
     
@@ -132,7 +134,7 @@ async def sort(request:Request):
     indexname = usables.getIndex(username)
 
 
-    query={f"{data['field']}":{"order":{data['order']}}}
+    query={f"{data['name']}":{"order":{data['ord']}}}
 
     return es.search(index=indexname,sort=query)['hits']['hits'] 
 
