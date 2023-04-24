@@ -16,7 +16,7 @@ import json
 import pymongo
 
 #comment down while deploying
-# pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
 
 def IsValidUser(name):
     if creds.collection.find_one({"uid":name}):
@@ -91,7 +91,7 @@ def fetchMail():
     id_list = mail_ids.split()[::-1]
     mailbox = []
 
-    for msgnum in id_list:
+    for msgnum in id_list[::-1]:
         # fetch the message by its ID
         typ, msg_data = mail.fetch(msgnum, '(RFC822)')
         raw_msg = email.message_from_bytes(msg_data[0][1])

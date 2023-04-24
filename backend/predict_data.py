@@ -48,7 +48,7 @@ import pytesseract
 
 
 
-pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
+# pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
 from fastapi_utils.tasks import repeat_every
 import usables
 
