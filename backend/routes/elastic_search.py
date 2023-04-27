@@ -2,6 +2,9 @@
 #by rk
 
 from fastapi import APIRouter,Request,HTTPException,status
+
+from fastapi.responses import StreamingResponse
+
 import pytesseract
 
 from datetime import datetime
@@ -9,6 +12,7 @@ from datetime import datetime
 from creds import es
 import usables
 
+import json
 
 router = APIRouter(
     prefix='/elastic'
@@ -163,6 +167,51 @@ async def delete(request:Request):
     }
 
     return es.delete_by_query(index=indexname,query=query)
+
+
+@router.post('/streamupload')
+async def stream(request: Request):
+    data = await request.json()
+
+    # print(data)
+
+
+    if not (data.get('filename',False) and data.get('size',False) and data.get('status',False) and data.get('dataurl',False) and data.get('username',False)):
+        raise HTTPException(status_code=status.HTTP_406_NOT_ACCEPTABLE,detail="provide both field and order key")
+
+    username = data['username']
+    
+    if not usables.IsValidUser(username):
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    
+    indexname = usables.getIndex(username)
+    status = data['status']
+
+    def streaming_data():
+        for fname,size,url in zip(data['filename'],data['size'],data['dataurl']):
+            # print(fname)
+
+            context = usables.data_url_to_image(url,fname)
+            format = {
+                "username":username,
+                "filename":fname,
+                "size":size,
+                "context":context,
+                "datetime":usables.getdatetime(),
+                "dataurl":url,
+                "status":status
+            }
+
+            print(es.index(index=indexname,document=format))
+
+            # del format['datetime']
+
+            yield json.dumps({'filename':format['filename']})
+            # print(res[-1])
+
+    return StreamingResponse(streaming_data(),media_type='application/json')
+
+
 
 
 
