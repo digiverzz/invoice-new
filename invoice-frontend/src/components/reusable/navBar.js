@@ -113,7 +113,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
             },
           }}>
         <DrawerHeader>
-          <IconButton style={{color:"#ffff"}} onClick={handleClose}>
+          <IconButton style={{color:"#ffff"}} onClick={handleDrawerClose}>
             {theme.direction === 'rtl' ? <ChevronRightIcon style={{ color:"#ffff" }}/> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>

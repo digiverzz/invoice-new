@@ -1,9 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import AddIcon from '@mui/icons-material/Add';
+import DoneIcon from '@mui/icons-material/Done';
+
+import { green } from '@mui/material/colors';
+import CheckIcon from '@mui/icons-material/Check';
+import BlockIcon from '@mui/icons-material/Block';
 import SearchIcon from '@mui/icons-material/Search';
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
-import { Grid, TextField } from '@mui/material';
+import { Avatar, Grid, ListItemButton, TextField } from '@mui/material';
 import { MoreVert } from '@mui/icons-material';
+import List from '@mui/material/List';
+import ListItem from '@mui/material/ListItem';
+import ListItemAvatar from '@mui/material/ListItemAvatar';
+import ListItemText from '@mui/material/ListItemText';
 import { Card, CardContent, CardMedia } from '@mui/material';
 import InputAdornment from '@mui/material/InputAdornment';
 import { InsertDriveFileOutlined, PictureAsPdfOutlined, DescriptionOutlined, ImageOutlined } from '@mui/icons-material';
@@ -153,9 +163,12 @@ export default function FileManager() {
 
   const [anchorElsort, setAnchorElsort] = React.useState(null);
   const [anchorEl, setAnchorEl] = React.useState(null);
+  const [anchorElupload, setAnchorElupload] = React.useState(null);
   const [currentName, setCurrentName] = React.useState(null);
   const open = Boolean(anchorEl);
   const opensort = Boolean(anchorElsort);
+
+  const openupload = Boolean(anchorElupload);
   const [loading, setloading] = useState(true);
   const [currentfield, setcurrentfield] = useState(fieldName[0]);
   const [isdesc, setisdesc] = useState(false);
@@ -163,23 +176,91 @@ export default function FileManager() {
   const [placeholderIndex, setPlaceholderIndex] = useState(0);
   const [fileList, setfileList] = useState([]);
   const dataFetchedRef = useRef(false);
+  const [uploadedFile, setuploadedFile] = useState([]);
+  const buttonSx = {
+    ...(true && {
+      bgcolor: green[500],
+      '&:hover': {
+        bgcolor: green[700],
+      },
+    }),
+  };
 
   const classes = useStyles();
+
+  const StreamingFileUpload = async (request) => {
+
+    const response = await fetch(URI + 'elastic/streamupload', {
+      method: 'POST',
+      body: JSON.stringify(request)
+    });
+    // const response = await axios.get('http://localhost:8000/streamjson')
+    const reader = response.body.getReader();
+    const decoder = new TextDecoder('utf-8');
+
+    reader.read().then(function processResult(result) {
+      console.log(result)
+      if (result.done) {
+
+        return;
+      }
+      const text = decoder.decode(result.value, { stream: true });
+      const data = JSON.parse(text)
+      // setData(prevData => [...prevData, JSON.parse(text)]);
+      setuploadedFile(uploadedFile => uploadedFile.map((item => {
+        if (item.name == data['filename']) {
+          var temp = item
+          temp['status'] = "done"
+
+          console.log("status updated...", temp)
+          return temp
+        }
+        return item
+      })))
+
+      return reader.read().then(processResult);
+    });
+  }
+
+  const handleCloseupload = () => {
+
+    setAnchorElupload(null);
+    fetchData()
+    setuploadedFile([])
+  }
+
+  const handleApprove = () => {
+
+    setAnchorEl(false);
+  };
+
+
+  const handleReject = () => {
+
+    setAnchorEl(false);
+  };
+
+  const handleupload = (e) => {
+
+    setAnchorElupload(e.currentTarget)
+
+  }
+
 
   const sort = () => {
     // setloading(true)
     setTimeout(() => {
-      
+
     }, 300);
-    console.log("sorting...",currentfield,isdesc)
-    const changer = isdesc?-1:1
+    console.log("sorting...", currentfield, isdesc)
+    const changer = isdesc ? -1 : 1
 
     setfileList(fileList.sort((a, b) => {
       if (a[currentfield] > b[currentfield]) {
-        return 1*changer
+        return 1 * changer
       }
       else if (a[currentfield] < b[currentfield]) {
-        return -1*changer
+        return -1 * changer
       }
       else {
         return 0
@@ -207,11 +288,10 @@ export default function FileManager() {
   }
 
   async function fetchData() {
-    setfileList([])
-    setloading(true)
 
-    console.log("fetching data")
-    console.log("useeffect")
+    
+    console.log("inside fetchData")
+    setloading(true)
     try {
       const response = await axios.post(URI + "elastic/getallfiles", { 'username': localStorage.getItem('uid') }, {
         headers: {
@@ -219,22 +299,26 @@ export default function FileManager() {
         }
       });
       console.log(response.data)
-
-      setloading(false)
+      const temp = [];
       response.data.forEach((Source) => {
-        setfileList(fileList => [...fileList, {
+        temp.push({
           "name": Source['_source']['filename'],
           "date": Source['_source']['datetime'],
           "dataurl": Source['_source']['dataurl'],
           "size": Source['_source']['size'],
           "status": Source['_source']['status']
-        }])
+        })
       })
 
-      console.log("setted false")
+      setfileList(fileList => temp)
 
-      // console.log(fileList)
-    } catch (error) {
+
+      setloading(false)
+      
+
+    // console.log("setted false")
+    }
+    catch (error) {
       console.error(error);
     }
   }
@@ -252,12 +336,23 @@ export default function FileManager() {
     return () => clearInterval(intervalId);
   }, []);
 
-  
 
-  useEffect(()=>{
-    console.log("change....",currentfield,isdesc)
+
+  useEffect(() => {
+    console.log("change filter...", currentfield, isdesc)
     sort();
-  },[currentfield,isdesc])
+  }, [currentfield, isdesc])
+
+  useEffect(() => {
+
+
+    if (uploadedFile.length > 0){
+      
+    console.log("change in uploaded file", uploadedFile)
+      fetchData()
+    }
+
+  }, [uploadedFile])
 
 
 
@@ -291,8 +386,37 @@ export default function FileManager() {
 
   const handleOrder = () => {
     setisdesc(!isdesc)
-    
 
+
+
+  }
+
+  const handleuploadmul = (e) => {
+    console.log(e.target.files)
+    const files = Array.from(e.target.files)
+    const filesasdict = [];
+    const dataUrls = [];
+    const FileName = [];
+    const FileSize = [];
+    files.forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+
+        filesasdict.push({ "name": file.name, "size": file.size, "url": event.target.result, "status": "pending" })
+        dataUrls.push(event.target.result);
+        FileName.push(file.name);
+        FileSize.push(file.size);
+        if (dataUrls.length === files.length) {
+          // All files have been converted to data URLs
+          StreamingFileUpload({ "filename": FileName, "dataurl": dataUrls, "size": FileSize, "username": "emp001", "status": "pending" })
+          // axios.post("http://127.0.0.1:5000/elastic/upload",{"filename":FileName,"dataurl":dataUrls,"size":FileSize,"username":"emp001","status":"pending"})
+          setuploadedFile(filesasdict)
+          console.log(FileName);
+          // navigate('/dashboard');
+        }
+      };
+      reader.readAsDataURL(file);
+    });
 
   }
 
@@ -357,7 +481,7 @@ export default function FileManager() {
           <Grid container padding={2}>
             <Grid item xs={12} paddingBottom={2} sx={{ justifyContent: "center" }}>
               <Grid container justifyContent={"right"}>
-                <Grid item xs={11}>
+                <Grid item xs={10}>
                   <TextField
                     onChange={searching}
                     sx={{ width: "90%" }}
@@ -379,7 +503,22 @@ export default function FileManager() {
                       ),
                     }} />
                 </Grid>
-                <Grid item xs={1} sx={{ textAlign: "right", marginTop: 1 }}>
+                <Grid item xs={2} sx={{ textAlign: "right", marginTop: 1 }}>
+                  <IconButton
+
+                    sx={{ color: "rgba(0, 0, 0, 0.54)" }}
+                    aria-controls={openupload ? 'upload-menu' : undefined}
+                    aria-haspopup="true"
+                    aria-expanded={openupload ? 'true' : undefined}
+                    onClick={handleupload} component="label">
+
+                    <input multiple hidden accept="image/*" type="file" onChange={handleuploadmul} />
+                    <Tooltip title="Upload a file">
+
+                      <AddIcon sx={{ fontSize: 20 }}>
+                      </AddIcon>
+                    </Tooltip>
+                  </IconButton>
 
                   <Button
                     id="sort-button"
@@ -393,7 +532,7 @@ export default function FileManager() {
                   </Button>
 
                   <IconButton onClick={handleOrder}>
-                    {isdesc ?  <ArrowDownwardIcon sx={{ fontSize: 18 }}/> : <ArrowUpwardIcon sx={{ fontSize: 18 }} />}
+                    {isdesc ? <ArrowDownwardIcon sx={{ fontSize: 18 }} /> : <ArrowUpwardIcon sx={{ fontSize: 18 }} />}
                   </IconButton>
                 </Grid>
               </Grid>
@@ -450,7 +589,7 @@ export default function FileManager() {
 
                               </Box>
                               <Box flexGrow={1}>
-                                <Typography variant='small' sx={{ fontSize: 12 }}>{file.name}</Typography>
+                                <Typography variant='small' sx={{ fontSize: 12 }}>{file.name.length > 20 ? file.name.substring(0, 10) + "..." : file.name}</Typography>
                               </Box>
                               <Box>
 
@@ -512,6 +651,22 @@ export default function FileManager() {
           <MenuItem onClick={handleDelete}>
             <Box flexGrow={1}>
               <DeleteOutlineIcon color="action" sx={{ fontSize: 20 }} />
+              <span style={{fontSize:12, paddingLeft:3}}>Delete</span>
+              {/* <Typography >Delete</Typography> */}
+            </Box></MenuItem>
+
+          <MenuItem onClick={handleApprove}>
+            <Box flexGrow={1}>
+              <DoneIcon color="action" sx={{ fontSize: 20 }} /><span style={{fontSize:12
+              ,paddingLeft:3}}>Approve</span>
+              {/* <Typography sx={{ fontSize: 10 }} >Approve</Typography> */}
+            </Box></MenuItem>
+
+          <MenuItem onClick={handleReject}>
+            <Box flexGrow={1}>
+              <BlockIcon color="action" sx={{ fontSize: 20 }} />
+            <span style={{fontSize:12, paddingLeft:3}}>Reject</span>
+              {/* <Typography>Reject</Typography> */}
             </Box></MenuItem>
         </Box>
       </Menu>
@@ -529,7 +684,75 @@ export default function FileManager() {
         <MenuItem onClick={() => { handleClosesort(fieldName[2], 2) }}>{fieldName[2]}</MenuItem>
         <MenuItem onClick={() => { handleClosesort(fieldName[3], 3) }}>{fieldName[3]}</MenuItem>
       </Menu>
+      <Menu
+        id="upload-menu"
+        anchorEl={anchorElupload}
+        open={openupload}
+        onClose={handleCloseupload}
+        MenuListProps={{
+          'aria-labelledby': 'basic-button',
+        }}
+      >
+        {uploadedFile.length ?
+          <List sx={{
+            width: '100%', maxWidth: 360, maxHeight: 250, bgcolor: 'background.paper', overflow: "auto",
 
+            '&::-webkit-scrollbar': {
+              width: '0.5em',
+            },
+            '&::-webkit-scrollbar-track': {
+              boxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)',
+              webkitBoxShadow: 'inset 0 0 6px rgba(0,0,0,0.00)'
+            },
+            '&::-webkit-scrollbar-thumb': {
+              backgroundColor: 'rgba(0,0,0,.1)',
+              outline: '0px solid slategrey'
+            }
+          }}>
+
+            {
+              uploadedFile.map((file) => (
+
+                <ListItem alignItems="flex-start"
+
+                  secondaryAction={
+                    <IconButton edge="end" aria-label="delete">
+                      {/* <CheckIcon  sx={{ fontSize: 18 }} /> */}
+                      {file.status == 'pending' ? <CircularProgress size="1.2rem" /> : <CheckIcon sx={{ fontSize: 18, bgcolor: "#5cb85c", color: "white" }} />}
+
+                    </IconButton>
+                  }>
+                  <ListItemAvatar>
+
+                    <Avatar src={file.url} sx={{ border: "1px solid grey" }} />
+                  </ListItemAvatar>
+                  <ListItemText
+
+                    primaryTypographyProps={{ fontSize: '13px' }}
+                    secondaryTypographyProps={{ fontSize: '10px' }}
+                    primary={file.name}
+                    secondary={
+                      <React.Fragment>
+                        <Typography
+                          sx={{ display: 'inline' }}
+                          component="span"
+                          variant="body2"
+                          color="text.primary"
+                        >
+                          size:
+                        </Typography>
+                        {file.size} bytes
+                      </React.Fragment>
+                    }
+                  />
+                </ListItem>
+              )
+              )
+            }
+          </List> : <Box sx={{ padding: 2 }}>
+            <Typography>No file selected</Typography>
+          </Box>}
+      </Menu>
 
 
       {/* <Box sx={{height:"10%"}}>
