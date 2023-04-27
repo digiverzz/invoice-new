@@ -380,7 +380,7 @@ export default function MiniDrawer() {
       
     }
     fetchData()
-  },[tabData]);
+  },[]);
   const styles = {
     paper: {
       background: "blue"

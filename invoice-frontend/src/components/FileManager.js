@@ -229,15 +229,20 @@ export default function FileManager() {
     setuploadedFile([])
   }
 
-  const handleApprove = () => {
+  const handleApprove = async () => {
 
     setAnchorEl(false);
+    const response = await axios.post(URI+'statusupdate',{"filename":currentName,"uid":localStorage.getItem('uid'),"status":"accepted"})
+    
   };
 
 
-  const handleReject = () => {
+  const handleReject = async () => {
 
     setAnchorEl(false);
+    
+    const response = await axios.post(URI+'statusupdate',{"filename":currentName,"uid":localStorage.getItem('uid'),"status":"rejected"})
+    
   };
 
   const handleupload = (e) => {
