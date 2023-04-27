@@ -73,6 +73,15 @@
   opacity: 0;
   transition: opacity 0.3s ease;
 }
+.ok-btn {
+  cursor: pointer;
+  background-color: black;
+  border: 0;
+  color: #fff;
+  position: absolute;
+
+  transition: opacity 0.3s ease;
+}
 
 .list li:hover .delete-btn {
   opacity: 1;

@@ -725,9 +725,9 @@ export default function MiniDrawer() {
                <StyledTableCell align="left" style={{width: 200}}>Date</StyledTableCell>
                <StyledTableCell align="left" style={{width: 200}}>Category</StyledTableCell>
                <StyledTableCell align="left" style={{width: 200}}>Amount</StyledTableCell>
-               <StyledTableCell align="left" style={{width: 200}}>Approvers</StyledTableCell>
-               <StyledTableCell align="left" style={{width: 200}}>Status</StyledTableCell>
                <StyledTableCell align="left" style={{width: 200}}>Currency</StyledTableCell>
+               <StyledTableCell align="left" style={{width: 200}}>Status</StyledTableCell>
+               <StyledTableCell align="left" style={{width: 200}}>Approvers</StyledTableCell>
              </TableRow>
            </TableHead>
            <TableBody>
@@ -739,6 +739,8 @@ export default function MiniDrawer() {
                  
                  <StyledTableCell align="left" style={{width: 200}}>{row.Category}</StyledTableCell>
                  <StyledTableCell align="left" style={{width: 200}}>{row.Amount}</StyledTableCell>
+                 <StyledTableCell align="left" style={{width: 200}}>{row.currency}</StyledTableCell>
+                 <StyledTableCell align="left" style={{width: 200}}><Chip label={row.status} color={row.status=="Accepted" ? "success" : row.status=="Rejected" ? "error" : "warning"} /></StyledTableCell>
                  <StyledTableCell align="left" style={{width: 200}}>
                    <div className='d-flex align-items-center'>
                    
@@ -751,8 +753,6 @@ export default function MiniDrawer() {
                    </div>
                    
                    </StyledTableCell>
-                 <StyledTableCell align="left" style={{width: 200}}><Chip label={row.status} color={row.status=="Accepted" ? "success" : row.status=="Rejected" ? "error" : "warning"} /></StyledTableCell>
-                 <StyledTableCell align="left" style={{width: 200}}>{row.currency}</StyledTableCell>
                </StyledTableRow>
              ))}
            </TableBody>

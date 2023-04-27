@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Button } from "@mui/material";
 import { useCallback, useMemo } from "react";
@@ -20,7 +20,13 @@ import {
 } from "@mui/material";
 import DoubleArrowSharpIcon from "@mui/icons-material/DoubleArrowSharp";
 import AddIcon from "@mui/icons-material/Add";
-import { ArrowBack, ArrowForward, ConstructionOutlined, Delete, Edit } from "@mui/icons-material";
+import {
+  ArrowBack,
+  ArrowForward,
+  ConstructionOutlined,
+  Delete,
+  Edit,
+} from "@mui/icons-material";
 import Navbar from "./Navbar";
 import Fab from "@mui/material/Fab";
 import axios from "axios";
@@ -42,13 +48,12 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import ButtonGroup from "@mui/material/ButtonGroup";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
-import Menu from '@mui/material/Menu';
+import Menu from "@mui/material/Menu";
 import ImageCropper from "./ImageCropper";
-
-
+import CheckSharpIcon from "@mui/icons-material/CheckSharp";
 
 export default function InvoiceData(props) {
-  console.log("props",props)
+  console.log("props", props);
   const [itemdata, setItemData] = useState([]);
   //table
   const [tableData, setTableData] = useState(() => props.responsedata);
@@ -70,20 +75,17 @@ export default function InvoiceData(props) {
   const [addIndexupdate, setAddIndexupdate] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openmenu = Boolean(anchorEl);
-  const [showCropimage,setShowcropimage] = useState(false);
+  const [showCropimage, setShowcropimage] = useState(false);
   const [imageToCrop, setImageToCrop] = useState(undefined);
   const [croppedImage, setCroppedImage] = useState("");
-  
+  const [okButton, setOkbutton] = useState(false);
+
   const handlemenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handlemenuClose = () => {
     setAnchorEl(null);
   };
-
-  
-  
-
 
   const handleClickOpen = () => {
     console.log("row", selectedRow);
@@ -345,21 +347,21 @@ export default function InvoiceData(props) {
     setOpencreatemodal(false);
   };
 
-  const handleCropclick = (crop) =>{
-    setShowcropimage(true)
+  const handleCropclick = (crop) => {
+    setShowcropimage(true);
+    setOkbutton(true);
     setAnchorEl(null);
+  };
 
-  }
- 
-  const handleImagecropped = (croppedImage) =>{
-    console.log("croppedImage",croppedImage)
-    setCroppedImage(croppedImage)
-    selectedRow['text'] = croppedImage
+  const handleImagecropped = (croppedImage) => {
+    console.log("croppedImage", croppedImage);
+    setCroppedImage(croppedImage);
+    selectedRow["text"] = croppedImage;
     tableData[indexupdate][indexupdate2] = selectedRow;
     setTableData([...tableData]);
     props.responsedata[indexupdate][selectedRow.label] = selectedRow.text;
     console.log("tabledata after edit", tableData);
-  }
+  };
 
   return (
     <div className="container-fluid" style={{ backgroundColor: "#F6F1F1" }}>
@@ -397,40 +399,31 @@ export default function InvoiceData(props) {
           </ButtonGroup>
         </div>
       </div>
-      {
-      tableData
+      {tableData
         ? tableData.slice(page, page + 1).map((item, i) => (
             <div className="row mt-3">
-                          {/* {
-                croppedImage &&
-                <div>
-                    <h2>{croppedImage}</h2>
-                    
-                </div>
-            } */}
               <div className="col-lg-5 mt-3">
-                {
-                  showCropimage===true ? (
-                    <div>
-                      {/* <Button variant="outlined" onClick={cropImageNow}>Extract</Button> */}
-                      <ImageCropper
-                    index = {indexupdate}
-                    index2 = {indexupdate2}
-                    responsedata={props.responsedata[i]}
-                    tabledata = {tableData[i]}
-                    imageToCrop={item.image}
-                    onImageCropped={(croppedImage) => handleImagecropped(croppedImage)}
-                />
-                
-                </div>
-                  ) : (
-                    <img
+                {showCropimage === true ? (
+                  <div>
+                    {/* <Button variant="outlined" onClick={cropImageNow}>Extract</Button> */}
+                    <ImageCropper
+                      index={indexupdate}
+                      index2={indexupdate2}
+                      responsedata={props.responsedata[i]}
+                      tabledata={tableData[i]}
+                      imageToCrop={item.image}
+                      onImageCropped={(croppedImage) =>
+                        handleImagecropped(croppedImage)
+                      }
+                    />
+                  </div>
+                ) : (
+                  <img
                     src={item.image}
                     alt=""
                     style={{ width: "560px", height: "620px" }}
                   />
-                  )
-                }
+                )}
               </div>
               <div className="col-lg-1">
                 <Divider orientation="vertical">
@@ -452,7 +445,7 @@ export default function InvoiceData(props) {
                       color="inherit"
                       aria-label="add"
                       size="small"
-                      sx={{boxShadow:"none"}}
+                      sx={{ boxShadow: "none" }}
                       onClick={() => {
                         setAddIndexupdate(page);
                         setOpencreatemodal(true);
@@ -509,13 +502,12 @@ export default function InvoiceData(props) {
                         </Button>
                       </DialogActions>
                     </Dialog>
-                    
+
                     <div className="list">
                       {Array.isArray(item)
                         ? item.map((item2, i2) => {
                             return (
                               <div>
-                           
                                 <li
                                   className={
                                     item2.text !== "" ? "plus" : "minus"
@@ -523,22 +515,41 @@ export default function InvoiceData(props) {
                                 >
                                   {item2.label}
                                   <span>{item2.text}</span>
-                                  <button
-                                    onClick={(event)=>{
-                                      setIndexupdate(i);
-                                      setIndexupdate2(i2);
-                                      setSelectedRow(item2);
-                                      handlemenuClick(event)}}
-                                    className="delete-btn"
-                                  >
-                                    <MoreVertIcon />
-                                  </button> 
+                                  {
+                                  okButton === false ? (
+                                    <button
+                                      onClick={(event) => {
+                                        setIndexupdate(i);
+                                        setIndexupdate2(i2);
+                                        setSelectedRow(item2);
+                                        handlemenuClick(event);
+                                      }}
+                                      className="delete-btn"
+                                    >
+                                      <MoreVertIcon />
+                                    </button>
+                                  ) : (
+                                     i2===indexupdate2 ? (
+                                      <Fab
+                                    size="small"
+                                      color="success"
+                                      sx={{
+                                        height: 5,
+                                        lineHeight: '10px',
+                                        verticalAlign: 'middle',
+                                        width: 33,
+                                        boxShadow:"none"
+                                      }}
+                                      
+                                      className="ok-btn"
+                                      onClick={()=>{setShowcropimage(false);setOkbutton(false)}}
+                                    >
+                                      <CheckSharpIcon sx={{ width: 17}}/>
+                                    </Fab>
+                                     ) : ""
+                                  )}
                                 </li>
-                                
                               </div>
-                              
-                             
-                              
                             );
                           })
                         : ""}
@@ -699,7 +710,6 @@ export default function InvoiceData(props) {
                     </Dialog>
                   </AccordionDetails>
                 </Accordion>
-                
               </div>
             </div>
           ))
@@ -713,32 +723,24 @@ export default function InvoiceData(props) {
             loading={loading}
             loadingPosition="end"
             variant="contained"
-            sx={{backgroundColor:"#000000"}}
+            sx={{ backgroundColor: "#000000" }}
           >
             Submit
           </LoadingButton>
         </div>
-
       </div>
       <Menu
-                                    id="basic-menu"
-                                    anchorEl={anchorEl}
-                                    open={openmenu}
-                                    onClose={handlemenuClose}
-                                    MenuListProps={{
-                                      "aria-labelledby": "basic-button",
-                                    }}
-                                  >
-                                    <MenuItem                                     
-                                    onClick={
-                                      handleClickOpen
-                                    }>
-                                      Edit
-                                    </MenuItem>
-                                    <MenuItem onClick={handleCropclick}>
-                                      Crop
-                                    </MenuItem>
-                                  </Menu>
+        id="basic-menu"
+        anchorEl={anchorEl}
+        open={openmenu}
+        onClose={handlemenuClose}
+        MenuListProps={{
+          "aria-labelledby": "basic-button",
+        }}
+      >
+        <MenuItem onClick={handleClickOpen}>Edit</MenuItem>
+        <MenuItem onClick={handleCropclick}>Crop</MenuItem>
+      </Menu>
     </div>
   );
 }
