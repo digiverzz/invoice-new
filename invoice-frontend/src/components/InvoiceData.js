@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect,useRef } from "react";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Button } from "@mui/material";
 import { useCallback, useMemo } from "react";
@@ -20,7 +20,7 @@ import {
 } from "@mui/material";
 import DoubleArrowSharpIcon from "@mui/icons-material/DoubleArrowSharp";
 import AddIcon from "@mui/icons-material/Add";
-import { ArrowBack, ArrowForward, Delete, Edit } from "@mui/icons-material";
+import { ArrowBack, ArrowForward, ConstructionOutlined, Delete, Edit } from "@mui/icons-material";
 import Navbar from "./Navbar";
 import Fab from "@mui/material/Fab";
 import axios from "axios";
@@ -43,10 +43,12 @@ import ButtonGroup from "@mui/material/ButtonGroup";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import Menu from '@mui/material/Menu';
+import ImageCropper from "./ImageCropper";
 
 
 
 export default function InvoiceData(props) {
+  console.log("props",props)
   const [itemdata, setItemData] = useState([]);
   //table
   const [tableData, setTableData] = useState(() => props.responsedata);
@@ -66,23 +68,12 @@ export default function InvoiceData(props) {
   const [customlabel, setCustomlabel] = useState();
   const [customvalue, setCustomvalue] = useState();
   const [addIndexupdate, setAddIndexupdate] = useState();
-  const [crop, setCrop] = useState({
-    aspect: 1 / 1,
-    height: 468,
-    unit: "px",
-    width: 468,
-    x: 0,
-    y: 107,
-  });
-  const [completedCrop, setCompletedCrop] = useState();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const openmenu = Boolean(anchorEl);
   const [showCropimage,setShowcropimage] = useState(false);
-  const [imageUrl, setImageUrl] = useState(undefined);
-  const [imagecropped,setImagecropped] = useState();
-  const [croppedbase64image,setCroppedbase64image] = useState();
-
-
+  const [imageToCrop, setImageToCrop] = useState(undefined);
+  const [croppedImage, setCroppedImage] = useState("");
+  
   const handlemenuClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -90,7 +81,8 @@ export default function InvoiceData(props) {
     setAnchorEl(null);
   };
 
-
+  
+  
 
 
   const handleClickOpen = () => {
@@ -128,6 +120,8 @@ export default function InvoiceData(props) {
     setLoading(true);
     for (var i = 0; i < props.responsedata.length; i++) {
       const formData1 = new FormData();
+
+      formData1.append("filename", props.images[i].name);
       formData1.append("data", JSON.stringify(props.responsedata[i]));
       formData1.append("id", "dl/0" + Math.floor(totalreq + 1).toString());
       formData1.append("name", localStorage.getItem("name"));
@@ -354,81 +348,18 @@ export default function InvoiceData(props) {
   const handleCropclick = (crop) =>{
     setShowcropimage(true)
     setAnchorEl(null);
-    
-  }
 
-
-  function imageCrop(crop) {
-    setCrop(crop);
   }
-  function imageCropComplete(crop,image) {
-    setImagecropped(image)
+ 
+  const handleImagecropped = (croppedImage) =>{
+    console.log("croppedImage",croppedImage)
+    setCroppedImage(croppedImage)
+    selectedRow['text'] = croppedImage
+    tableData[indexupdate][indexupdate2] = selectedRow;
+    setTableData([...tableData]);
+    props.responsedata[indexupdate][selectedRow.label] = selectedRow.text;
+    console.log("tabledata after edit", tableData);
   }
-  function userCrop(crop,image) {
-    if (image && crop.width && crop.height) {
-      console.log(getCroppedImage(image, crop, "newFile.jpeg"));
-    }
-  }
-  
-  const convertBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      console.log("file",file)
-      console.log("file type",typeof(file))
-      const fileReader = new FileReader();
-      fileReader.readAsDataURL(file);
-      fileReader.onload = () => {
-        resolve(fileReader.result);
-      };
-      fileReader.onerror = (error) => {
-        reject(error);
-      };
-    });
-  };
-
-  function getCroppedImage(image, crop, fileName) {
-    console.log("crop parameters",crop)
-    const imageCanvas = document.createElement("canvas");
-    const scaleX = image.naturalWidth / image.width;
-    const scaleY = image.naturalHeight / image.height;
-    imageCanvas.width = crop.width;
-    imageCanvas.height = crop.height;
-    const imgCx = imageCanvas.getContext("2d");
-    console.log("imagecx",imgCx)
-    // imgCx.drawImage(
-    //   image,
-    //   crop.x * scaleX,
-    //   crop.y * scaleY,
-    //   crop.width * scaleX,
-    //   crop.height * scaleY,
-    //   0,
-    //   0,
-    //   crop.width,
-    //   crop.height
-    // );
-    // return new Promise((reject, resolve) => {
-    //   imageCanvas.toDataURL((blob) => {
-    //     if (!blob) {
-    //       reject(new Error("the image canvas is empty"));
-    //       return;
-    //     }
-    //     console.log("blob",blob)
-    //     blob.name = fileName;
-    //     let imageURL;
-    //     window.URL.revokeObjectURL(imageURL);
-    //     imageURL = blob;
-    //     resolve(imageURL);
-    //     setImageUrl(blob);
-    //   }, "image1/jpeg");
-    //   console.log("imageUrl type",typeof(imageUrl))
-    //   setCroppedbase64image(convertBase64(imageUrl))
-    //   console.log("cropped image base64",croppedbase64image)
-    //   setShowcropimage(false)
-    // });
-
-    return imageCanvas.toDataURL("image/png", 1);
-    
-  }
-
 
   return (
     <div className="container-fluid" style={{ backgroundColor: "#F6F1F1" }}>
@@ -466,26 +397,31 @@ export default function InvoiceData(props) {
           </ButtonGroup>
         </div>
       </div>
-      {tableData
+      {
+      tableData
         ? tableData.slice(page, page + 1).map((item, i) => (
             <div className="row mt-3">
+                          {/* {
+                croppedImage &&
+                <div>
+                    <h2>{croppedImage}</h2>
+                    
+                </div>
+            } */}
               <div className="col-lg-5 mt-3">
                 {
                   showCropimage===true ? (
                     <div>
-                      <Button variant="outlined" onClick={()=>userCrop(crop,imagecropped)}>Extract</Button>
-                    <ReactCrop
-                  crop={crop}
-                  src={item.image}
-                  onChange={imageCrop}
-                  onComplete={()=>imageCropComplete(crop,item.image)}
-                >
-                  <img
-                    src={item.image}
-                    alt=""
-                    style={{ width: "560px", height: "620px" }}
-                  />
-                </ReactCrop>
+                      {/* <Button variant="outlined" onClick={cropImageNow}>Extract</Button> */}
+                      <ImageCropper
+                    index = {indexupdate}
+                    index2 = {indexupdate2}
+                    responsedata={props.responsedata[i]}
+                    tabledata = {tableData[i]}
+                    imageToCrop={item.image}
+                    onImageCropped={(croppedImage) => handleImagecropped(croppedImage)}
+                />
+                
                 </div>
                   ) : (
                     <img

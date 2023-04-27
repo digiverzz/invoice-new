@@ -8,6 +8,8 @@ import UploadFileComp from './components/UploadFile';
 import InvoiceData from './components/InvoiceData';
 import FileManager from './components/FileManager';
 import HeadDashboard from './components/HeadDashboard';
+import Testcrop from './components/testcrop';
+
 
 function App() {
   return (
@@ -19,7 +21,8 @@ function App() {
           <Route path='/uploadfile' element={<UploadFileComp />}></Route>
           <Route path='/filemanager' element={<FileManager />}></Route>
           <Route path='/approve' element={<HeadDashboard />}/>
-          <Route path="/" element={<Navigate replace to="/login" />} /> 
+          <Route path="/" element={<Navigate replace to="/login" />} />
+          <Route path="/test" element={<Testcrop />} />
         </Routes>
     </div>
   );

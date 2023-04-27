@@ -207,8 +207,11 @@ def tax_extract(img,lang_input):
         d = pytesseract.image_to_data(canny, config=custom_config, output_type=Output.DICT)
         #print("hello",d['text'])
         d = seperate(d['text'])
-        d = "".join(d[-1])
-        return d
+        if len(d)>0:
+            d = "".join(d[-1])
+            return d
+        else:
+            return ""
     elif lang_input == 'arabic':
         custom_config = r"--psm 11 --oem 3 -c tessedit_char_whitelist=1234567890%.)("
         img = get_grayscale(img)

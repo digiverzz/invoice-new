@@ -154,6 +154,8 @@ export default function MiniDrawer() {
       navigate('/login')
     }
   },[]);
+
+
   const theme = useTheme();
   const navigate = useNavigate();
   
@@ -318,12 +320,13 @@ export default function MiniDrawer() {
 
         console.log("table data",wholeData)
         const tempTable = [];
+        console.log("pentot",pentot)
         for(let i=0;i<res['data'].length;i++){
+          console.log("res",res)
           console.log(JSON.parse(res['data'][i].data).category)
           const cat = JSON.parse(res['data'][i].data).category
           const parseddata = JSON.parse(res['data'][i].data)
           tempTable.push({"Date":getCurrentDate(),"Category":cat,"Amount":Number(parseddata.total).toFixed(2),"currency":parseddata.currency,"status":res['data'][i].status[0].toUpperCase() + res['data'][i].status.slice(1)})
-          
           if(cat=='Automotive'){
             Automotive+=1
           }
@@ -356,7 +359,7 @@ export default function MiniDrawer() {
           }
         }
         setTabData(tempTable)
-      
+        console.log("acctot",pentot)
         setautomobileCount(Automotive)
         setappliancesCount(Appliances)
         setbeautyCount(beauty)
@@ -365,9 +368,11 @@ export default function MiniDrawer() {
         setfoodCount(food)
         setelectronicsCount(Electronics)
         setaccTotal(acctot)
+        console.log("acctot",acctot)
         setrejTotal(rejtot)
         setpenTotal(pentot)
         console.log("tabData",tabData)
+        console.log(acctot,rejtot,pentot)
         console.log([automobileCount,electronicsCount,appliancesCount,industryCount,foodCount,healthcareCount,beautyCount])
       } catch (error) {
         console.log(error);
@@ -375,7 +380,7 @@ export default function MiniDrawer() {
       
     }
     fetchData()
-  },[]);
+  },[tabData]);
   const styles = {
     paper: {
       background: "blue"
@@ -635,7 +640,7 @@ export default function MiniDrawer() {
         <DrawerHeader />
         <Grid container spacing={4}   id="portfolio">
   {
-    total ? (
+    total>=0 ? (
       <Grid item xs={3}>
       <div class="card" id="storageCard">
         <div class="card-title">Total Claim Requests</div>
@@ -652,7 +657,7 @@ export default function MiniDrawer() {
 
   }
     {
-    acctotal ? (
+    acctotal>=0 ? (
       <Grid item xs={3}>
       <div class="card" id="loveCard" >
               <div class="card-title">Total claim Approved</div>
@@ -669,7 +674,7 @@ export default function MiniDrawer() {
 
   }
       {
-    rejtotal ? (
+    rejtotal>=0 ? (
       <Grid item xs={3}>
       <div class="card" id="pizzaCard">
               <div class="card-title">Total claim Rejected</div>
@@ -686,7 +691,7 @@ export default function MiniDrawer() {
 
   }
         {
-    rejtotal ? (
+    rejtotal>=0 ? (
 
       <Grid item xs={3}>
       <div class="card" id="gameCard">
@@ -709,7 +714,7 @@ export default function MiniDrawer() {
 
 <Grid container spacing={5} id="charttype">
 {
-    tabData.length>0 ? (
+    tabData.length>=0 ? (
       <Grid item xs={12}>
       <div class="card1">
       <Paper sx={{ width: '100%', overflow: 'hidden' }}>

@@ -282,3 +282,12 @@ def data5389(total:str = Form()):
 @userrouter.post('/token',dependencies=[Depends(token_required)])
 def tokencheck(token:str = Form()):
     return "Success"
+
+
+@userrouter.post('/statusupdate',dependencies=[Depends(token_required)])
+def update_from_search(uid,filename,status):
+    collection = creds.database['request']
+    lst = []
+    uid = uid
+    collection.update_one({"uid":uid,"filename":filename},{ "$set": { "status": status } })
+    return "Success"

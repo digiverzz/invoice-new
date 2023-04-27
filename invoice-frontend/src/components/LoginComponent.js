@@ -103,8 +103,8 @@ function Login() {
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("dept", decoded.dept);
         
-        if (decoded.role == "Practice head") {
-          navigate("/head");
+        if (decoded.role == "Practice Lead") {
+          navigate("/dashboard");
         }
         if (decoded.role == "Admin") {
           navigate("/admin");
@@ -117,7 +117,7 @@ function Login() {
         setLoginstatus("error")
         setalertcontent("Invalid Username or Password")
         setshowalert(true)
-        toast.error(alertcontent, {
+        toast.error("Invalid Username or Password", {
           position: "top-right",
           autoClose: 2000,
           hideProgressBar: true,

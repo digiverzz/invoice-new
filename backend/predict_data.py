@@ -198,21 +198,21 @@ def predict(file_input,lang_input):
              predicted_response['company_name'] = company_name_extract(cropped_image)
         elif label == 'qty_col':
              if lang_input=='english':
-                predicted_response['bill_of_materials'][0]['quantity'] = col_extract(cropped_image)
+                predicted_response['bill_of_materials'][0]['quantity'] = [] if col_extract(cropped_image)==None else col_extract(cropped_image)
                 
              elif lang_input=='arabic':
                 predicted_response['bill_of_materials'][0]['quantity'] = arabic_col_extract(cropped_image)
              column_count+=1
         elif label == 'price_col':
              if lang_input=='english':
-                predicted_response['bill_of_materials'][0]['price'] = col_extract(cropped_image)
+                predicted_response['bill_of_materials'][0]['price'] = [] if col_extract(cropped_image)==None else col_extract(cropped_image)
                 
              elif lang_input=='arabic':
                 predicted_response['bill_of_materials'][0]['price'] = arabic_col_extract(cropped_image)
              column_count+=1         
         elif label == 'description_col':
              if lang_input=='english':
-                predicted_response['bill_of_materials'][0]['description'] = col_extract(cropped_image)
+                predicted_response['bill_of_materials'][0]['description'] = [] if col_extract(cropped_image)==None else col_extract(cropped_image)
                 
              elif lang_input=='arabic':
                 predicted_response['bill_of_materials'][0]['description'] = arabic_col_extract(cropped_image)
@@ -220,7 +220,7 @@ def predict(file_input,lang_input):
 
         elif label == 'unitprice_col':
             if lang_input=='english':
-                predicted_response['bill_of_materials'][0]['unit_price'] = col_extract(cropped_image)
+                predicted_response['bill_of_materials'][0]['unit_price'] = [] if col_extract(cropped_image)==None else col_extract(cropped_image)
                 
             elif lang_input=='arabic':
                 predicted_response['bill_of_materials'][0]['unit_price'] = arabic_col_extract(cropped_image)

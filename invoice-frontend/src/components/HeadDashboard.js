@@ -800,8 +800,9 @@ function HeadDashboard() {
             pentot+=1
           }
         }
+
+      console.log("approved",acctotal)
       setTabData(tempTable)
-     
       setTotal((acctot + rejtot + pentot).toFixed(2));
       setaccTotal(acctot.toFixed(2));
       setrejTotal(rejtot.toFixed(2));
