@@ -79,6 +79,10 @@ const handleDrawerOpen = () => {
     console.log("hi at handle search")
     navigate("/filemanager")
   }
+  const handleuserdashboard = () =>{
+    console.log("hi at handle search")
+    navigate("/userdashboard")
+  }
   const Item = styled(Paper)(({ theme }) => ({
     backgroundColor: theme.palette.mode === 'dark' ? '#1A2027' : '#fff',
     ...theme.typography.body2,
@@ -209,6 +213,26 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
                   <FindInPageIcon style={{ color:"#ffff" }}/>
                 </ListItemIcon>
                 <ListItemText primary="Search" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  
+                }} onClick={handleuserdashboard}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                    
+                  }}
+                >
+                  <FindInPageIcon style={{ color:"#ffff" }}/>
+                </ListItemIcon>
+                <ListItemText primary="userdashboard" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
         </List>

@@ -9,6 +9,7 @@ import InvoiceData from './components/InvoiceData';
 import FileManager from './components/FileManager';
 import HeadDashboard from './components/HeadDashboard';
 import Testcrop from './components/testcrop';
+import Dashboard from './components/Dashboard';
 
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path='/approve' element={<HeadDashboard />}/>
           <Route path="/" element={<Navigate replace to="/login" />} />
           <Route path="/test" element={<Testcrop />} />
+          <Route path="/userdashboard" element={<Dashboard/>}/>
         </Routes>
     </div>
   );
