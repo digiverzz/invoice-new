@@ -7,14 +7,17 @@ import URI from "../utils/request";
 
 export default function ImageCropper(props) {
     const {imageToCrop, onImageCropped} = props;
+    
     const [croppedImagelast,setCroppedimagelast] = useState();
     const [extractedText,setExtractedtext] = useState();
     const [cropConfig, setCropConfig] = useState(
         // default crop config
         {
-            unit: '%',
-            width: 30,
-            aspect: 16 / 9,
+            unit: 'px', // default, can be 'px' or '%'
+            x: 130,
+            y: 50,
+            width: 200,
+            height: 200
         }
     );
 
