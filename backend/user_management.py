@@ -7,6 +7,7 @@ from token_authentication import token_required,SECRET_KEY
 from passlib.context import CryptContext
 import datetime
 import creds
+import usables
 
 
 userrouter = APIRouter()
@@ -289,5 +290,6 @@ def update_from_search(uid,filename,status):
     collection = creds.database['request']
     lst = []
     uid = uid
+    usables.status_update(filename=filename,uid=uid,status=status)
     collection.update_one({"uid":uid,"filename":filename},{ "$set": { "status": status } })
     return "Success"
