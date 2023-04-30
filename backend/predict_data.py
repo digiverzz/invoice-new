@@ -37,7 +37,6 @@ from dataclasses import dataclass, field
 from preprocessing_image import deskew,erode,canny,remove_noise,get_grayscale,match_template,dilate,opening,thresholding
 from preprocessing_text import seperate,correction
 from field_extraction import *
-from user_management import tokencheck
 from token_authentication import token_required
 from nltk.corpus import stopwords
 import user_management
