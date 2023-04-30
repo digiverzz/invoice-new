@@ -3,6 +3,8 @@ import axios from "axios";
 import AddIcon from "@mui/icons-material/Add";
 import DoneIcon from "@mui/icons-material/Done";
 
+import loader from "../images/loader.gif";
+import DocumentScannerIcon from '@mui/icons-material/DocumentScanner';
 import { green } from "@mui/material/colors";
 import CheckIcon from "@mui/icons-material/Check";
 import BlockIcon from "@mui/icons-material/Block";
@@ -156,6 +158,7 @@ const fileClick = (file) => {
 };
 
 export default function FileManager() {
+  const [istotalloading, setistotalloading] = useState(false);
   const [fieldName, setfieldName] = useState([
     "name",
     "size",
@@ -244,16 +247,16 @@ export default function FileManager() {
   const handleApprove = async () => {
 
     setAnchorEl(false);
-    const response = await axios.post(URI+'statusupdate',{"filename":currentName,"uid":localStorage.getItem('uid'),"status":"accepted"})
-    
+    const response = await axios.post(URI + 'statusupdate', { "filename": currentName, "uid": localStorage.getItem('uid'), "status": "accepted" })
+
   };
 
   const handleReject = async () => {
 
     setAnchorEl(false);
-    
-    const response = await axios.post(URI+'statusupdate',{"filename":currentName,"uid":localStorage.getItem('uid'),"status":"rejected"})
-    
+
+    const response = await axios.post(URI + 'statusupdate', { "filename": currentName, "uid": localStorage.getItem('uid'), "status": "rejected" })
+
   };
 
   const handleupload = (e) => {
@@ -262,7 +265,7 @@ export default function FileManager() {
 
   const sort = () => {
     // setloading(true)
-    setTimeout(() => {}, 300);
+    setTimeout(() => { }, 300);
     console.log("sorting...", currentfield, isdesc);
     const changer = isdesc ? -1 : 1;
 
@@ -282,6 +285,7 @@ export default function FileManager() {
 
   const searching = async (e) => {
     console.log(e.target.value);
+    setloading(true)
     var temp = [];
     const response = await axios.post(URI + "elastic/search", {
       query: e.target.value,
@@ -295,7 +299,7 @@ export default function FileManager() {
         size: Source["_source"]["size"],
       });
     });
-
+    setloading(false)
     setfileList(temp);
   };
 
@@ -449,6 +453,11 @@ export default function FileManager() {
   };
 
   const handleClaim = async () => {
+    // settotloading(true)
+    setAnchorEl(false);
+    setistotalloading(true)
+
+
     var tempfiles = [];
 
     var format = {
@@ -467,7 +476,8 @@ export default function FileManager() {
       .then((response) => {
         let data = response.data.response;
         setResdata(data);
-        console.log("response", data);
+        // console.log("response", data);
+        setistotalloading(false)
       });
     setFilebase([...tempfiles]);
   };
@@ -507,7 +517,24 @@ export default function FileManager() {
           width="100%"
           sx={{ bgcolor: "#F9FAFB" }}
         >
-          <Grid container spacing={0} sx={{ justifyContent: "left" }}>
+          {istotalloading ? 
+            <Box 
+          position="fixed"
+          top={0}
+          height="100%"
+          width="100%"
+          sx={{ bgcolor: "white" }}>
+              <Grid
+                container
+                direction="row"
+                justifyContent="center"
+                alignItems="center"
+                spacing={5}
+                sx={{marginTop:22}}
+              >
+                <img src={loader} alt="" style={{ width: "17rem" }} />
+              </Grid>
+            </Box> : <Grid container spacing={0} sx={{ justifyContent: "left" }}>
             <Grid item xs={0.6}>
               <Nav></Nav>
             </Grid>
@@ -735,7 +762,7 @@ export default function FileManager() {
                 </Grid>
               </Grid>
             </Grid>
-          </Grid>
+          </Grid>}
 
           <Menu
             id="basic-menu"
@@ -773,7 +800,7 @@ export default function FileManager() {
 
               <MenuItem onClick={handleClaim}>
                 <Box flexGrow={1}>
-                  <BlockIcon color="action" sx={{ fontSize: 20 }} />
+                  <DocumentScannerIcon color="action" sx={{ fontSize: 20 }} />
                   <span style={{ fontSize: 12, paddingLeft: 3 }}>Claim</span>
                   {/* <Typography>Reject</Typography> */}
                 </Box>
@@ -785,7 +812,9 @@ export default function FileManager() {
             id="sort-menu"
             anchorEl={anchorElsort}
             open={opensort}
-            onClose={handleClosesort}
+            onClose={() => {
+              setAnchorElsort(null);
+            }}
             MenuListProps={{
               "aria-labelledby": "basic-button",
             }}
@@ -896,10 +925,6 @@ export default function FileManager() {
               </Box>
             )}
           </Menu>
-
-          {/* <Box sx={{height:"10%"}}>
-        <Skeleton variant="rectangular" height="100%" />
-        </Box> */}
         </Box>
       ) : (
         <InvoiceData images={fileBase} responsedata={resData} />
