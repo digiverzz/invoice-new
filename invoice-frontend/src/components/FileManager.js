@@ -468,7 +468,7 @@ export default function FileManager() {
     format["data"] = selectedfile.dataurl;
     tempfiles.push(format);
     axios
-      .post(URI + "predict", tempfiles, {
+      .post(URI + "predict", {"data":tempfiles}, {
         headers: {
           "content-Type": "application/json",
         },

@@ -32,7 +32,7 @@ from sklearn.metrics import confusion_matrix, f1_score
 from functools import wraps
 import datetime
 from base64 import b64encode,decodestring
-from fastapi.middleware.cors import CORSMiddleware
+# from fastapi.middleware.cors import CORSMiddleware
 from dataclasses import dataclass, field
 from preprocessing_image import deskew,erode,canny,remove_noise,get_grayscale,match_template,dilate,opening,thresholding
 from preprocessing_text import seperate,correction
@@ -50,7 +50,7 @@ import predict_data
 from fastapi_utils.tasks import repeat_every
 import usables
 from usables import predict_from_mail
-
+from starlette.middleware.cors import CORSMiddleware
 
 # pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
 
@@ -85,6 +85,7 @@ app.include_router(elastic.router)
 async def predicted_output(request:Request):
 
     fileslist = await request.json()
+    fileslist = fileslist['data']
     # print(fileslist)
     res = []
     count = 0

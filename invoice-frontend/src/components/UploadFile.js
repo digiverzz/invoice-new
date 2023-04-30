@@ -72,7 +72,7 @@ export default function UploadFileComp() {
           // axios.post("http://127.0.0.1:5000/elastic/upload",{"filename":FileName,"dataurl":dataUrls,"size":FileSize,"username":"emp001","status":"pending"})
           console.log(tempfiles.length)
           axios
-          .post(URI + "predict", tempfiles, {
+          .post(URI + "predict", {"data":tempfiles}, {
             headers: {
               "content-Type": "application/json",
             },

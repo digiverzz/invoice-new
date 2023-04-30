@@ -28,7 +28,7 @@ protobuf==3.18.0
 pyyaml
 matplotlib
 seaborn
-nltk
+nltk==3.8.1
 pytesseract
 textblob
 scikit_learn
