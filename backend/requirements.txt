@@ -49,4 +49,5 @@ fastapi-utils
 python-docx
 python-pptx
 pdf2image
+python-dotenv
 
