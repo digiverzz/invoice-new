@@ -8,7 +8,7 @@ import pandas as pd
 import re
 import base64
 
-# pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
+pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
 
 def total(img,lang_input):
     # Adding custom options

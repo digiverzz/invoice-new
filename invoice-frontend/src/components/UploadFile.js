@@ -25,6 +25,8 @@ export default function UploadFileComp() {
   const [errorUpload, setErrorUpload] = useState(false);
   const [resData, setResData] = useState();
   const [fileBase, setfilesBase] = useState([]);
+  const [extension,setExtension] = useState([]);
+
 
   const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -38,6 +40,22 @@ export default function UploadFileComp() {
       };
     });
   };
+  
+  const base64toBlob = (data) => {
+    // Cut the prefix `data:application/pdf;base64` from the raw base 64
+    const base64WithoutPrefix = data.substr('data:application/pdf;base64,'.length);
+
+    const bytes = atob(base64WithoutPrefix);
+    let length = bytes.length;
+    let out = new Uint8Array(length);
+
+    while (length--) {
+        out[length] = bytes.charCodeAt(length);
+    }
+
+    return new Blob([out], { type: 'application/pdf' });
+};
+
 
   const uploadFiles = async () => {
     
@@ -58,11 +76,12 @@ export default function UploadFileComp() {
         var format = {
           name: "",
           data: "",
+          extension:"",
         };  
         
         format["name"] = item.name;
         format["data"] = event.target.result;
-
+        format['extension'] = item.name.split(".")[1]
         tempfiles.push(format)
         dataUrls.push(event.target.result);
         FileName.push(item.name);

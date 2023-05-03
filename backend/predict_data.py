@@ -121,6 +121,9 @@ def predict(file_input,lang_input):
         imageBinaryBytes = base_str
         image = np.asarray(bytearray(imageBinaryBytes), dtype=np.uint8)
         image = cv2.imdecode(image, cv2.IMREAD_COLOR)
+
+    elif type(file_input)==np.ndarray:
+        image = file_input
     else:
         base_str = base_str.split(",")[1]
         binary = base64.b64decode(base_str)

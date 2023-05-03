@@ -51,6 +51,8 @@ from fastapi_utils.tasks import repeat_every
 import usables
 from usables import predict_from_mail
 from starlette.middleware.cors import CORSMiddleware
+from pdf2image import convert_from_bytes
+
 
 # pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
 
@@ -78,20 +80,40 @@ app.include_router(user_management.userrouter)
 app.include_router(crop_endpoint.croprouter)
 app.include_router(elastic.router)
 
+poppler_path = r"D:/invoice-management/poppler-22.04.0/Library/bin"
 
 
 
 @app.post('/predict')
 async def predicted_output(request:Request):
-
+    
     fileslist = await request.json()
     fileslist = fileslist['data']
     # print(fileslist)
     res = []
     count = 0
+    image_lists = []
     for i in fileslist:
         #print("count",count)
-        output = predict_data.predict(str(i['data']),"english")
-        res.append(output)
-        count+=1
+        ext = str(i['name']).split(".")[-1]
+        if ext=="pdf":
+            base64string = str(i['data']).split(",")[1]
+            bytes_str = base64.b64decode(base64string)
+            images = convert_from_bytes(bytes_str,poppler_path=poppler_path,fmt="png")
+            for i in range(len(images)):
+                decoded = np.array(images[i].convert('RGB'))
+                image_lists.append(decoded)
+                
+            im_v = cv2.vconcat(image_lists)
+            
+            # print(len(dataurl))
+            output = predict_data.predict(im_v,"english")
+            res.append(output)
+            count+=1
+
+          
+        else:  
+            output = predict_data.predict(str(i['data']),"english")
+            res.append(output)
+            count+=1
     return {"response":res}

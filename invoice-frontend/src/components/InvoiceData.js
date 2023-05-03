@@ -51,6 +51,10 @@ import "react-image-crop/dist/ReactCrop.css";
 import Menu from "@mui/material/Menu";
 import ImageCropper from "./ImageCropper";
 import CheckSharpIcon from "@mui/icons-material/CheckSharp";
+import { Worker, Viewer } from '@react-pdf-viewer/core';
+import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
+import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+import '@react-pdf-viewer/core/lib/styles/index.css';
 
 export default function InvoiceData(props) {
   console.log("props", props);
@@ -79,6 +83,9 @@ export default function InvoiceData(props) {
   const [imageToCrop, setImageToCrop] = useState(undefined);
   const [croppedImage, setCroppedImage] = useState("");
   const [okButton, setOkbutton] = useState(false);
+  const newPlugin = defaultLayoutPlugin(
+     
+  );
 
   const handlemenuClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -108,6 +115,20 @@ export default function InvoiceData(props) {
     console.log("tabledata after edit", tableData);
     setOpen(false);
   };
+  const base64toBlob = (data) => {
+    // Cut the prefix `data:application/pdf;base64` from the raw base 64
+    const base64WithoutPrefix = data.substr('data:application/pdf;base64,'.length);
+
+    const bytes = atob(base64WithoutPrefix);
+    let length = bytes.length;
+    let out = new Uint8Array(length);
+
+    while (length--) {
+        out[length] = bytes.charCodeAt(length);
+    }
+
+    return new Blob([out], { type: 'application/pdf' });
+};
 
   const navigate = useNavigate();
 
@@ -262,11 +283,26 @@ export default function InvoiceData(props) {
     setinvoicetableData([...table]);
 
     for (var i = 0; i < props.responsedata.length; i++) {
+      if (props.images[i].extension==='pdf'){
+      const blob = base64toBlob(props.images[i].data);
+      const url = URL.createObjectURL(blob);
+      tempTable[i]["name"] = props.images[i].name;
+      tempTable[i]["image"] = url;
+      tempdata[i]["name"] = props.images[i].name;
+      tempdata[i]["image"] = url;
+      tempTable[i]["extension"] = props.images[i].extension;
+      tempdata[i]["extension"] = props.images[i].extension;
+      templist.push(tempdata[i]);
+      }
+      else{
       tempTable[i]["name"] = props.images[i].name;
       tempTable[i]["image"] = props.images[i].data;
       tempdata[i]["name"] = props.images[i].name;
       tempdata[i]["image"] = props.images[i].data;
+      tempTable[i]["extension"] = props.images[i].extension;
+      tempdata[i]["extension"] = props.images[i].extension;
       templist.push(tempdata[i]);
+      }
     }
     setItemData([...templist]);
     setTableData([...tempTable]);
@@ -402,35 +438,53 @@ export default function InvoiceData(props) {
       {tableData
         ? tableData.slice(page, page + 1).map((item, i) => (
             <div className="row mt-3">
-              <div className="col-lg-5 mt-3">
-                {showCropimage === true ? (
-                  <div>
-                    {/* <Button variant="outlined" onClick={cropImageNow}>Extract</Button> */}
-                    <ImageCropper
-                      index={indexupdate}
-                      index2={indexupdate2}
-                      responsedata={props.responsedata[i]}
-                      tabledata={tableData[i]}
-                      imageToCrop={item.image}
-                      onImageCropped={(croppedImage) =>
-                        handleImagecropped(croppedImage)
-                      }
-                    />
-                  </div>
-                ) : (
-                  <img
-                    src={item.image}
-                    alt=""
-                    style={{ width: "560px", height: "620px" }}
-                  />
-                )}
+              <div className="col-lg-6 mt-3">
+                {
+                  item.extension=='pdf' ? (
+                    <div class="card"
+    style={{
+         boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
+        height: '750px',
+        width:'670px'
+    }}
+>
+    <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js`}>
+        <Viewer fileUrl={item.image} 
+        plugins={[newPlugin]}
+    />
+      </Worker>
+</div>
+                  ) : (
+                    showCropimage === true ? (
+                      <div>
+                        {/* <Button variant="outlined" onClick={cropImageNow}>Extract</Button> */}
+                        <ImageCropper
+                          index={indexupdate}
+                          index2={indexupdate2}
+                          responsedata={props.responsedata[i]}
+                          tabledata={tableData[i]}
+                          imageToCrop={item.image}
+                          onImageCropped={(croppedImage) =>
+                            handleImagecropped(croppedImage)
+                          }
+                        />
+                      </div>
+                    ) : (
+                      <img
+                        src={item.image}
+                        alt=""
+                        style={{ width: "560px", height: "620px" }}
+                      />
+                    )
+                  )
+                }
               </div>
               <div className="col-lg-1">
                 <Divider orientation="vertical">
                   <Chip label="Extract" color="primary" variant="outlined" />
                 </Divider>
               </div>
-              <div className="col-lg-6 mt-3">
+              <div className="col-lg-5 mt-3">
                 <Accordion>
                   <AccordionSummary
                     expandIcon={<ExpandMoreIcon />}
@@ -507,49 +561,54 @@ export default function InvoiceData(props) {
                       {Array.isArray(item)
                         ? item.map((item2, i2) => {
                             return (
-                              <div>
-                                <li
-                                  className={
-                                    item2.text !== "" ? "plus" : "minus"
-                                  }
-                                >
-                                  {item2.label}
-                                  <span>{item2.text}</span>
-                                  {
-                                  okButton === false ? (
-                                    <button
-                                      onClick={(event) => {
-                                        setIndexupdate(i);
-                                        setIndexupdate2(i2);
-                                        setSelectedRow(item2);
-                                        handlemenuClick(event);
-                                      }}
-                                      className="delete-btn"
-                                    >
-                                      <MoreVertIcon />
-                                    </button>
-                                  ) : (
-                                     i2===indexupdate2 ? (
-                                      <Fab
-                                    size="small"
-                                      color="success"
-                                      sx={{
-                                        height: 5,
-                                        lineHeight: '10px',
-                                        verticalAlign: 'middle',
-                                        width: 33,
-                                        boxShadow:"none"
-                                      }}
-                                      
-                                      className="ok-btn"
-                                      onClick={()=>{setShowcropimage(false);setOkbutton(false)}}
-                                    >
-                                      <CheckSharpIcon sx={{ width: 17}}/>
-                                    </Fab>
-                                     ) : ""
-                                  )}
-                                </li>
-                              </div>
+                                                            
+                              item2.label !=='extension' ? (
+                                <div>
+                              <li
+                                className={
+                                  item2.text !== "" ? "plus" : "minus"
+                                }
+                              >
+                                {item2.label}
+                                <span>{item2.text}</span>
+                                {
+                                okButton === false ? (
+                                  <button
+                                    onClick={(event) => {
+                                      setIndexupdate(i);
+                                      setIndexupdate2(i2);
+                                      setSelectedRow(item2);
+                                      handlemenuClick(event);
+                                    }}
+                                    className="delete-btn"
+                                  >
+                                    <MoreVertIcon />
+                                  </button>
+                                ) : (
+                                   i2===indexupdate2 ? (
+                                    <Fab
+                                  size="small"
+                                    color="success"
+                                    sx={{
+                                      height: 5,
+                                      lineHeight: '10px',
+                                      verticalAlign: 'middle',
+                                      width: 33,
+                                      boxShadow:"none"
+                                    }}
+                                    
+                                    className="ok-btn"
+                                    onClick={()=>{setShowcropimage(false);setOkbutton(false)}}
+                                  >
+                                    <CheckSharpIcon sx={{ width: 17}}/>
+                                  </Fab>
+                                   ) : ""
+                                )}
+                              </li>
+                            </div>
+                              ) : (
+                                <></>
+                              )
                             );
                           })
                         : ""}
