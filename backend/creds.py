@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 import os
 import email
 from pymongo import MongoClient
+from pywebhdfs.webhdfs import PyWebHdfsClient
 
 load_dotenv()
 
@@ -29,3 +30,5 @@ mail.login(os.getenv('email'),os.getenv('mail_pass'))
 
 
 mail.select('Inbox')
+
+hdfs= PyWebHdfsClient(host=os.getenv('hdfshost'),port=os.getenv('hdfsport'),user_name=os.getenv('hdfsuser'))
