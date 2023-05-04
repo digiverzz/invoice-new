@@ -52,7 +52,9 @@ import usables
 from usables import predict_from_mail
 from starlette.middleware.cors import CORSMiddleware
 from pdf2image import convert_from_bytes
+import os
 
+print(os.getenv('elastic_url'))
 
 # pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
 

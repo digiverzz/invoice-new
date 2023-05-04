@@ -22,6 +22,7 @@ ENV FLASK_ENV=development
 
 COPY ./requirements.txt .
 
+
 RUN pip install -r requirements.txt
 
 RUN python -m nltk.downloader punkt

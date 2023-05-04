@@ -7,7 +7,7 @@ import email
 from pymongo import MongoClient
 from pywebhdfs.webhdfs import PyWebHdfsClient
 
-load_dotenv()
+load_dotenv('./env')
 
 
 es = Elasticsearch([os.getenv('elastic_url')],basic_auth=(os.getenv('elastic_username'),os.getenv('elastic_password')),verify_certs=False)
