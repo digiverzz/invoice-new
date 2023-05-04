@@ -1,4 +1,6 @@
 #by rk
+import os
+import threading
 import creds
 import base64
 from datetime import datetime
@@ -14,7 +16,7 @@ from predict_data import predict
 from datetime import datetime
 import json
 import pymongo
-
+from urllib.request import urlopen
 #comment down while deploying
 # pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
 
@@ -219,3 +221,23 @@ def predict_from_mail():
     collection1 = database['request']
     for i in range(len(response)):
         collection1.insert_one(response[i])
+
+
+def UploadFileHdfs(file,filename):
+    path = os.getenv('hdfspath')
+    def do():
+        creds.hdfs.create_file(path+f'/{filename}',file)
+        print(f"{filename} saved in hdfs..")
+        event.set()
+    
+    event = threading.Event()
+    thread = threading.Thread(target=do)
+    
+    thread.start()
+    event.wait(timeout=2)
+    if not event.is_set():
+        print(f"Failed to save {filename} in hdfs..")
+
+
+def dataurltobytes(url):
+    return urlopen(url).read()

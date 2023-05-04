@@ -51,6 +51,10 @@ async def upload(request: Request):
             "status":status
         }
 
+        
+        fraw = usables.dataurltobytes(url)
+        usables.UploadFileHdfs(file = fraw,filename = fname)
+
         res.append(es.index(index=indexname,document=format))
         # print(res[-1])
 
@@ -204,7 +208,10 @@ async def stream(request: Request):
 
             print(es.index(index=indexname,document=format))
 
+            #you can do this using celery also (it is effective)
             # del format['datetime']
+            fraw = usables.dataurltobytes(url)
+            usables.UploadFileHdfs(file = fraw,filename = fname)
 
             yield json.dumps({'filename':format['filename']})
             # print(res[-1])
