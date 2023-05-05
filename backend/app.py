@@ -53,6 +53,7 @@ from usables import predict_from_mail
 from starlette.middleware.cors import CORSMiddleware
 from pdf2image import convert_from_bytes
 import os
+import routes.stats as stats
 
 print(os.getenv('elastic_url'))
 
@@ -81,6 +82,7 @@ app.add_middleware(
 app.include_router(user_management.userrouter)
 app.include_router(crop_endpoint.croprouter)
 app.include_router(elastic.router)
+app.include_router(stats.router)
 
 # poppler_path = r"D:/invoice-management/poppler-22.04.0/Library/bin"
 
