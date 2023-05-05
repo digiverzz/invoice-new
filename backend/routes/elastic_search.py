@@ -13,6 +13,7 @@ from creds import es
 import usables
 
 import json
+import io
 
 router = APIRouter(
     prefix='/elastic'
@@ -170,6 +171,14 @@ async def delete(request:Request):
     }
     }
 
+    size = es.search(index="emp001",query=query)['hits']['hits']['_source']['size']
+    size_mb = usables.size_converter(size,'bytes','MB')
+
+    response = usables.update_size(username,size_mb,"-1")
+
+    if response.get('status') == "exceeds":
+        return json.dumps(response)
+
     return es.delete_by_query(index=indexname,query=query)
 
 
@@ -207,6 +216,14 @@ async def stream(request: Request):
             }
 
             print(es.index(index=indexname,document=format))
+            
+            size_mb = usables.size_converter(size,'bytes','MB')
+
+            response = usables.update_size(username,size_mb,"1")
+
+            if response.get('status') == "exceeds":
+                return json.dumps(response)
+
 
             #you can do this using celery also (it is effective)
             # del format['datetime']
