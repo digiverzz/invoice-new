@@ -221,6 +221,7 @@ export default function FileManager() {
       const text = decoder.decode(result.value, { stream: true });
       const data = JSON.parse(text);
       // setData(prevData => [...prevData, JSON.parse(text)]);
+      // need to handle storage exceeds
       setuploadedFile((uploadedFile) =>
         uploadedFile.map((item) => {
           if (item.name == data["filename"]) {

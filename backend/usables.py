@@ -20,6 +20,8 @@ from urllib.request import urlopen
 #comment down while deploying
 # pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
 
+Files = {}
+
 def IsValidUser(name):
     if creds.collection.find_one({"uid":name}):
         return True
@@ -30,6 +32,18 @@ def getIndex(name):
     if not creds.es.indices.exists(index=name):
         creds.es.indices.create(index=name)
     return name
+
+
+def get_files(username):
+    global Files
+    files = Files.get(username,False)
+    if files:
+        return files
+    else:
+        Files[username] = creds.es.search(index=username,query={"match_all":{}})['hits']['hits']
+        return Files[username]
+
+
 
 
 def get_docx_Text(file_bytes):
@@ -241,3 +255,41 @@ def UploadFileHdfs(file,filename):
 
 def dataurltobytes(url):
     return urlopen(url).read()
+
+
+####################################### for dashboard and size calculation ###################################
+#size calculator
+def size_calculator(b64string):
+    return (len(b64string) * 3) / 4 - b64string.count('=', -2)
+
+#size converter
+def size_converter(value,unit,expected="KB"):
+    unit_map = {
+        "bytes":{
+        "MB":lambda v: v/1000000,
+        "GB":lambda v: v/1000000000,
+        "KB":lambda v: v/1000
+    }}
+
+    return unit_map.get(unit,{}).get(expected,lambda v: v)(value)
+
+
+#for mongo
+def update_size(username,size,type):
+      
+      myquery = { "uid" : username }
+      doc = creds.collection.find_one(myquery, {'_id': 0,"used_size":1,"total_size":1})
+      myquery = { "used_size": doc['used_size'] }
+      if doc['used_size']<doc['total_size']:
+        if type=="1":
+            newsize = size+doc['used_size']
+            newsizedata = { "$set": { "used_size": newsize } }
+            creds.collection.update_one(myquery,newsizedata)
+            return {"Newupdatedsize": newsize,"Unit": "MB","status":"success"}
+        elif type=="-1":
+            newsize = doc['used_size']-size
+            newsizedata = { "$set": { "used_size": newsize } }
+            creds.collection.update_one(myquery,newsizedata)
+            return {"Newupdatedsize": newsize,"Unit": "MB","status":"success"}
+      else:
+        return {"status":"exceeds"}
