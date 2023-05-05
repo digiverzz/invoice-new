@@ -7,6 +7,7 @@ import user from "../images/user.png";
 import Nav from "./reusable/navBar";
 import { FiUser} from "react-icons/fi";
 import { format } from 'date-fns'
+import URI from '../utils/request';
 
 function StorageDashboard() {
 
@@ -23,7 +24,7 @@ function StorageDashboard() {
   // bodyFormData.append('password', userCredentials.password); //Current Password
 
     const fetchPiechartData = async(username)=>{
-        await axios.post("http://172.174.180.163:5000/stats/StorageDetails",{
+        await axios.post(URI+"stats/StorageDetails",{
           username:username
         })
         .then(function (response) {
@@ -49,7 +50,7 @@ function StorageDashboard() {
 
 
     const fetchBarchartData = async(username)=>{
-      await axios.post("http://172.174.180.163:5000/stats/TypeBasedFrequency",{
+      await axios.post(URI+"stats/TypeBasedFrequency",{
         username:username
       })
       .then(function (response) {
@@ -63,7 +64,7 @@ function StorageDashboard() {
     }
 
     const fetchLinechartData = async(username)=>{
-        await axios.post("http://172.174.180.163:5000/stats/DateBasedFrequency",{
+        await axios.post(URI+"stats/DateBasedFrequency",{
           username:username
         })
     
@@ -99,7 +100,7 @@ function StorageDashboard() {
   
 
     const fetchRecentActivity = async(username)=>{
-      await axios.post("http://172.174.180.163:5000/stats/GetActivity",{
+      await axios.post(URI+"stats/GetActivity",{
         username:username
       })
       .then(function (response) {
