@@ -1,0 +1,94 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans&display=swap');
+p{
+  font-family: 'DM Sans', sans-serif;
+  text-align: center;
+  font-weight: 600;
+  padding-top:5px;
+}
+
+.wrapper > * {
+  margin-top: 60px;
+  display:inline-block;
+}
+
+.piechart{
+  background-color:#fff;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.25);
+  border-radius: 10px;
+  width: 300px;
+  /* height: 210px; */
+	/* background-position: left; */
+  margin-left:200px;
+
+}
+
+.piechart:hover{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.551);
+}
+.Barchart{
+  background-color:#fff;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.25);
+  border-radius: 10px;
+  margin-left:20px;
+
+}
+.Barchart:hover{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.551);
+}
+
+
+.Linechart{
+  background-color:#fff;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.25);
+  border-radius: 10px;
+  margin-left: 200px;
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+.Linechart:hover{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.551);
+}
+
+.Activity{
+  height: 595px;
+  width: 400px;
+  position: absolute;
+  background-color:#fff;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.25);
+  border-radius: 10px;
+  margin-top: 60px;
+  margin-bottom: 40px;
+  margin-left: 20px;
+  padding-bottom: 30px;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+.Activity:hover{
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.551);
+}
+
+.ActivityDiv{
+  display: flex;
+  align-items: center;
+  width: 400px;
+  padding-left: 30px;
+  padding-right:30px;
+
+}
+.ActiP{
+  margin-top:20px;
+}
+.User{
+  width: 60px;
+  height: 40px;
+  padding-right: 20px;
+}
+.Log{
+  font-family: 'DM Sans', sans-serif;
+  text-align: left;
+  font-weight: 500;
+}
+.ActLog:hover{
+  font-weight: bold;
+}
+
