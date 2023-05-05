@@ -215,7 +215,9 @@ export default function InvoiceData(props) {
           key !== "name" &&
           key !== "image" &&
           key !== "barcode" &&
-          key !== "custom"
+          key !== "custom" &&
+          key !== "pdf_image" &&
+          key !== "extension"
         ) {
           temp.push({ label: capitalizeWords(key), text: tempdata[i][key] });
         } else if (key === "bill_of_materials") {
@@ -292,6 +294,8 @@ export default function InvoiceData(props) {
       tempdata[i]["image"] = url;
       tempTable[i]["extension"] = props.images[i].extension;
       tempdata[i]["extension"] = props.images[i].extension;
+      tempTable[i]["pdf_image"] = props.responsedata[i].pdf_image;
+      tempdata[i]["pdf_image"] = props.responsedata[i].pdf_image;
       templist.push(tempdata[i]);
       }
       else{
@@ -440,8 +444,29 @@ export default function InvoiceData(props) {
             <div className="row mt-3">
               <div className="col-lg-6 mt-3">
                 {
-                  item.extension=='pdf' ? (
-                    <div class="card"
+                  item.extension==='pdf'? (
+                    
+                    showCropimage === true ? (
+                      <div className="card" id="style-1" style={{maxHeight: 600,
+                        overflowY: "auto",width:560,boxShadow: "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px"}}>
+                        {/* <Button variant="outlined" onClick={cropImageNow}>Extract</Button> */}
+                        <div className="card-body">
+                        <ImageCropper
+                          index={indexupdate}
+                          index2={indexupdate2}
+                          responsedata={props.responsedata[i]}
+                          tabledata={tableData[i]}
+                          imageToCrop={item.pdf_image}
+                          onImageCropped={(croppedImage) =>
+                            handleImagecropped(croppedImage)
+                          }
+                          
+                        />
+                        </div>
+                      </div>
+                        
+                      ) : (
+                        <div class="card"
     style={{
          boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
         height: '750px',
@@ -453,10 +478,18 @@ export default function InvoiceData(props) {
         plugins={[newPlugin]}
     />
       </Worker>
+      {/* <img
+                        src={item.pdf_image}
+                        alt=""
+                        style={{ width: "560px"}}
+                      /> */}
 </div>
+                      )
+                    
+                    
                   ) : (
                     showCropimage === true ? (
-                      <div>
+                      <div className="card" style={{ width: "560px", height: "620px" }}>
                         {/* <Button variant="outlined" onClick={cropImageNow}>Extract</Button> */}
                         <ImageCropper
                           index={indexupdate}
@@ -562,7 +595,7 @@ export default function InvoiceData(props) {
                         ? item.map((item2, i2) => {
                             return (
                                                             
-                              item2.label !=='extension' ? (
+                              item2.label !=='extension' && item2.label !=='pdf_image' ? (
                                 <div>
                               <li
                                 className={

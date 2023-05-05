@@ -48,8 +48,8 @@ import Chip from '@mui/material/Chip';
 import Avatar from '@mui/material/Avatar';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Skeleton from '@mui/material/Skeleton';
-
-
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 const drawerWidth = 240;
 
 
@@ -208,10 +208,7 @@ export default function MiniDrawer() {
     },
   }])
 
-  let tot = 0;
-  let acctot = 0;
-  let rejtot = 0;
-  let pentot = 0;
+
   let Appliances = 0;
   let Automotive = 0;
   let Electronics = 0;
@@ -257,7 +254,10 @@ export default function MiniDrawer() {
     };
   
   useEffect(() => {
-
+    let tot = 0;
+    let acctot = 0;
+    let rejtot = 0;
+    let pentot = 0;
     async function fetchData() {
       let res = {
         data: [
@@ -446,7 +446,7 @@ export default function MiniDrawer() {
     }}
     variant="contained" onClick={()=> navigate('/uploadfile')}>Create Claim</Button>
             <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
+              <Badge badgeContent={pentotal} color="warning">
                 <AccountCircleSharpIcon />
               </Badge>
             </IconButton>
@@ -467,14 +467,15 @@ export default function MiniDrawer() {
         </DrawerHeader>
         <Box>
                     <Grid container xs={11} justifyContent={"center"}>
-                        <Grid container xs={11} justifyContent={"center"} padding={2} sx={{alignItems:"center"}}>
+                        <Grid container xs={11} justifyContent={"center"} padding={5} sx={{alignItems:"center"}}>
                     
-                            <Avatar sx={{ width: 80, height: 80, background:"#3498DB" }}>{localStorage.getItem('name')[0]}</Avatar>
+                            <Avatar sx={{ width: 80, height: 80, background:"#3498DB",
+                                           ...(!open && { width: 40, height: 40 }),
+                          
+                          }}>{localStorage.getItem('name')[0]}</Avatar>
                         </Grid>
                     
-                        <Grid xs={12} textAlign={"center"} padding={2}>
-                            <Typography color={"#FFFFFF"}>{localStorage.getItem('name')}</Typography>
-                        </Grid>
+                        
                     </Grid>
                 </Box>  
             
@@ -514,9 +515,32 @@ export default function MiniDrawer() {
                     
                   }}
                 >
-                  <DraftsOutlinedIcon style={{ color:"#ffff" }}/>
+                  <DashboardIcon style={{ color:"#ffff" }}/>
                 </ListItemIcon>
+                
                 <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  
+                }}
+                onClick={()=>{navigate("/storage")}}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                    
+                  }}
+                >
+                  <AutoGraphIcon style={{ color:"#ffff" }}/>
+                </ListItemIcon>
+                
+                <ListItemText primary="Storage" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
             <ListItem key="Search" disablePadding sx={{ display: 'block',

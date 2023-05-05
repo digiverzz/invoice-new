@@ -107,9 +107,12 @@ async def predicted_output(request:Request):
                 image_lists.append(decoded)
                 
             im_v = cv2.vconcat(image_lists)
-            
+            _, im_arr = cv2.imencode('.jpg', im_v)  # im_arr: image in Numpy one-dim array format.
+            im_bytes = im_arr.tobytes()
+            im_b64 = base64.b64encode(im_bytes)
+            dataurl = f'data:image/jpg;base64,{str(im_b64)[2:len(im_b64)-2]}'
             # print(len(dataurl))
-            output = predict_data.predict(im_v,"english")
+            output = predict_data.predict(dataurl,"english")
             res.append(output)
             count+=1
 

@@ -77,6 +77,7 @@ export default function UploadFileComp() {
           name: "",
           data: "",
           extension:"",
+          pdf_image:""
         };  
         
         format["name"] = item.name;

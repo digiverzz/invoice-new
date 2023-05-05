@@ -72,6 +72,7 @@ predicted_response = {
     'logo':'',
     'custom': [],
     'category':'',
+    'pdf_image':None,
     'bill_of_materials':[
         {
             "description":[],
@@ -100,6 +101,7 @@ def empty_resp():
     'logo':'',
     'custom': [],
     'category':'',
+    'pdf_image':None,
     'bill_of_materials':[
         {
             "description":[],
@@ -125,6 +127,7 @@ def predict(file_input,lang_input):
     elif type(file_input)==np.ndarray:
         image = file_input
     else:
+        predicted_response['pdf_image'] = base_str
         base_str = base_str.split(",")[1]
         binary = base64.b64decode(base_str)
         image = np.asarray(bytearray(binary), dtype=np.uint8)
@@ -142,7 +145,7 @@ def predict(file_input,lang_input):
     image3 = image
     # image2 = cv2.cvtColor(image2, cv2.COLOR_RGB2BGR)
     # image3 = cv2.cvtColor(image3, cv2.COLOR_RGB2BGR)
-    cv2.imwrite("sample.png",image2)
+    # cv2.imwrite("sample.png",image2)
     #print("image2",image2)
     values, img = start('best_1000.pt', image2)
     COLORS = np.random.uniform(0, 255, size=(len(classes), 3))

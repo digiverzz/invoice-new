@@ -28,8 +28,8 @@ import MuiDrawer from '@mui/material/Drawer';
 import FindInPageIcon from '@mui/icons-material/FindInPage';
 import LogoutIcon from '@mui/icons-material/Logout';
 import Paper from '@mui/material/Paper';
-
-
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import DashboardIcon from '@mui/icons-material/Dashboard';
 
 function Nav() {
     const theme = useTheme();
@@ -167,7 +167,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
                     
                   }}
                 >
-                  <DraftsOutlinedIcon style={{ color:"#ffff" }}/>
+                  <DashboardIcon style={{ color:"#ffff" }}/>
                 </ListItemIcon>
                 <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
@@ -210,45 +210,30 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
                 </ListItemIcon>
                 <ListItemText primary="Search" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
-            </ListItem>
-        </List>
-        <Divider color="white"/>
-        <List>
-        <ListItem key="Dark Mode" disablePadding sx={{ display: 'block',
-            '&& .Mui-selected, && .Mui-selected:hover': {
-              bgcolor: 'red',
-              '&, & .MuiListItemIcon-root': {
-                color: 'pink',
-
-              },
-            },
-            
-            '& .MuiListItemButton-root:hover': {
-              bgcolor: '#6b7682',
-              '&, & .MuiListItemIcon-root': {
-                color: '#e3e8eb',
-              },
-            },
-            }}>
               <ListItemButton
                 sx={{
                   minHeight: 48,
                   justifyContent: open ? 'initial' : 'center',
                   px: 2.5,
-                }} 
+                  
+                }} onClick={()=>{navigate("/storage")}}
               >
                 <ListItemIcon
                   sx={{
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
+                    
                   }}
                 >
-                  <DarkModeSharpIcon style={{ color:"#ffff" }}/>
+                  < AutoGraphIcon style={{ color:"#ffff" }}/>
                 </ListItemIcon>
-                <ListItemText primary="Dark Mode" sx={{ opacity: open ? 1 : 0 }} />
+                <ListItemText primary="Dashboard Analysis" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
+        </List>
+        <Divider color="white"/>
+        <List>
             <ListItem key="Logout" disablePadding sx={{ display: 'block',
             '&& .Mui-selected, && .Mui-selected:hover': {
               bgcolor: 'red',
@@ -286,6 +271,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
                 </ListItemIcon>
                 <ListItemText primary="Logout" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
+              
             </ListItem>
         </List>
       </Drawer>
