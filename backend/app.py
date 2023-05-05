@@ -82,7 +82,7 @@ app.include_router(user_management.userrouter)
 app.include_router(crop_endpoint.croprouter)
 app.include_router(elastic.router)
 
-poppler_path = r"D:/invoice-management/poppler-22.04.0/Library/bin"
+# poppler_path = r"D:/invoice-management/poppler-22.04.0/Library/bin"
 
 
 
