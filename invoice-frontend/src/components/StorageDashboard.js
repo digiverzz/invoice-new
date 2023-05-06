@@ -14,7 +14,7 @@ function StorageDashboard() {
   const [PieChartValue, setPieChartValue] = useState([]);
   const [LineChartValue, setLineChartValue] = useState([]);
   const [RecentActivity,setRecentActivity] = useState([]);
-
+  var URI = "http://172.174.180.163:5000/"
 
     const fetchPiechartData = async(username)=>{
         await axios.post(URI+"stats/StorageDetails",{
