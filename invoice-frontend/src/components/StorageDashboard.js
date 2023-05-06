@@ -5,22 +5,16 @@ import { PieChart, Pie, Legend, Sector, Cell, ResponsiveContainer, BarChart, Bar
   Area} from 'recharts';
 import user from "../images/user.png";
 import Nav from "./reusable/navBar";
-import { FiUser} from "react-icons/fi";
-import { format } from 'date-fns'
 
 function StorageDashboard() {
 
   // var userCredentials = JSON.parse(localStorage.getItem("userCredentials"))
   var username = localStorage.getItem('uid')
-  // var username = 'emp001';
   const [BarChartValue, setBarChartValue] = useState([]);
   const [PieChartValue, setPieChartValue] = useState([]);
   const [LineChartValue, setLineChartValue] = useState([]);
   const [RecentActivity,setRecentActivity] = useState([]);
 
-  // var bodyFormData = new FormData();
-  // bodyFormData.append('username', userCredentials.username); //Current User
-  // bodyFormData.append('password', userCredentials.password); //Current Password
 
     const fetchPiechartData = async(username)=>{
         await axios.post("http://172.174.180.163:5000/stats/StorageDetails",{
@@ -139,7 +133,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
     <>
      <Nav></Nav>
     
-    <div style={{paddingTop:"50px"}}>
+    <div className={Style.Cont}>
 
   <div className= {Style.wrapper}>
   
@@ -172,7 +166,7 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
       <div className={Style.Barchart}>
         <p>Uploaded Files based on file type</p>
         {/* { BarChartValue.length === 0 ? "No Data Found" : */}
-      <BarChart width={450} height={196} margin={{ right:20}} 
+      <BarChart width={425} height={196} margin={{ right:20}} 
       data={BarChartValue}>
     <Bar dataKey="value" fill="#FF69B4">
     {BarChartValue.map((entry, index) => (<Cell key={`cell-${index}`} fill={COLOR[index % COLOR.length]} />))}
@@ -207,8 +201,8 @@ const renderCustomizedLabel = ({ cx, cy, midAngle, innerRadius, outerRadius, per
      
      <div className={Style.Linechart}>
       <p>File Growth over Time</p>
-     <LineChart width={770} height={290} data={LineChartValue}
-  margin={{right: 20, left: 20, bottom: 5 }} >
+     <LineChart width={745} height={265} data={LineChartValue}
+  margin={{right: 60, left: 20, bottom: 5 }} >
   {/* <CartesianGrid strokeDasharray="3 3" /> */}
   <XAxis dataKey="name" />
   <YAxis />
