@@ -52,6 +52,8 @@ import FileOpenIcon from '@mui/icons-material/FileOpen';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
+import DashboardIcon from '@mui/icons-material/Dashboard';
+import AutoGraphIcon from '@mui/icons-material/AutoGraph';
 
 const drawerWidth = 240;
 
@@ -838,7 +840,7 @@ function HeadDashboard() {
   return (
     <Box sx={{ display: 'flex' }}>
       <CssBaseline />
-      <AppBar position="absolute" open={open} style={{backgroundColor:"#ffff",color:"#000000"}}>
+      <AppBar position="fixed" open={open} style={{backgroundColor:"#ffff",color:"#000000"}}>
           <Toolbar
             sx={{
               pr: '24px', // keep right padding when drawer closed
@@ -865,17 +867,32 @@ function HeadDashboard() {
             >
               Dashboard
             </Typography>
-            
-            
+            {
+              localStorage.getItem('role')=="Practice Lead" ?
+              <Button     color="primary" style={{
+
+                marginRight:"15px",
+                borderRadius:"5px",
+                
+                }}
+                variant="contained" onClick={()=> navigate('/approve')}>Pending Approvals </Button> : ""
+            }
+            <Button     color="primary" style={{
+
+        marginRight:"15px",
+        borderRadius:"5px",
+        
+    }}
+    variant="contained" onClick={()=> navigate('/uploadfile')}>Create Claim</Button>
             <IconButton color="inherit">
-              <Badge badgeContent={Number(total)} color="warning">
+              <Badge badgeContent={pentotal} color="warning">
                 <AccountCircleSharpIcon />
               </Badge>
             </IconButton>
             
           </Toolbar>
         </AppBar>
-      <Drawer variant="permanent" open={open} PaperProps={{
+        <Drawer variant="permanent" open={open} PaperProps={{
             sx: {
               backgroundColor: "#1e2833",
               width: 300,
@@ -887,9 +904,23 @@ function HeadDashboard() {
             {theme.direction === 'rtl' ? <ChevronRightIcon style={{ color:"#ffff" }}/> : <ChevronLeftIcon />}
           </IconButton>
         </DrawerHeader>
+        <Box>
+                    <Grid container xs={11} justifyContent={"center"}>
+                        <Grid container xs={11} justifyContent={"center"} padding={5} sx={{alignItems:"center"}}>
+                    
+                            <Avatar sx={{ width: 80, height: 80, background:"#3498DB",
+                                           ...(!open && { width: 40, height: 40 }),
+                          
+                          }}>{localStorage.getItem('name')[0]}</Avatar>
+                        </Grid>
+                    
+                        
+                    </Grid>
+                </Box>  
+            
         <Divider />
         <List>
-        <ListItem key="Drafts" disablePadding sx={{ display: 'block',
+        <ListItem key="Dashboard" disablePadding sx={{ display: 'block',
             '&& .Mui-selected, && .Mui-selected:hover': {
               bgcolor: 'red',
               '&, & .MuiListItemIcon-root': {
@@ -923,9 +954,32 @@ function HeadDashboard() {
                     
                   }}
                 >
-                  <DraftsOutlinedIcon style={{ color:"#ffff" }}/>
+                  <DashboardIcon style={{ color:"#ffff" }}/>
                 </ListItemIcon>
-                <ListItemText primary="Drafts" sx={{ opacity: open ? 1 : 0 }} />
+                
+                <ListItemText primary="Dashboard" sx={{ opacity: open ? 1 : 0 }} />
+              </ListItemButton>
+              <ListItemButton
+                sx={{
+                  minHeight: 48,
+                  justifyContent: open ? 'initial' : 'center',
+                  px: 2.5,
+                  
+                }}
+                onClick={()=>{navigate("/storage")}}
+              >
+                <ListItemIcon
+                  sx={{
+                    minWidth: 0,
+                    mr: open ? 3 : 'auto',
+                    justifyContent: 'center',
+                    
+                  }}
+                >
+                  <AutoGraphIcon style={{ color:"#ffff" }}/>
+                </ListItemIcon>
+                
+                <ListItemText primary="Storage" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
             </ListItem>
             <ListItem key="Search" disablePadding sx={{ display: 'block',
@@ -970,7 +1024,7 @@ function HeadDashboard() {
         </List>
         <Divider color="white"/>
         <List>
-        <ListItem key="Dark Mode" disablePadding sx={{ display: 'block',
+        {/* <ListItem key="Dark Mode" disablePadding sx={{ display: 'block',
             '&& .Mui-selected, && .Mui-selected:hover': {
               bgcolor: 'red',
               '&, & .MuiListItemIcon-root': {
@@ -1004,7 +1058,7 @@ function HeadDashboard() {
                 </ListItemIcon>
                 <ListItemText primary="Dark Mode" sx={{ opacity: open ? 1 : 0 }} />
               </ListItemButton>
-            </ListItem>
+            </ListItem> */}
             <ListItem key="Logout" disablePadding sx={{ display: 'block',
             '&& .Mui-selected, && .Mui-selected:hover': {
               bgcolor: 'red',
