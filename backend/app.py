@@ -100,10 +100,13 @@ async def predicted_output(request:Request):
     for i in fileslist:
         #print("count",count)
         ext = str(i['name']).split(".")[-1]
+        
         if ext=="pdf":
             base64string = str(i['data']).split(",")[1]
             bytes_str = base64.b64decode(base64string)
-            images = convert_from_bytes(bytes_str,poppler_path=poppler_path,fmt="png")
+            # images = convert_from_bytes(bytes_str,poppler_path=poppler_path,fmt="png")
+            
+            images = convert_from_bytes(bytes_str,fmt="png")
             for i in range(len(images)):
                 decoded = np.array(images[i].convert('RGB'))
                 image_lists.append(decoded)

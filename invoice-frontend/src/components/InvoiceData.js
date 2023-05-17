@@ -466,24 +466,17 @@ export default function InvoiceData(props) {
                       </div>
                         
                       ) : (
-                        <div class="card"
-    style={{
-         boxShadow: "rgba(100, 100, 111, 0.2) 0px 7px 29px 0px",
-        height: '750px',
-        width:'670px'
-    }}
->
-    <Worker workerUrl={`https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js`}>
-        <Viewer fileUrl={item.image} 
-        plugins={[newPlugin]}
-    />
-      </Worker>
-      {/* <img
-                        src={item.pdf_image}
-                        alt=""
-                        style={{ width: "560px"}}
-                      /> */}
-</div>
+                        <div className="card" id="style-1" style={{maxHeight: 600,
+                          overflowY: "auto",width:560,boxShadow: "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px"}}>
+                          {/* <Button variant="outlined" onClick={cropImageNow}>Extract</Button> */}
+                          
+                          <img
+                            src={item.pdf_image}
+                            alt=""
+                            
+                          />
+                         
+                        </div>
                       )
                     
                     
