@@ -85,6 +85,7 @@ app.include_router(elastic.router)
 app.include_router(stats.router)
 
 # poppler_path = r"D:/invoice-management/poppler-22.04.0/Library/bin"
+# poppler_path = r"D:/projects/ocr-search/poppler-22.04.0/Library\bin"
 
 
 
