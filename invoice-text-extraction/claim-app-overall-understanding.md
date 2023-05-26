@@ -29,3 +29,40 @@ To create a claim app for employees where they can upload invoice images and cla
    * Choose a hosting provider or platform (such as Azure App Service) to deploy both the FastAPI backend and React frontend.
    * We Configured the necessary deployment settings and ensure the backend and frontend are properly connected.
    * We Deployed the application to the chosen hosting environment, making it accessible to employees for claiming expenses.
+
+### Claim App Flow
+
+\
+claim app flow includes the process of an employee raising a claim and the manager's role in accepting or rejecting it:
+
+1. Employee Raises a Claim:
+   * The employee logs into the Claim App using their credentials.
+   * In the app interface, the employee navigates to the "Raise a Claim" section.
+   * The employee fills out the necessary information, such as the expense details, amount, and any additional notes.
+   * The employee uploads the invoice image, which triggers the invoice text extraction process on the backend.
+   * The app displays a confirmation message indicating that the claim has been raised successfully.
+2. Invoice Text Extraction and Category Classification:
+   * The FastAPI backend receives the uploaded invoice image and processes it using the invoice text extraction pipeline.
+   * The image undergoes YOLO object detection to identify the invoice region.
+   * Tesseract OCR extracts text from the invoice image, capturing relevant details such as vendor name, date, and total amount.
+   * The extracted text is passed through an NLP-based classification model to determine the category of the invoice (e.g., travel, accommodation, meals).
+   * The extracted information and the assigned category are stored in the backend database along with the claim details.
+3. Manager Reviews the Claim:
+   * The manager, who also has access to the Claim App, logs in using their credentials.
+   * In the app interface, the manager navigates to the "Claims Review" section.
+   * The manager can view a list of pending claims raised by employees.
+   * For each claim, the manager can review the invoice text, extracted information, and the assigned category.
+   * Based on the information provided, the manager can either accept or reject the claim.
+4.  Accepting or Rejecting a Claim:
+
+    * If the manager decides to accept the claim:
+      * The app updates the claim status to "Accepted" in the backend database.
+      * An approval notification is sent to the employee, informing them that their claim has been approved.
+    *   If the manager decides to reject the claim:
+
+        * The app updates the claim status to "Rejected" in the backend database.
+        * A rejection notification is sent to the employee, providing a reason for the rejection.
+
+
+
+    To Know more about the claim app flow refer the above Claim app flow diagram.
