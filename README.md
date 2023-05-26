@@ -9,4 +9,5 @@
 * Dockerizing
 * Deployment
 * Creating the Claim App
+* Document Search
 * Conclusion

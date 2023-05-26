@@ -10,4 +10,5 @@
   * [Dockerizing the Fast-api Backend](invoice-text-extraction/dockerizing-the-fast-api-backend.md)
   * [Deployment](invoice-text-extraction/deployment.md)
   * [Claim App overall understanding](invoice-text-extraction/claim-app-overall-understanding.md)
+  * [Document Search](invoice-text-extraction/document-search.md)
   * [Conclusion](invoice-text-extraction/conclusion.md)
