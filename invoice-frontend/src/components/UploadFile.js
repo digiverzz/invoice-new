@@ -17,6 +17,8 @@ import InvoiceData from "./InvoiceData";
 import { Link, useNavigate } from "react-router-dom";
 import loader from "../images/loader.gif";
 import FileUpload from "react-material-file-upload";
+import { toast, ToastContainer } from 'react-toastify';
+import "react-toastify/dist/ReactToastify.css";
 
 export default function UploadFileComp() {
   const navigate = useNavigate();
@@ -102,7 +104,24 @@ export default function UploadFileComp() {
             console.log("response", data);
             setResData(data);
             setSpinner(false);
-          });
+          })
+          .catch((error)=> {
+            
+            toast.error("Something Went Wrong. Try again", {
+              position: "bottom-left",
+              autoClose: 2000,
+              hideProgressBar: true,
+              closeOnClick: true,
+              pauseOnHover: true,
+              draggable: true,
+              progress: undefined,
+              theme: "colored",
+              });
+              setFiles([])
+              setSpinner(false)
+              
+              navigate("/uploadfile")
+          })
 
           setfilesBase([...tempfiles])
           console.log(FileName);
@@ -139,6 +158,16 @@ export default function UploadFileComp() {
 
               >
                 <Grid item xs={10}>
+                <ToastContainer
+position="top-right"
+autoClose={2000}
+hideProgressBar
+newestOnTop
+closeOnClick
+rtl={false}
+draggable
+theme="colored"
+/>
                   <FileUpload value={files} onChange={setFiles} sx={{width:500,height:250,backgroundColor:"#edf2f7",
                     borderStyle: "dashed",
                     borderColor: "#cbd5e0",
