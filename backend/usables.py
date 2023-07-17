@@ -27,6 +27,26 @@ def IsValidUser(name):
         return True
     return False
 
+def file_compare(uploadFile,presetFile):
+        result = 0
+        f1=hashlib.sha1()
+
+        f1.update(uploadFile.read())
+
+        for file in presetFile:
+            f2=hashlib.sha1()
+            f2.update(file)
+            result = max(SequenceMatcher(None,f1.hexdigest(),f2.hexdigest()).ratio(),result)
+
+        return result
+
+def pathtobytes(dir_path):
+    res = []
+
+    for i in os.listdir(dir_path)[1:]:
+        byte = open(os.path.join(dir_path,i),"rb")
+        res.append(byte.read())
+    return res
 
 def getIndex(name):
     if not creds.es.indices.exists(index=name):
@@ -59,7 +79,7 @@ def get_image_Text(file_bytes):
     return context
 
 def get_pdf_Text(file_bytes):
-     #images = convert_from_bytes(file_bytes,poppler_path=popplers_path)
+    #images = convert_from_bytes(file_bytes,poppler_path=popplers_path)
     images = convert_from_bytes(file_bytes)
     return "\n".join([pytesseract.image_to_string(img) for img in images])
     

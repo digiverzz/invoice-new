@@ -44,10 +44,11 @@ from text_categorizing import categorize
 import crop_endpoint
 import routes.elastic_search as elastic
 import pytesseract
-
+import creds
 
 
 # pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
+#pytesseract.pytesseract.tesseract_cmd = r'C:/Program Files/Tesseract-OCR/tesseract.exe'
 from fastapi_utils.tasks import repeat_every
 import usables
 
@@ -147,7 +148,8 @@ def predict(file_input,lang_input):
     # image3 = cv2.cvtColor(image3, cv2.COLOR_RGB2BGR)
     # cv2.imwrite("sample.png",image2)
     #print("image2",image2)
-    values, img = start('best.pt', image2)
+    print("model selected: ",creds.modelToLoad)
+    values, img = start(creds.modelToLoad, image2)
     COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
     dw = image2.shape[1]
     dh = image2.shape[0]

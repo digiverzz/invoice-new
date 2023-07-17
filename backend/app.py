@@ -54,6 +54,9 @@ from starlette.middleware.cors import CORSMiddleware
 from pdf2image import convert_from_bytes
 import os
 import routes.stats as stats
+import hashlib
+from difflib import SequenceMatcher
+import creds
 
 print(os.getenv('elastic_url'))
 
@@ -85,28 +88,64 @@ app.include_router(elastic.router)
 app.include_router(stats.router)
 
 # poppler_path = r"D:/invoice-management/poppler-22.04.0/Library/bin"
-# poppler_path = r"D:/projects/ocr-search/poppler-22.04.0/Library\bin"
+#poppler_path = r"D:/projects/ocr-search/poppler-22.04.0/Library\bin"
+#poppler_path= r"C:/Users/paart/Videos/poppler-23.07.0/Library/bin"
 
 
+modelToLoad='best_1000.pt'
+
+testFiles=usables.pathtobytes(creds.testFilePath)
+print("Array length", len(testFiles))
 
 @app.post('/predict')
 async def predicted_output(request:Request):
     
+    
     fileslist = await request.json()
     fileslist = fileslist['data']
-    # print(fileslist)
+    print(fileslist)
     res = []
     count = 0
     image_lists = []
+    #########  To compare the files  #########
+    """ def file_compare(uploadFile,presetFile):
+        f1=hashlib.sha1()
+        f2=hashlib.sha1()
+
+        with open(uploadFile,"rb") as file:
+            chunk=0
+            while chunk != b'':
+                chunk= file.read(1024)
+                f1.update(chunk)
+        
+        with open(presetFile,"rb") as file:
+            chunk=0
+            while chunk != b'':
+                chunk= file.read(1024)
+                f2.update(chunk)
+        
+        return f1.hexdigest(),f2.hexdigest()
+
+    uploadedHex,presetHex=file_compare(fileslist[0],"Sample_files\\Naufar AMS Support Invoice - Jan'23.pdf")
+
+    if((SequenceMatcher(None,uploadedHex,presetHex.ratio()))>=21.0):
+          modelToLoad="best.pt"
+
+    print("selected model:"+modelToLoad) 
+ """
     for i in fileslist:
         #print("count",count)
         ext = str(i['name']).split(".")[-1]
+
         
         if ext=="pdf":
+
+            
             base64string = str(i['data']).split(",")[1]
             bytes_str = base64.b64decode(base64string)
             # images = convert_from_bytes(bytes_str,poppler_path=poppler_path,fmt="png")
-            
+            creds.modelToLoad=usables.file_compare(bytes_str,testFiles)
+
             images = convert_from_bytes(bytes_str,fmt="png")
             for i in range(len(images)):
                 decoded = np.array(images[i].convert('RGB'))

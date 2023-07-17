@@ -21,14 +21,16 @@ client = MongoClient(uri)
 database = client['invoice']
 collection = database['users']
 
+modelToLoad='best_1000.pt'
 
 mail = imaplib.IMAP4_SSL("imap.gmail.com",993)
 
+testFilePath=r"./Sample_files"
 
 mail.login(os.getenv('email'),os.getenv('mail_pass'))
 
-#poppler_path=
-#
+poppler_path="C:\applications\Release-23.07.0-0\poppler-23.07.0\Library\bin"
+
 mail.select('Inbox')
 
 hdfs= PyWebHdfsClient(host=os.getenv('hdfshost'),port=os.getenv('hdfsport'),user_name=os.getenv('hdfsuser'))

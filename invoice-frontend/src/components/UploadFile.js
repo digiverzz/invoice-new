@@ -100,6 +100,7 @@ export default function UploadFileComp() {
             },
           })
           .then((response) => {
+            console.log(response.message)
             let data = response.data.response;
             console.log("response", data);
             setResData(data);
