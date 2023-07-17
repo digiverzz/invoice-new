@@ -59,7 +59,7 @@ def get_image_Text(file_bytes):
     return context
 
 def get_pdf_Text(file_bytes):
-    # images = convert_from_bytes(file_bytes,poppler_path=popplers_path)
+     #images = convert_from_bytes(file_bytes,poppler_path=popplers_path)
     images = convert_from_bytes(file_bytes)
     return "\n".join([pytesseract.image_to_string(img) for img in images])
     

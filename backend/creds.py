@@ -27,8 +27,8 @@ mail = imaplib.IMAP4_SSL("imap.gmail.com",993)
 
 mail.login(os.getenv('email'),os.getenv('mail_pass'))
 
-
-
+#poppler_path=
+#
 mail.select('Inbox')
 
 hdfs= PyWebHdfsClient(host=os.getenv('hdfshost'),port=os.getenv('hdfsport'),user_name=os.getenv('hdfsuser'))

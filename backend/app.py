@@ -31,7 +31,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, f1_score
 from functools import wraps
 import datetime
-from base64 import b64encode,decodestring
+from base64 import b64encode
 # from fastapi.middleware.cors import CORSMiddleware
 from dataclasses import dataclass, field
 from preprocessing_image import deskew,erode,canny,remove_noise,get_grayscale,match_template,dilate,opening,thresholding
@@ -128,3 +128,8 @@ async def predicted_output(request:Request):
             res.append(output)
             count+=1
     return {"response":res}
+
+""" @app.get('/get')
+async def test():
+    print("Hello")
+    return "api ok" """
