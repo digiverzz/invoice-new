@@ -17,6 +17,8 @@ from datetime import datetime
 import json
 import pymongo
 from urllib.request import urlopen
+import hashlib
+from difflib import SequenceMatcher
 #comment down while deploying
 # pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
 
@@ -27,7 +29,7 @@ def IsValidUser(name):
         return True
     return False
 
-def file_compare(uploadFile,presetFile):
+""" def file_compare(uploadFile,presetFile):
         result = 0
         f1=hashlib.sha1()
 
@@ -38,7 +40,26 @@ def file_compare(uploadFile,presetFile):
             f2.update(file)
             result = max(SequenceMatcher(None,f1.hexdigest(),f2.hexdigest()).ratio(),result)
 
-        return result
+        return result """
+
+def file_compare(uploadFile,presetFile):
+        result = 0.0
+        f1=hashlib.sha1()
+
+        f1.update(uploadFile)
+
+        for file in presetFile:
+            f2=hashlib.sha1()
+            f2.update(file)
+            result = max((SequenceMatcher(None,f1.hexdigest(),f2.hexdigest()).ratio())*100,result)
+            
+        if(result>=17.0):
+          print("choosen by function is best.pt")
+          return "best.pt"
+        else:
+          print("choosen by function is best_1000.pt")
+          return "best_1000.pt"
+
 
 def pathtobytes(dir_path):
     res = []
