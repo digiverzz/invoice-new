@@ -42,11 +42,11 @@ function Login() {
       });
 
     useEffect(()=>{
-      if (localStorage.getItem('uid')){
+     if (localStorage.getItem('uid')){
         navigate('/dashboard')
-      }
-
-
+      } 
+      /* localStorage.clear() */
+     
     },[]);
     //   const themeDark = createTheme({
     //     palette: {
@@ -58,14 +58,19 @@ function Login() {
     //       }
     //     }
     //   });
-    
+  /*   const test =async(event)=>{
+      event.preventDefault();
+     const  res = await axios.get("http://127.0.0.1:5000/get");
+      console.log(res)
+    } */
     const handleSubmit = async (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
+      console.log(event.currentTarget)
       console.log({
         uid: data.get("uid"),
         password: data.get("password"),
-      });
+      }); 
       let res = {
         data: {
           message: "Failure",
@@ -102,7 +107,7 @@ function Login() {
         localStorage.setItem("uid", decoded.uid);
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("dept", decoded.dept);
-        
+         
         if (decoded.role == "Practice Lead") {
           navigate("/dashboard");
         }
@@ -198,6 +203,7 @@ theme="colored"
               type="submit"
               fullWidth
               variant="contained"
+    
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In

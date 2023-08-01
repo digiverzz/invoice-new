@@ -100,6 +100,7 @@ export default function UploadFileComp() {
             },
           })
           .then((response) => {
+            console.log(response.message)
             let data = response.data.response;
             console.log("response", data);
             setResData(data);
@@ -183,7 +184,7 @@ theme="colored"
                     onClick={() => {
                       uploadFiles();
                     }}
-                    sx={ { borderRadius: 28,backgroundColor:"#000000" } }
+                    sx={ { borderRadius: 28,backgroundColor:"#ff0000" } }
                     disabled={files.length<=0}
                   >
                     Extract

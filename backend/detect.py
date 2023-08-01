@@ -164,6 +164,7 @@ def detect(opt,save_img=False):
 
 
 
+
 def start(weights,source,img_size=640,conf_thres=0.75,iou_thres=0.75):
 
     opt={"weights":weights,"source":source,"img_size":img_size,

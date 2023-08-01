@@ -17,6 +17,8 @@ from datetime import datetime
 import json
 import pymongo
 from urllib.request import urlopen
+import hashlib
+from difflib import SequenceMatcher
 #comment down while deploying
 # pytesseract.pytesseract.tesseract_cmd = r'D:\Tesseract-OCR\tesseract.exe'
 
@@ -27,6 +29,45 @@ def IsValidUser(name):
         return True
     return False
 
+""" def file_compare(uploadFile,presetFile):
+        result = 0
+        f1=hashlib.sha1()
+
+        f1.update(uploadFile.read())
+
+        for file in presetFile:
+            f2=hashlib.sha1()
+            f2.update(file)
+            result = max(SequenceMatcher(None,f1.hexdigest(),f2.hexdigest()).ratio(),result)
+
+        return result """
+
+def file_compare(uploadFile,presetFile):
+        result = 0.0
+        f1=hashlib.sha1()
+
+        f1.update(uploadFile)
+
+        for file in presetFile:
+            f2=hashlib.sha1()
+            f2.update(file)
+            result = max((SequenceMatcher(None,f1.hexdigest(),f2.hexdigest()).ratio())*100,result)
+            
+        if(result>=20.0):
+          print("choosen by function is bestnafaur.pt")
+          return "bestnafaur.pt"
+        else:
+          print("choosen by function is best_1000.pt")
+          return "best_1000.pt"
+
+
+def pathtobytes(dir_path):
+    res = []
+
+    for i in os.listdir(dir_path)[1:]:
+        byte = open(os.path.join(dir_path,i),"rb")
+        res.append(byte.read())
+    return res
 
 def getIndex(name):
     if not creds.es.indices.exists(index=name):
@@ -59,7 +100,7 @@ def get_image_Text(file_bytes):
     return context
 
 def get_pdf_Text(file_bytes):
-    # images = convert_from_bytes(file_bytes,poppler_path=popplers_path)
+    #images = convert_from_bytes(file_bytes,poppler_path=popplers_path)
     images = convert_from_bytes(file_bytes)
     return "\n".join([pytesseract.image_to_string(img) for img in images])
     

@@ -31,7 +31,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, f1_score
 from functools import wraps
 import datetime
-from base64 import b64encode,decodestring
+from base64 import b64encode
 # from fastapi.middleware.cors import CORSMiddleware
 from dataclasses import dataclass, field
 from preprocessing_image import deskew,erode,canny,remove_noise,get_grayscale,match_template,dilate,opening,thresholding
@@ -54,6 +54,9 @@ from starlette.middleware.cors import CORSMiddleware
 from pdf2image import convert_from_bytes
 import os
 import routes.stats as stats
+import hashlib
+from difflib import SequenceMatcher
+import creds
 
 print(os.getenv('elastic_url'))
 
@@ -85,28 +88,43 @@ app.include_router(elastic.router)
 app.include_router(stats.router)
 
 # poppler_path = r"D:/invoice-management/poppler-22.04.0/Library/bin"
-# poppler_path = r"D:/projects/ocr-search/poppler-22.04.0/Library\bin"
+#poppler_path = r"D:/projects/ocr-search/poppler-22.04.0/Library\bin"
+#poppler_path= r"C:/Users/paart/Videos/poppler-23.07.0/Library/bin"
 
 
+#converting the sample files into byte codes
+testFiles=usables.pathtobytes(creds.testFilePath)
+print("Array length", len(testFiles))
 
+
+#/predict api
 @app.post('/predict')
 async def predicted_output(request:Request):
     
+    
     fileslist = await request.json()
     fileslist = fileslist['data']
-    # print(fileslist)
+    #print(fileslist)
     res = []
     count = 0
     image_lists = []
+    
+ 
     for i in fileslist:
         #print("count",count)
         ext = str(i['name']).split(".")[-1]
+
         
         if ext=="pdf":
+
+            
             base64string = str(i['data']).split(",")[1]
             bytes_str = base64.b64decode(base64string)
             # images = convert_from_bytes(bytes_str,poppler_path=poppler_path,fmt="png")
             
+            #####deciding which model to render###### 
+            creds.modelToLoad=usables.file_compare(bytes_str,testFiles)
+            print("selected model: ", creds.modelToLoad)
             images = convert_from_bytes(bytes_str,fmt="png")
             for i in range(len(images)):
                 decoded = np.array(images[i].convert('RGB'))
@@ -126,5 +144,11 @@ async def predicted_output(request:Request):
         else:  
             output = predict_data.predict(str(i['data']),"english")
             res.append(output)
-            count+=1
+            count+=1  
+            
     return {"response":res}
+
+@app.get('/get')
+async def test():
+    print("Hello")
+    return "api ok" 
