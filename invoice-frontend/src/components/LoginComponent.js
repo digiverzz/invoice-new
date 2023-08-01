@@ -42,10 +42,10 @@ function Login() {
       });
 
     useEffect(()=>{
-     /*  if (localStorage.getItem('uid')){
+     if (localStorage.getItem('uid')){
         navigate('/dashboard')
-      } */
-      localStorage.clear()
+      } 
+      /* localStorage.clear() */
      
     },[]);
     //   const themeDark = createTheme({

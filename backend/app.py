@@ -121,6 +121,7 @@ async def predicted_output(request:Request):
             base64string = str(i['data']).split(",")[1]
             bytes_str = base64.b64decode(base64string)
             # images = convert_from_bytes(bytes_str,poppler_path=poppler_path,fmt="png")
+            
             #####deciding which model to render###### 
             creds.modelToLoad=usables.file_compare(bytes_str,testFiles)
             print("selected model: ", creds.modelToLoad)
@@ -143,10 +144,11 @@ async def predicted_output(request:Request):
         else:  
             output = predict_data.predict(str(i['data']),"english")
             res.append(output)
-            count+=1
+            count+=1  
+            
     return {"response":res}
 
-""" @app.get('/get')
+@app.get('/get')
 async def test():
     print("Hello")
-    return "api ok" """
+    return "api ok" 

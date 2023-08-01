@@ -53,7 +53,7 @@ def file_compare(uploadFile,presetFile):
             f2.update(file)
             result = max((SequenceMatcher(None,f1.hexdigest(),f2.hexdigest()).ratio())*100,result)
             
-        if(result>=17.0):
+        if(result>=20.0):
           print("choosen by function is bestnafaur.pt")
           return "bestnafaur.pt"
         else:
