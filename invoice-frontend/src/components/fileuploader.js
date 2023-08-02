@@ -57,12 +57,12 @@ import InvoiceForm from "./invoiceForm.js";
     ////////////Upload files to the state array "uploadedFiles"///////////
     uploadFiles=(event)=>{
            const files = event.target.files
-           console.log(files)
+         /*   console.log(files) */
            const newFiles = Array.from(files);
-           console.log(newFiles)
+          /*  console.log(newFiles) */
            this.setState((prevState) => ({ uploadedFiles: [...prevState.uploadedFiles, ...newFiles] }));
           
-           console.log(this.state.uploadedFiles)
+          /*  console.log(this.state.uploadedFiles) */
     }
       
 
@@ -70,7 +70,7 @@ import InvoiceForm from "./invoiceForm.js";
     deleteFiles=(index)=>{
         const updatedFiles=[...this.state.uploadedFiles]
         updatedFiles.splice(index,1)
-        console.log("locally updated"+updatedFiles)
+     /*    console.log("locally updated"+updatedFiles) */
         this.setState({
             uploadedFiles:updatedFiles
         }) 
@@ -131,9 +131,9 @@ import InvoiceForm from "./invoiceForm.js";
                   },
                 })
                 .then((response) => {
-                  console.log(response.message)
+                  /* console.log(response.message) */
                   let data = response.data.response;
-                  console.log("response", data);
+                  /* console.log("response", data); */
                   
                   this.setState({
                     resData:data

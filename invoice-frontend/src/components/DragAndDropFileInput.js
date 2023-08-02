@@ -37,7 +37,7 @@ function DragAndDropFileInput({ onFileSelected }) {
       return;
     }
     const file = Array.from(files);
-    console.log(file);
+    /* console.log(file); */
     if(onFileSelected)
       onFileSelected(file);
 

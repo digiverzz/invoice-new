@@ -94,7 +94,7 @@ app.include_router(stats.router)
 
 #converting the sample files into byte codes
 testFiles=usables.pathtobytes(creds.testFilePath)
-print("Array length", len(testFiles))
+""" print("Array length", len(testFiles)) """
 
 
 #/predict api
@@ -124,7 +124,7 @@ async def predicted_output(request:Request):
             
             #####deciding which model to render###### 
             creds.modelToLoad=usables.file_compare(bytes_str,testFiles)
-            print("selected model: ", creds.modelToLoad)
+            """ print("selected model: ", creds.modelToLoad) """
             images = convert_from_bytes(bytes_str,fmt="png")
             for i in range(len(images)):
                 decoded = np.array(images[i].convert('RGB'))
@@ -148,7 +148,7 @@ async def predicted_output(request:Request):
             
     return {"response":res}
 
-@app.get('/get')
+""" @app.get('/get')
 async def test():
     print("Hello")
-    return "api ok" 
+    return "api ok"  """

@@ -50,10 +50,10 @@ export default class FileUploadPage extends React.Component
     uploadFiles=(file)=>{
 
         const newFiles = file;
-        console.log(newFiles);        
+       /*  console.log(newFiles);     */    
         this.setState((prevState) => ({ uploadedFiles: [...prevState.uploadedFiles, ...newFiles] }));
        
-        console.log(this.state.uploadedFiles)
+       /*  console.log(this.state.uploadedFiles) */
      }
     // File upload icon selection
     getFileIcon = (fileType) => {
@@ -78,7 +78,7 @@ export default class FileUploadPage extends React.Component
      deleteFiles=(index)=>{
         const updatedFiles=[...this.state.uploadedFiles]
         updatedFiles.splice(index,1)
-        console.log("locally updated"+updatedFiles)
+       /*  console.log("locally updated"+updatedFiles) */
         this.setState({
             uploadedFiles:updatedFiles
         }) 
@@ -134,10 +134,10 @@ export default class FileUploadPage extends React.Component
                       },
                     })
                     .then((response) => {
-                      console.log(response.message)
+                     /*  console.log(response.message) */
                       let data = response.data.response;
-                      console.log("response", data);
-                      
+                     /*  console.log("response", data);
+                       */
                       this.setState({
                         resData:data
                       })

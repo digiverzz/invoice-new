@@ -47,7 +47,7 @@ export default function ImageCropper(props) {
                 },
               })
               .then((response) => {
-                console.log("res",response['data'])
+               /*  console.log("res",response['data']) */
                 // setExtractedtext(response['data'])
                 onImageCropped(response['data']);
               });

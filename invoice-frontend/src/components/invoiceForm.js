@@ -70,8 +70,8 @@ export default function InvoiceForm(props){
   const [tableData, setTableData] = useState(()=>props.responsedata);
   const [image, setImage] = useState(() => props.images);
     /* Defining states, const and variables */
-   console.log("props",props.responsedata)
-   console.log("props",props.images)
+  /*  console.log("props",props.responsedata)
+   console.log("props",props.images) */
    let i=0;
    /* let comp_name,from_addr,to_addr,inv_no,ph_no,dt,des=[] */
    const [companyName,setcompanyName]=useState([])
@@ -257,11 +257,11 @@ export default function InvoiceForm(props){
   })
   function incIndex(){
     setIndex(index+1)
-    console.log("incremented: ",index)
+   /*  console.log("incremented: ",index) */
   }
   function decIndex(){
     setIndex(index-1)
-    console.log("Decremented: ",index)
+    /* console.log("Decremented: ",index) */
   }
    //console.log(tableData[0].company_name)
    useEffect(()=>{
