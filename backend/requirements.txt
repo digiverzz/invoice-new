@@ -33,6 +33,7 @@ pytesseract
 textblob
 scikit_learn
 flask-session
+ultralytics
 #pytz
 requests
 pymongo

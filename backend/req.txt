@@ -22,3 +22,4 @@ python-pptx
 pdf2image
 python-dotenv
 pywebhdfs
+ultralytics

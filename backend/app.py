@@ -20,7 +20,7 @@ import platform  # from native modules
 from os.path import join, dirname, realpath
 import json
 from detect import start
-import io  # from native modules
+import io  # from native modules 
 import platform  # from native modules
 import nltk
 from pathlib import Path
@@ -45,8 +45,9 @@ from text_categorizing import categorize
 import crop_endpoint
 import routes.elastic_search as elastic
 import pytesseract
-from predict_data import predict
-import predict_data
+from predict_data_v8 import predict
+import predict_data_v8
+import predict_data 
 from fastapi_utils.tasks import repeat_every
 import usables
 from usables import predict_from_mail
@@ -136,13 +137,13 @@ async def predicted_output(request:Request):
             im_b64 = base64.b64encode(im_bytes)
             dataurl = f'data:image/jpg;base64,{str(im_b64)[2:len(im_b64)-2]}'
             # print(len(dataurl))
-            output = predict_data.predict(dataurl,"english")
+            output = predict_data_v8.predict(dataurl,"english")
             res.append(output)
             count+=1
 
           
         else:  
-            output = predict_data.predict(str(i['data']),"english")
+            output = predict_data_v8.predict(str(i['data']),"english")
             res.append(output)
             count+=1  
             
