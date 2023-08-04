@@ -148,7 +148,7 @@ def predict(file_input,lang_input):
     # image3 = cv2.cvtColor(image3, cv2.COLOR_RGB2BGR)
     # cv2.imwrite("sample.png",image2)
     #print("image2",image2)
-"""     print("model selected: ",creds.modelToLoad) """
+    #print("model selected: ",creds.modelToLoad)
     values, img = start("best_1000.pt", image2)
     COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
     dw = image2.shape[1]
