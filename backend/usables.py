@@ -233,7 +233,7 @@ async def elastic_upload(username:str,status:str,filename:list,Size:list,dataurl
 def predict_from_mail():
     data = fetchMail()
     response = []
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
+    uri = creds.uri
     client = pymongo.MongoClient(uri)
     database = client['invoice']
     #print("data",len(data))
