@@ -4,7 +4,9 @@ span.Resizer.vertical{
   background: black;
 }
 
-
+.main-div{
+  display: flex;
+}
 
 .large-screen{
   display:block
@@ -32,6 +34,12 @@ span.Resizer.vertical{
   padding-top: 20px;
   overflow: 'auto'
 }
+.img-show{
+  background-color:rgba(162, 155, 155, 0.239);
+  height:1000px;
+  padding-top: 20px;
+  overflow: 'auto'
+}
 
 .results{
   padding-top: 20px;
@@ -46,7 +54,7 @@ span.Resizer.vertical{
   top: 200px;
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1339px) {
   .large-screen{
     display:none
   }
@@ -72,8 +80,10 @@ span.Resizer.vertical{
 }
 
 
-
-
+.blur {
+  backdrop-filter: blur(8px); /* Add the blur effect */
+  pointer-events: none; /* This allows click events to pass through the blurred container */
+}
 
 
 
@@ -238,4 +248,9 @@ span.Resizer.vertical{
   .table-container .MuiDataGrid-root {
     font-size: 12px; /* Decrease font size for better visibility on small screens */
   }
+}
+
+.large-screen {
+  width: 100%; /* Full width of the parent container */
+  max-width: 100%; 
 }

@@ -21,14 +21,13 @@ function App() {
           <Route path="/login" element={<Login/>}></Route>
           <Route path="/dashboard" element={<EmpDashboard />}></Route>
           <Route path="/createclaim" element={<CreateClaimRecord />}></Route>
-          <Route path='/uploadfile' element={<FileUploadPage />}></Route>
+          <Route path="/uploadfile" element={<FileUploadPage />}></Route>
           <Route path='/filemanager' element={<FileManager />}></Route>
           <Route path='/approve' element={<HeadDashboard />}/>
           {/* <Route path="/" element={<Navigate replace to="/login" />} /> */}
           <Route path="/" element={<Login/>} />
           <Route path="/test" element={<Testcrop />} />
           <Route path="/storage" element={<StorageDashboard />} />
-          <Route path="/oi" element={<InvoiceData />} />
         </Routes>
     </div>
   );

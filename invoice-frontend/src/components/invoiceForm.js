@@ -59,7 +59,7 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import CircularProgress from '@mui/material/CircularProgress';
-
+import LinearProgress from '@mui/material/LinearProgress';
 
 
 export default function InvoiceForm(props){
@@ -96,7 +96,7 @@ export default function InvoiceForm(props){
    const [rows,setRows]=useState([total,tax,discount,des])
    const [height, setHeight] = useState(150);
    const [openClosed, setOpenClosed]= useState(true)
-   
+   const [openBack,setOpenBack]=useState(false)
 
 
 
@@ -175,11 +175,13 @@ export default function InvoiceForm(props){
 
     const handleNo= async () =>{
       setOpen(false)
+      setOpenBack(false)
     }
 
    
     const handleYes = async () =>{
-    setOpen(false)
+     setLoading(true);
+     setOpen(false)
     for (var i = 0; i < props.responsedata.length; i++) {
       const formData1 = new FormData();
 
@@ -263,6 +265,12 @@ export default function InvoiceForm(props){
     setIndex(index-1)
     /* console.log("Decremented: ",index) */
   }
+
+
+
+  function backButton(){
+   setOpenBack(true)
+  }
    //console.log(tableData[0].company_name)
    useEffect(()=>{
     if (tableData && tableData.length > 0) {
@@ -281,9 +289,21 @@ export default function InvoiceForm(props){
    
     return(
         /************ main div **************/
+        <Box sx={{width:"100%"}}>
         <div className="main-div"> 
-                  
-            <div className="large-screen">
+          
+           
+          <div className="large-screen">
+          <div className="loader">
+          {loading===true? (<Box sx={{ width: '100%' }}>
+
+          <LinearProgress />
+                  </Box>):(<>
+                    
+
+                  </>)
+                  }
+          </div>
               <SplitPane split="vertical" minSize={700} maxSize={900} defaultSize={900} >
                 <Pane className="form-img">
                   <Grid container>
@@ -291,16 +311,18 @@ export default function InvoiceForm(props){
                     <Grid item xs={1} sm={1} >
                       <div className="sidenav">
                         {/* back button */}
-                        <IconButton 
+                        
+                        <IconButton onClick={backButton}
                            size="large"
                            edge="start"
                            color="primary"
                            variant="contained"
                            aria-label="menu"
-                            
+                           
                             sx={{ ml: 4, bgcolor:'whitesmoke', mt:4}}>
                         <ArrowBackTwoToneIcon />
                         </IconButton>
+                    
                       </div>
                     </Grid>
 
@@ -325,7 +347,7 @@ export default function InvoiceForm(props){
                               }}>
                         <Paper elevation={3} >
                         {/* <p>{index}</p>  */}
-
+                           {}
                            <img
                            key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
                            src={img[index]}
@@ -546,6 +568,23 @@ export default function InvoiceForm(props){
                                YES
                           </Button>
                         </DialogActions>
+                        </Dialog> 
+
+                        <Dialog
+                          open={openBack}
+                          onClose={handleClose}
+                          aria-labelledby="alert-dialog-title"
+                          aria-describedby="alert-dialog-description"
+                        >
+                        <DialogTitle id="alert-dialog-title">
+                            {"Are you sure that you want to go back?"}
+                        </DialogTitle>
+                        <DialogActions>
+                           <Button onClick={handleNo}>NO</Button>
+                           <Button onClick={()=> props.updateParentState()} autoFocus>
+                               YES
+                          </Button>
+                        </DialogActions>
                         </Dialog>  
                         </div>
                  
@@ -565,18 +604,293 @@ export default function InvoiceForm(props){
 
             </div>
 
+
             {/* Rendered if the screen is small */} 
             <div className="small-screen">
               <Grid container spacing={2}>
-                <Grid item xs={3} sm={2}> 
                 
-                  nav
-                </Grid>
-                <Grid item xs={9} sm={10}>
-                  form
+                <Grid item xs={12} sm={12}>
+                <Grid item container={true}>
+                    {/* side images from the invoice */}
+                   
+
+
+
+                    {/* main image of invoice */}
+                    <Grid item xs={12} sm={12} >
+                      <div className="img-show"  key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}>
+                      <IconButton onClick={backButton}
+                           size="large"
+                           edge="start"
+                           color="primary"
+                           variant="contained"
+                           aria-label="menu"
+                           
+                            sx={{ ml: 4, bgcolor:'whitesmoke', mt:4}}>
+                        <ArrowBackTwoToneIcon />
+                        </IconButton>
+                    
+                      <Box
+                        
+                         sx={{
+          
+                            display: 'flex',
+                            flexWrap: 'wrap',
+                            justifyContent:"center",
+                          '& > :not(style)': {
+                                  m: 1,
+                                  width: "595px",
+                                  height: "742px",
+                                },
+                              }}>
+                        <Paper elevation={3} >
+                        {/* <p>{index}</p>  */}
+
+                           <img
+                           key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
+                           src={img[index]}
+                           alt=""
+                           style={{ width: '100%', height: '100%' }} />
+                           
+                        </Paper>
+                        <div className="fileNav-btn">
+                     
+                        <Button sx={{ marginRight: '5px' }}
+                        onClick={decIndex}  disabled={index==0?true:false}>
+                        <IconButton 
+                            size="small"
+                            sx={{color:'Black'}}>
+                        <KeyboardArrowLeftRoundedIcon /></IconButton>Previous file
+                        </Button>
+                        
+                        
+                        <Button sx={{ marginLeft: '290px' }} disabled={index===tableData.length-1 ? true: false}
+                            onClick={incIndex}
+                        >Next file
+                          <IconButton 
+                            size="small"
+                            sx={{color:'Black'}}>
+                        <KeyboardArrowRightRoundedIcon /></IconButton>
+                        </Button>
+                      </div>
+                     
+                      </Box>
+                      
+                      </div>
+                     
+
+                      
+                    </Grid>
+                  </Grid>
                 </Grid>
                 <Grid item xs={12} sm={12}>
-                  form 
+                <Grid item xs={12} sm={12}>
+                     <div className="results">
+                      <div className="fileName">
+                        <h3>{image[index].name}</h3>
+                      </div>
+                      <hr></hr> 
+                      {/* General info */}
+                     
+                     
+
+                      <Accordion defaultExpanded>
+                        <AccordionSummary onClick={handleExpand}
+                          expandIcon={<ExpandMoreIcon />}
+                          aria-controls="panel1a-content"
+                          id="panel1a-header">
+                              <Stack direction="row" spacing={1}>
+                                  <div className="heading">
+                                   <h5>General info: </h5></div>
+                                    <div className="tag">
+                                  <Stack direction="row" spacing={1}>
+                                    <Chip
+                                      avatar={<Avatar alt="catagory" src={tag}  />}
+                                      label={category[index]}
+                                      variant="outlined"/>
+                                  </Stack>
+                      
+                      </div>
+                      </Stack> 
+                        </AccordionSummary>
+                        <AccordionDetails>
+                        {display==true ?
+                     (
+                      <>
+                          <Grid container={'true'} item sx={12}>
+                      <Grid item={'true'} md={4}>
+                      <TextField 
+                      defaultValue={invoiceNo[index]}
+                      key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
+                      id="invoice_no" 
+                      label=" Invoice number"
+                      variant="outlined"
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      color="primary" focused/>
+                      </Grid>
+
+                      <Grid item={'true'} md={4}>
+                      <TextField 
+                      defaultValue={phoneNo[index]}   
+                      key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}                   
+                      id="ph_no" 
+                      label="Phone number" 
+                      variant="outlined"
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      color="primary" focused/>
+                      </Grid>
+
+                      <Grid item={'true'}  md={4}>
+                      
+                      <div className="date">
+                      <LocalizationProvider dateAdapter={AdapterDayjs} margin="dense" color="primary">
+                        <DatePicker 
+                          label="Date"
+                          value={date}
+                           autoFocus
+                          variant="outlined"
+                          margin="dense"
+                          id="date"
+                          onChange={(newValue) => setDate(newValue)}/>
+                      </LocalizationProvider></div>
+                      </Grid>
+                      </Grid> 
+                      <TextField 
+                      defaultValue={companyName[i]}
+                      key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
+                      id="CompanyName" 
+                      label="Company name" 
+                      variant="outlined"
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused/>
+
+                      <TextField 
+                      defaultValue={fromAddress[i]}
+                      key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
+                      id="fromAddress" 
+                      label="From address" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused/>
+
+                      <TextField 
+                      defaultValue={toAddress[index]}
+                      key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
+                      id="toAddress" 
+                      label="To address" 
+                      variant="outlined"
+                      multiline
+                     
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused/> 
+
+                
+                  
+                        
+                        {/* Line items */}
+                     
+                      </>
+                     ):(
+
+                      <div>
+
+                      </div>
+                     )}
+                      </AccordionDetails>
+                      </Accordion>
+                      
+                      {/* <ul class="tags blue">
+                          <li><a href="#">Infrastructure <span>31</span></a></li> 
+                      </ul> */}
+                     
+                     
+                   
+                        <div className="heading">
+                          <h5>Line items:</h5>
+                        </div>
+                      
+                         
+                         
+                       
+                 
+                    
+                          <div style={{ height: height, width: 'auto' ,color:"primary"}} className="table-container">
+                            <DataGrid rows={row} columns={columns}/>
+                          </div>
+                        <Button variant="contained" color="primary" sx={{ ml:'40%', marginTop:3}} onClick={handleClickOpen}>
+                            Submit
+                          <IconButton 
+                           size="small"
+                           edge="start"
+                           color="primary"
+                           variant="contained"
+                           aria-label="menu"
+                            
+                            sx={{ ml:2, bgcolor:'whitesmoke'}}>
+                        <PublishRoundedIcon />
+                        </IconButton>
+                        </Button>
+                       
+                        <div className="submit-btn">
+                        <Dialog
+                          open={open}
+                          onClose={handleClose}
+                          aria-labelledby="alert-dialog-title"
+                          aria-describedby="alert-dialog-description"
+                        >
+                        <DialogTitle id="alert-dialog-title">
+                            {"Are you sure that you want to submit the invoice?"}
+                        </DialogTitle>
+                        <DialogActions>
+                           <Button onClick={handleNo}>NO</Button>
+                           <Button onClick={handleYes} autoFocus>
+                               YES
+                          </Button>
+                        </DialogActions>
+                        </Dialog> 
+
+
+                          <Dialog
+                          open={openBack}
+                          onClose={handleClose}
+                          aria-labelledby="alert-dialog-title"
+                          aria-describedby="alert-dialog-description"
+                        >
+                        <DialogTitle id="alert-dialog-title">
+                            {"Are you sure that you want to go back?"}
+                        </DialogTitle>
+                        <DialogActions>
+                           <Button onClick={handleNo}>NO</Button>
+                           <Button onClick={()=> props.updateParentState()} autoFocus>
+                               YES
+                          </Button>
+                        </DialogActions>
+                        </Dialog> 
+
+
+                        
+                        </div>
+                 
+
+                     
+                     
+                  </div>
+                </Grid>
                 </Grid>
                 </Grid>
 
@@ -584,5 +898,5 @@ export default function InvoiceForm(props){
 
         
         </div>
-    );
+        </Box>);
 }

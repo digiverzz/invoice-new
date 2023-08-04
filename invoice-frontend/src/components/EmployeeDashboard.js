@@ -224,7 +224,7 @@ export default function MiniDrawer() {
     setOpen(false);
   };
   const handlesearch = () =>{
-   /*  console.log("hi at handle search") */
+    console.log("hi at handle search")
     navigate("/filemanager")
   }
   const Item = styled(Paper)(({ theme }) => ({
@@ -313,17 +313,17 @@ export default function MiniDrawer() {
       formData2.append("token", localStorage.getItem("token"));
       try {
         res = await axios.post(URI + "requests", formData1);
-        /* console.log("requests",res['data']); */
+        console.log("requests",res['data']);
         
         setTotal(res['data'].length)
         setWholeData(res['data'])
 
-     /*    console.log("table data",wholeData) */
+        console.log("table data",wholeData)
         const tempTable = [];
-       /*  console.log("pentot",pentot) */
+        console.log("pentot",pentot)
         for(let i=0;i<res['data'].length;i++){
-         /*  console.log("res",res)
-          console.log(JSON.parse(res['data'][i].data).category) */
+          console.log("res",res)
+          console.log(JSON.parse(res['data'][i].data).category)
           const cat = JSON.parse(res['data'][i].data).category
           const parseddata = JSON.parse(res['data'][i].data)
           tempTable.push({"Date":getCurrentDate(),"Category":cat,"Amount":Number(parseddata.total).toFixed(2),"currency":parseddata.currency,"status":res['data'][i].status[0].toUpperCase() + res['data'][i].status.slice(1)})
@@ -359,7 +359,7 @@ export default function MiniDrawer() {
           }
         }
         setTabData(tempTable)
-      /*   console.log("acctot",pentot) */
+        console.log("acctot",pentot)
         setautomobileCount(Automotive)
         setappliancesCount(Appliances)
         setbeautyCount(beauty)
@@ -368,14 +368,14 @@ export default function MiniDrawer() {
         setfoodCount(food)
         setelectronicsCount(Electronics)
         setaccTotal(acctot)
-       /*  console.log("acctot",acctot) */
+        console.log("acctot",acctot)
         setrejTotal(rejtot)
         setpenTotal(pentot)
-       /*  console.log("tabData",tabData)
+        console.log("tabData",tabData)
         console.log(acctot,rejtot,pentot)
-        console.log([automobileCount,electronicsCount,appliancesCount,industryCount,foodCount,healthcareCount,beautyCount]) */
+        console.log([automobileCount,electronicsCount,appliancesCount,industryCount,foodCount,healthcareCount,beautyCount])
       } catch (error) {
-       /*  console.log(error); */
+        console.log(error);
       }
       
     }
