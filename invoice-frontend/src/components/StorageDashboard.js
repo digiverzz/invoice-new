@@ -22,13 +22,13 @@ function StorageDashboard() {
         })
         .then(function (response) {
                 var ChartData = response.data;
-                console.log(ChartData);
+               /*  console.log(ChartData); */
                 setPieChartValue(response.data);
-                console.log(response.data);
+               /*  console.log(response.data); */
                 
               })
-              .catch(function (response) {
-                console.log(response);
+              .catch(function (error) {
+                console.log(error);
               });
             }
   useEffect(() => {
@@ -99,12 +99,12 @@ function StorageDashboard() {
       .then(function (response) {
 
        setRecentActivity(response.data);
-        console.log(response.data);
+      /*   console.log(response.data); */
       
         
       })
       .catch(function (response) {
-        console.log(response);
+         console.log(response); 
       });
     }
 

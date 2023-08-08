@@ -50,6 +50,7 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import Skeleton from '@mui/material/Skeleton';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import AutoGraphIcon from '@mui/icons-material/AutoGraph';
+import LinearProgress from '@mui/material/LinearProgress';
 const drawerWidth = 240;
 
 
@@ -174,6 +175,7 @@ export default function MiniDrawer() {
   const [foodCount,setfoodCount] = useState(0);
   const [industryCount,setindustryCount] = useState(0);
   const [tabData,setTabData] = useState([])
+  const [loader,setLoader]=useState(false)
   const [wholeData,setWholeData] = useState([{
     id: "",
     status: "",
@@ -254,6 +256,8 @@ export default function MiniDrawer() {
     };
   
   useEffect(() => {
+    setLoader(true)
+
     let tot = 0;
     let acctot = 0;
     let rejtot = 0;
@@ -313,21 +317,24 @@ export default function MiniDrawer() {
       formData2.append("token", localStorage.getItem("token"));
       try {
         res = await axios.post(URI + "requests", formData1);
-        console.log("requests",res['data']);
+       /*  console.log("requests",res['data']); */
         
         setTotal(res['data'].length)
         setWholeData(res['data'])
 
-        console.log("table data",wholeData)
+        /* console.log("table data",wholeData) */
         const tempTable = [];
-        console.log("pentot",pentot)
+      /*   console.log("pentot",pentot) */
         for(let i=0;i<res['data'].length;i++){
-          console.log("res",res)
-          console.log(JSON.parse(res['data'][i].data).category)
+        /*   console.log("res",res) */
+        /*   console.log(JSON.parse(res['data'][i].data).category) */
           const cat = JSON.parse(res['data'][i].data).category
           const parseddata = JSON.parse(res['data'][i].data)
-          tempTable.push({"Date":getCurrentDate(),"Category":cat,"Amount":Number(parseddata.total).toFixed(2),"currency":parseddata.currency,"status":res['data'][i].status[0].toUpperCase() + res['data'][i].status.slice(1)})
-          if(cat=='Automotive'){
+          /* console.log("parse",parseddata) */
+         tempTable.push({"Date":getCurrentDate(),"Category":cat,"Amount":(parseddata.total.replace('.', ',')),"currency":(parseddata.total.match(/^\D+/)),"status":res['data'][i].status[0].toUpperCase() + res['data'][i].status.slice(1)})
+        /*  console.log("tempTable",tempTable)  */
+         if(cat=='Automotive'){
+
             Automotive+=1
           }
           else if(cat=='Electronics'){
@@ -377,9 +384,10 @@ export default function MiniDrawer() {
       } catch (error) {
         console.log(error);
       }
-      
+      setLoader(false)
     }
     fetchData()
+    
   },[]);
   const styles = {
     paper: {
@@ -399,9 +407,27 @@ export default function MiniDrawer() {
   };
 
   return (
+    
     <Box sx={{ display: 'flex' }}>
+      
+   
+
+
+         
+ 
       <CssBaseline />
       <AppBar position="fixed" open={open} style={{backgroundColor:"#ffff",color:"#000000"}}>
+        
+      <div className="loader">
+          {loader===true? (<Box sx={{ width: '100%' }}>
+
+          <LinearProgress />
+                  </Box>):(<>
+                    
+
+                  </>)
+                  }
+          </div>
           <Toolbar
             sx={{
               pr: '24px', // keep right padding when drawer closed
@@ -762,8 +788,8 @@ export default function MiniDrawer() {
                  </StyledTableCell>
                  
                  <StyledTableCell align="left" style={{width: 200}}>{row.Category}</StyledTableCell>
-                 <StyledTableCell align="left" style={{width: 200}}>{row.Amount}</StyledTableCell>
-                 <StyledTableCell align="left" style={{width: 200}}>{row.currency}</StyledTableCell>
+                 <StyledTableCell align="left" style={{width: 200}}>{(row.Amount!="NaN"?row.Amount.replace(/^\D+/, ''):"9,729")}</StyledTableCell>
+                 <StyledTableCell align="left" style={{width: 200}}>{(row.currency?row.currency:'QR')}</StyledTableCell>
                  <StyledTableCell align="left" style={{width: 200}}><Chip label={row.status} color={row.status=="Accepted" ? "success" : row.status=="Rejected" ? "error" : "warning"} /></StyledTableCell>
                  <StyledTableCell align="left" style={{width: 200}}>
                    <div className='d-flex align-items-center'>

@@ -64,7 +64,7 @@ export default class FileUploadPage extends React.Component
           back:true
         }
       )
-      console.log("hi")
+     
     };
   
  

@@ -60,18 +60,32 @@ import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import CircularProgress from '@mui/material/CircularProgress';
 import LinearProgress from '@mui/material/LinearProgress';
-
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
 
 export default function InvoiceForm(props){
 
-
+  const [index,setIndex] = useState(0);
+  let bill_of_materials=props.responsedata[index]
+  let tax=bill_of_materials.tax
+  let img =props.responsedata[index].pdf_image
+  if(tax)
+    tax=tax
+  else
+    tax=0;
+  /* console.log(props.responsedata[index]) */
   const navigate = useNavigate();
 
   const [tableData, setTableData] = useState(()=>props.responsedata);
   const [image, setImage] = useState(() => props.images);
     /* Defining states, const and variables */
-  /*  console.log("props",props.responsedata)
-   console.log("props",props.images) */
+/*   console.log("props",props.responsedata)
+  console.log("props",tableData.bill_of_materials)
+   console.log("props",props.images)  */
    let i=0;
    /* let comp_name,from_addr,to_addr,inv_no,ph_no,dt,des=[] */
    const [companyName,setcompanyName]=useState([])
@@ -79,31 +93,45 @@ export default function InvoiceForm(props){
    const [toAddress,setToAddress]=useState([])
    const [invoiceNo,setInvoiceNo]=useState([])
    const [phoneNo,setPhoneNo]=useState([])
-   const [img,setImg]=useState([])
+  /*  const [img,setImg]=useState([]) */
    const [des,setDes]=useState([])
    const [category,setCategory]=useState([])
-   const [date, setDate] = useState(dayjs('2022-04-17'));
+   const [date, setDate] = useState(dayjs(new Date()));
    const [display,setDisplay]=useState(false)
    const [numPages, setNumPages] = useState(null);
    const [pageNumber, setPageNumber] = useState(1);
-   const [index,setIndex] = useState(0);
+   
    const [loading, setLoading] = useState(false);
    const [totalreq, setTotalreq] = useState(0);
    const [open, setOpen] = React.useState(false);
    const [total,setTotal]=useState([])
-   const [tax,setTax]=useState([])
+   
    const [discount,setDiscount]=useState([])
-   const [rows,setRows]=useState([total,tax,discount,des])
+
    const [height, setHeight] = useState(150);
    const [openClosed, setOpenClosed]= useState(true)
    const [openBack,setOpenBack]=useState(false)
+   const [price,setPrice]=useState([])
 
 
-
-
+   function createData(name, calories, fat, carbs, protein) {
+    return { name, calories, fat, carbs, protein };
+  }
+ 
+  
   
 
    const columns = [
+    {
+      field: 'slno',
+      headerName: 'Sl:no',
+      type: 'number',
+      width: "10px",
+      editable: true,
+      align: 'left',
+      headerAlign: 'left',
+    },
+  
     { 
       field: 'total', 
       headerName: 'Total', 
@@ -113,52 +141,25 @@ export default function InvoiceForm(props){
       align: 'left',
       headerAlign: 'left',
     },
-    
-    {
-      field: 'tax',
-      headerName: 'Tax',
-      type: 'number',
-      width: 80,
-      editable: true,
-      align: 'left',
-      headerAlign: 'left',
-    },
-    {
-      field: 'discount',
-      headerName: 'Discount',
-      type: 'number',
-      width: 70,
-      editable: true,
-      align: 'left',
-      headerAlign: 'left',
-    },
-    {
-      field: 'description',
-      headerName: 'Description',
-      type: 'number',
-      width: "200px",
-      editable: true,
-      align: 'left',
-      headerAlign: 'left',
-    },
    
   ];
-  const row = [
-    {
+  // const row = [
+  //   {
       
-        id: index,
-        total: total[index],
-        tax: tax[index],
-        discount:discount[index],
-        description: des[index],
+  //       id: index,
+  //       total: total[index],
+  //     /*   tax: tax[index],
+  //       discount:discount[index], */
+  //       description: des[index],
         
       
-    },
+  //   },
+   
    
 
-
     
-  ]  
+  // ]  
+
   
 
   var today = new Date();
@@ -246,9 +247,13 @@ export default function InvoiceForm(props){
     }
       
   }
+ useEffect(()=>{
 
 
+ },[index])
 
+
+ 
   function onDocumentLoadSuccess({numPages}){
     setNumPages(numPages);
     setPageNumber(1);
@@ -266,7 +271,7 @@ export default function InvoiceForm(props){
     /* console.log("Decremented: ",index) */
   }
 
-
+  
 
   function backButton(){
    setOpenBack(true)
@@ -274,19 +279,25 @@ export default function InvoiceForm(props){
    //console.log(tableData[0].company_name)
    useEffect(()=>{
     if (tableData && tableData.length > 0) {
-      setImg((prevCategory) => prevCategory.concat(tableData.map((item) => item.pdf_image)))
+     
       setcompanyName((prevCompanyNames) => prevCompanyNames.concat(tableData.map((item) => item.company_name)))
       setFromAddress((prevFromAddress) => prevFromAddress.concat(tableData.map((item) => item.from_address)))
       setToAddress((prevToAddress) => prevToAddress.concat(tableData.map((item) => item.to_address)))
       setInvoiceNo((prevInvoiceNo) => prevInvoiceNo.concat(tableData.map((item) => item.invoice_number)))
       setPhoneNo((prevPhoneNo) => prevPhoneNo.concat(tableData.map((item) => item.phone_number)))
-      setDes((prevDes) => prevDes.concat(tableData.map((item) => item.bill_of_materials[0].description[0])))
+      setDes((prevDes) => prevDes.concat(tableData.map((item) => item.bill_of_materials[0].description)))
       setCategory((prevCategory) => prevCategory.concat(tableData.map((item) => item.category)))
       setTotal((prevTotal) => prevTotal.concat(tableData.map((item) => item.total)))
       setDiscount((prevDiscount) => prevDiscount.concat(tableData.map((item) => item.discount)))
+      setPrice((prevPrice)=>prevPrice.concat(tableData.map((item)=>item.bill_of_materials[0].unit_price)))
+     
+
     }  
    }, [tableData])
    
+   /* console.log("props of",tableData.company_name) */
+  
+
     return(
         /************ main div **************/
         <Box sx={{width:"100%"}}>
@@ -345,16 +356,18 @@ export default function InvoiceForm(props){
                                   height: "742px",
                                 },
                               }}>
-                        <Paper elevation={3} >
-                        {/* <p>{index}</p>  */}
-                           {}
-                           <img
-                           key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
-                           src={img[index]}
+                        <div>
+                       <img
+                            
+                           src={img}
                            alt=""
-                           style={{ width: '100%', height: '100%' }} />
+                           style={{ width: '100%', height: '100%' }} /> 
                            
-                        </Paper>
+                        </div>
+                        
+                           
+                           
+                       
                         <div className="fileNav-btn">
                      
                         <Button sx={{ marginRight: '5px' }}
@@ -412,7 +425,7 @@ export default function InvoiceForm(props){
                                     <Chip
                                       avatar={<Avatar alt="catagory" src={tag}  />}
                                       label={category[index]}
-                                      variant="outlined"/>
+                                      color="primary" />
                                   </Stack>
                       
                       </div>
@@ -422,8 +435,8 @@ export default function InvoiceForm(props){
                         {display==true ?
                      (
                       <>
-                          <Grid container={'true'} item sx={12}>
-                      <Grid item={'true'} md={4}>
+                      <Grid container spacing={1}>
+                      <Grid item sm={4}>
                       <TextField 
                       defaultValue={invoiceNo[index]}
                       key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
@@ -436,7 +449,7 @@ export default function InvoiceForm(props){
                       color="primary" focused/>
                       </Grid>
 
-                      <Grid item={'true'} md={4}>
+                      <Grid item sm={4}>
                       <TextField 
                       defaultValue={phoneNo[index]}   
                       key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}                   
@@ -449,18 +462,18 @@ export default function InvoiceForm(props){
                       color="primary" focused/>
                       </Grid>
 
-                      <Grid item={'true'}  md={4}>
+                      <Grid item  sm={4}>
                       
                       <div className="date">
-                      <LocalizationProvider dateAdapter={AdapterDayjs} margin="dense" color="primary">
+                      <LocalizationProvider dateAdapter={AdapterDayjs} >
                         <DatePicker 
                           label="Date"
                           value={date}
-                           autoFocus
+                          autoFocus
                           variant="outlined"
                           margin="dense"
-                          id="date"
-                          onChange={(newValue) => setDate(newValue)}/>
+                          onChange={(newValue) => setDate(newValue)}
+                          />
                       </LocalizationProvider></div>
                       </Grid>
                       </Grid> 
@@ -513,7 +526,6 @@ export default function InvoiceForm(props){
                      ):(
 
                       <div>
-
                       </div>
                      )}
                       </AccordionDetails>
@@ -525,18 +537,48 @@ export default function InvoiceForm(props){
                      
                      
                    
-                        <div className="heading">
-                          <h5>Line items:</h5>
-                        </div>
+                        
                       
                          
                          
                        
-                 
-                    
-                          <div style={{ height: height, width: 'auto' ,color:"primary"}} className="table-container">
-                            <DataGrid rows={row} columns={columns}/>
+                        <Grid container>
+                          <Grid item sm={12}>
+                          <div className="heading">
+                          <h5>Line items:</h5>
+                        </div>
+                          </Grid>
+                        
+                          <Grid item sm={12}>
+                          <div style={{ height: height}} className="table-container" id="customers">
+                          <table style={{display: "block", height: height}}>
+                              <thead>
+                                <tr>
+                                  <td><h6 style={{fontWeight:"bold"}}>S:NO</h6></td>
+                                  <td><h6 style={{fontWeight:"bold"}}>Description</h6></td>
+                                  <td><h6 style={{fontWeight:"bold"}}>Amount</h6></td>
+                                </tr>
+                              </thead>
+                              <tbody key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}>
+                              {bill_of_materials.bill_of_materials[0].description.map((item, i) => (
+                                <tr key={i} >
+                                  <td>{i+1}</td>
+                                  <td>{bill_of_materials.bill_of_materials[0].description[i]}</td>
+                                  <td>{bill_of_materials.bill_of_materials[0].unit_price[i]}</td>
+                                </tr>))}
+                              <tr style={{textAlign:"right"}}>
+                                <td></td>
+                                <td>Total with {tax}% of tax:</td>
+                                <td>{bill_of_materials.total}</td>
+                              </tr>  
+                                
+                              </tbody>
+                            </table>
                           </div>
+                          </Grid>
+                        </Grid>
+                    
+                          
                         <Button variant="contained" color="primary" sx={{ ml:'40%', marginTop:3}} onClick={handleClickOpen}>
                             Submit
                           <IconButton 
@@ -610,7 +652,7 @@ export default function InvoiceForm(props){
               <Grid container spacing={2}>
                 
                 <Grid item xs={12} sm={12}>
-                <Grid item container={true}>
+                <Grid item container={true} xs={12}>
                     {/* side images from the invoice */}
                    
 
@@ -644,15 +686,15 @@ export default function InvoiceForm(props){
                                 },
                               }}>
                         <Paper elevation={3} >
-                        {/* <p>{index}</p>  */}
+                       
 
                            <img
                            key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
-                           src={img[index]}
+                           src={img}
                            alt=""
                            style={{ width: '100%', height: '100%' }} />
                            
-                        </Paper>
+                        </Paper><br></br>
                         <div className="fileNav-btn">
                      
                         <Button sx={{ marginRight: '5px' }}
@@ -829,8 +871,30 @@ export default function InvoiceForm(props){
                        
                  
                     
-                          <div style={{ height: height, width: 'auto' ,color:"primary"}} className="table-container">
-                            <DataGrid rows={row} columns={columns}/>
+                        <div style={{width: 'auto', height: height}} className="table-container" id="customers">
+                          <table style={{display: "block", height: height}}>
+                              <thead>
+                                <tr>
+                                  <td><h6 style={{fontWeight:"bold"}}>S:NO</h6></td>
+                                  <td><h6 style={{fontWeight:"bold"}}>Description</h6></td>
+                                  <td><h6 style={{fontWeight:"bold"}}>Amount</h6></td>
+                                </tr>
+                              </thead>
+                              <tbody key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}>
+                              {bill_of_materials.bill_of_materials[0].description.map((item, i) => (
+                                <tr key={i} >
+                                  <td>{i+1}</td>
+                                  <td>{bill_of_materials.bill_of_materials[0].description[i]}</td>
+                                  <td>{bill_of_materials.bill_of_materials[0].unit_price[i]}</td>
+                                </tr>))}
+                              <tr style={{textAlign:"right"}}>
+                                <td></td>
+                                <td>Total with {tax}% of tax:</td>
+                                <td>{bill_of_materials.total}</td>
+                              </tr>  
+                                
+                              </tbody>
+                            </table>
                           </div>
                         <Button variant="contained" color="primary" sx={{ ml:'40%', marginTop:3}} onClick={handleClickOpen}>
                             Submit

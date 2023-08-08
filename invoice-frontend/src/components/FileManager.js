@@ -40,7 +40,7 @@ import { makeStyles } from "@mui/styles";
 import URI from "../utils/request";
 
 import CircularProgress from "@mui/material/CircularProgress";
-import InvoiceData from "./InvoiceData";
+import InvoiceForm from "./invoiceForm";
 
 const placeholders = ["Search for...", "Find...", "Explore..."];
 
@@ -506,7 +506,9 @@ export default function FileManager() {
     setloading(false);
     // window.location.reload(false);
   };
-
+ const updateParentState = () => {
+     setResdata([])
+  };
   const placeholder = placeholders[placeholderIndex];
   return (
     <>
@@ -928,7 +930,7 @@ export default function FileManager() {
           </Menu>
         </Box>
       ) : (
-        <InvoiceData images={fileBase} responsedata={resData} />
+        <InvoiceForm images={fileBase} responsedata={resData} updateParentState={updateParentState} />
       )}
     </>
   );
