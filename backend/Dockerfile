@@ -6,6 +6,8 @@ RUN apt-get update -qq
 
 RUN apt-get install -y -qq libtesseract-dev libleptonica-dev tesseract-ocr
 
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6  -y
+
 RUN apt-get install -y -qq \
   tesseract-ocr-eng \
   tesseract-ocr-ara \

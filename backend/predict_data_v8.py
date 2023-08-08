@@ -89,7 +89,7 @@ def predict(file_input,lang_input):
     image2 = image
 
     ###### deection of OCR 
-    model = YOLO(r'backend\bestv8.pt')
+    model = YOLO('bestv8.pt')
     results = model(image2,conf=0.25)
 
     dw = image2.shape[1]
@@ -106,14 +106,14 @@ def predict(file_input,lang_input):
             x1,y1,x2,y2 = box.xyxy[0]
             x1,y1,x2,y2 = int(x1),int(y1),int(x2),int(y2)
             #drwing the rectangle
-            cv2.rectangle(cap,(x1,y1),(x2,y2),(255,0,255),3)
+            cv2.rectangle(image2,(x1,y1),(x2,y2),(255,0,255),3)
             # initate the class
             cls = int(box.cls[0])
 
             #print(x1,y1,x2,y2,cls)
             #3################################ cropping the detected location
             w,h = x2-x1,y2-y1
-            cropped_image = cap[y1:y1 + h, x1:x1 + w]
+            cropped_image = image2[y1:y1 + h, x1:x1 + w]
             label = classes[cls]
 
 
@@ -222,11 +222,11 @@ def predict(file_input,lang_input):
 
 if __name__ == '__main__':
 
-    cap = cv2.imread(r'backend\yolov8_testing\test\images\1.jpg')
+    cap = cv2.imread('MicrosoftTeams-image.png')
     dw = cap.shape[1]
     dh = cap.shape[0]
-    model = YOLO(r'backend\bestv8.pt')
-    results = model(r'D:\kaar\invoice-new\backend\yolov8_testing\test\images\2.jpg',conf=0.25)
+    model = YOLO('bestv8.pt')
+    results = model(cap,conf=0.25)
     classes = ['company_name', 'from_address', 'to_address', 'date', 'phone_number', 'invoice_number', 'total', 'sub_total', 'tax', 'discount', 'barcode', 'logo', 'description_col', 'qty_col', 'price_col', 'unitprice_col', 'header', 'table']
     for r in results:
         boxes = r.boxes
@@ -249,10 +249,13 @@ if __name__ == '__main__':
 
             if label == 'from_address':
                 predicted_response = address(cropped_image,'english')
-                cv2.imshow('img',cropped_image)
+                #cv2.imshow('img',cropped_image)
                 print(predicted_response)
 
-            
+            elif label == 'company_name':
+                predicted_response['company_name'] = company_name_extract(cropped_image)
+                cv2.imshow('img',cropped_image)
+                print(predicted_response)
     
 
     cv2.waitKey(0)

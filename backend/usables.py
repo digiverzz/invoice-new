@@ -282,7 +282,7 @@ def UploadFileHdfs(file,filename):
     path = os.getenv('hdfspath')
     def do():
         creds.hdfs.create_file(path+f'/{filename}',file)
-        print(f"{filename} saved in hdfs..")
+        """ print(f"{filename} saved in hdfs..") """
         event.set()
     
     event = threading.Event()
@@ -291,7 +291,7 @@ def UploadFileHdfs(file,filename):
     thread.start()
     event.wait(timeout=2)
     if not event.is_set():
-        print(f"Failed to save {filename} in hdfs..")
+       """  print(f"Failed to save {filename} in hdfs..") """
 
 
 def dataurltobytes(url):

@@ -20,7 +20,7 @@ import platform  # from native modules
 from os.path import join, dirname, realpath
 import json
 from detect import start
-import io  # from native modules 
+import io  # from native modules
 import platform  # from native modules
 import nltk
 from pathlib import Path
@@ -45,9 +45,8 @@ from text_categorizing import categorize
 import crop_endpoint
 import routes.elastic_search as elastic
 import pytesseract
-from predict_data_v8 import predict
-import predict_data_v8
-import predict_data 
+from predict_data import predict
+import predict_data
 from fastapi_utils.tasks import repeat_every
 import usables
 from usables import predict_from_mail
@@ -58,8 +57,9 @@ import routes.stats as stats
 import hashlib
 from difflib import SequenceMatcher
 import creds
+import predict_data_v8
 
-print(os.getenv('elastic_url'))
+#print(os.getenv('elastic_url'))
 
 # pytesseract.pytesseract.tesseract_cmd = 'C:/Users/lcharankumar/AppData/Local/Tesseract-OCR/tesseract.exe'
 
@@ -95,7 +95,7 @@ app.include_router(stats.router)
 
 #converting the sample files into byte codes
 testFiles=usables.pathtobytes(creds.testFilePath)
-print("Array length", len(testFiles))
+# print("Array length", len(testFiles))
 
 
 #/predict api
@@ -125,7 +125,7 @@ async def predicted_output(request:Request):
             
             #####deciding which model to render###### 
             creds.modelToLoad=usables.file_compare(bytes_str,testFiles)
-            print("selected model: ", creds.modelToLoad)
+            """ print("selected model: ", creds.modelToLoad) """
             images = convert_from_bytes(bytes_str,fmt="png")
             for i in range(len(images)):
                 decoded = np.array(images[i].convert('RGB'))
@@ -146,10 +146,9 @@ async def predicted_output(request:Request):
             output = predict_data_v8.predict(str(i['data']),"english")
             res.append(output)
             count+=1  
-            
     return {"response":res}
 
-@app.get('/get')
+""" @app.get('/get')
 async def test():
     print("Hello")
-    return "api ok" 
+    return "api ok"  """
