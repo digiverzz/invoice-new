@@ -1,3 +1,4 @@
+/***********************Import section****************************/
 import React from "react";
 import { styled } from '@mui/material/styles';
 import { useState } from "react";
@@ -21,36 +22,19 @@ import { Navigate, redirect } from "react-router-dom";
 import {useNavigate} from "react-router-dom"
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
-import CardMedia from '@mui/material/CardMedia';
-import { Button, CardActionArea, CardActions } from '@mui/material';
+import { Button, CardActionArea, CardActions, Tooltip } from '@mui/material';
 import Paper from '@mui/material/Paper';
-import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-import { render } from "@testing-library/react";
-import Alert from '@mui/material/Alert';
-import DeleteForeverRoundedIcon from '@mui/icons-material/DeleteForeverRounded';
-import Snackbar from '@mui/material/Snackbar';
-import MuiAlert from '@mui/material/Alert';
 import axios, * as others from "axios";
 import URI from "../utils/request";
-import { toast, ToastContainer } from 'react-toastify';
-import tag from "../images/tag.png";
-import uploadgif from "../images/output-onlinegiftools.gif";
-import InvoiceData from "./InvoiceData";
 import Grid from "@mui/material/Grid";
 import TextField from '@mui/material/TextField';
-import { DataGrid } from '@mui/x-data-grid';
 import sampleimg from '../images/modern.png'
 import { useEffect } from "react";
-import { tab } from "@testing-library/user-event/dist/tab";
-import { Document,Page } from 'react-pdf/dist/esm/entry.webpack';
-import ButtonGroup from '@mui/material/ButtonGroup';
 import KeyboardArrowLeftRoundedIcon from '@mui/icons-material/KeyboardArrowLeftRounded';
 import KeyboardArrowRightRoundedIcon from '@mui/icons-material/KeyboardArrowRightRounded';
 import PublishRoundedIcon from '@mui/icons-material/PublishRounded';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import Avatar from '@mui/material/Avatar';
 import Chip from '@mui/material/Chip';
@@ -58,134 +42,88 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
-import CircularProgress from '@mui/material/CircularProgress';
 import LinearProgress from '@mui/material/LinearProgress';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
+import CancelIcon from '@mui/icons-material/Cancel';
+import AddIcon from '@mui/icons-material/Add';
+import SellIcon from '@mui/icons-material/Sell';
+import SaveIcon from '@mui/icons-material/Save';
+import DeleteIcon from '@mui/icons-material/Delete';
 
+
+/***********************InvoiceForm component using function approach****************************/
 export default function InvoiceForm(props){
+  
+  /***********************____Defining let,const,state & var____****************************/
 
-  const [index,setIndex] = useState(0);
-  let bill_of_materials=props.responsedata[index]
-  let tax=bill_of_materials.tax
-  let img =props.responsedata[index].pdf_image
-  if(tax)
-    tax=tax
-  else
-    tax=0;
-  /* console.log(props.responsedata[index]) */
+  /* Used to navigate through react component */
   const navigate = useNavigate();
-
+  /* States used in this component */
+  const [index,setIndex] = useState(0);
   const [tableData, setTableData] = useState(()=>props.responsedata);
   const [image, setImage] = useState(() => props.images);
-    /* Defining states, const and variables */
-/*   console.log("props",props.responsedata)
-  console.log("props",tableData.bill_of_materials)
-   console.log("props",props.images)  */
-   let i=0;
-   /* let comp_name,from_addr,to_addr,inv_no,ph_no,dt,des=[] */
-   const [companyName,setcompanyName]=useState([])
-   const [fromAddress,setFromAddress]=useState([])
-   const [toAddress,setToAddress]=useState([])
-   const [invoiceNo,setInvoiceNo]=useState([])
-   const [phoneNo,setPhoneNo]=useState([])
-  /*  const [img,setImg]=useState([]) */
-   const [des,setDes]=useState([])
-   const [category,setCategory]=useState([])
-   const [date, setDate] = useState(dayjs(new Date()));
-   const [display,setDisplay]=useState(false)
-   const [numPages, setNumPages] = useState(null);
-   const [pageNumber, setPageNumber] = useState(1);
-   
-   const [loading, setLoading] = useState(false);
-   const [totalreq, setTotalreq] = useState(0);
-   const [open, setOpen] = React.useState(false);
-   const [total,setTotal]=useState([])
-   
-   const [discount,setDiscount]=useState([])
-
-   const [height, setHeight] = useState(150);
-   const [openClosed, setOpenClosed]= useState(true)
-   const [openBack,setOpenBack]=useState(false)
-   const [price,setPrice]=useState([])
-
-
-   function createData(name, calories, fat, carbs, protein) {
-    return { name, calories, fat, carbs, protein };
-  }
- 
-  
+  const [companyName,setcompanyName]=useState([])
+  const [fromAddress,setFromAddress]=useState([])
+  const [toAddress,setToAddress]=useState([])
+  const [invoiceNo,setInvoiceNo]=useState([])
+  const [phoneNo,setPhoneNo]=useState([])
+  const [des,setDes]=useState([])
+  const [category,setCategory]=useState([])
+  const [date, setDate] = useState(dayjs(new Date()));
+  const [display,setDisplay]=useState(false)
+  const [numPages, setNumPages] = useState(null);
+  const [pageNumber, setPageNumber] = useState(1);
+  const [editedDes,setEditedDes]=useState([]);
+  const [editedAmount,setEditedAmount]=useState([]);
+  const [loading, setLoading] = useState(false);
+  const [totalreq, setTotalreq] = useState(0);
+  const [open, setOpen] = React.useState(false);
+  const [total,setTotal]=useState()
+  const [isChanged,setIsChanged]=useState(false)
+  const [discount,setDiscount]=useState([])
+  const [openEditCard,setOpenEditCard]=useState(false)
+  const [height, setHeight] = useState(150);
+  const [openClosed, setOpenClosed]= useState(true)
+  const [openBack,setOpenBack]=useState(false)
+  const [price,setPrice]=useState([])
+  const [editIndex,setEditIndex]=useState()
+  const [tempDes,setTempDes]=useState()
+  const [tempAmount,setTempAmount]=useState()
+  const [openAdd,setOpenAdd]=useState(false)
+  const [addedTaxTotal,setAddedTaxTotal]=useState(false)
+  const [tax,setTax]=useState()
   
 
-   const columns = [
-    {
-      field: 'slno',
-      headerName: 'Sl:no',
-      type: 'number',
-      width: "10px",
-      editable: true,
-      align: 'left',
-      headerAlign: 'left',
-    },
+  let img =props.responsedata[index].pdf_image
+  let userGivendes , userGivenAmount;
+  let bill_of_materials=props.responsedata[index]
+  let i=0;
   
-    { 
-      field: 'total', 
-      headerName: 'Total', 
-      width: 80, 
-      type: 'number',
-      editable: true ,
-      align: 'left',
-      headerAlign: 'left',
-    },
-   
-  ];
-  // const row = [
-  //   {
-      
-  //       id: index,
-  //       total: total[index],
-  //     /*   tax: tax[index],
-  //       discount:discount[index], */
-  //       description: des[index],
-        
-      
-  //   },
-   
-   
-
-    
-  // ]  
-
-  
-
+  /* This is used to define the date if we click submit */
   var today = new Date();
   var dd = String(today.getDate()).padStart(2, "0");
   var mm = String(today.getMonth() + 1).padStart(2, "0"); //January is 0!
   var yyyy = today.getFullYear();
-
   today = mm + "/" + dd + "/" + yyyy;
  
+  /************************************____Functions____******************************************/
 
   const handleClickOpen = () => {
     setOpen(true);
   };
 
-    const handleNo= async () =>{
-      setOpen(false)
-      setOpenBack(false)
-    }
+  const handleNo= async () =>{
+    setOpen(false)
+    setOpenBack(false)
+  }
 
    
-    const handleYes = async () =>{
-     setLoading(true);
-     setOpen(false)
-    for (var i = 0; i < props.responsedata.length; i++) {
-      const formData1 = new FormData();
 
+  const handleYes = async () =>{
+    setLoading(true);
+    setOpen(false)
+    for (var i = 0; i < props.responsedata.length; i++) {
+
+      const formData1 = new FormData();
       formData1.append("filename", props.images[i].name);
       formData1.append("data", JSON.stringify(props.responsedata[i]));
       formData1.append("id", "dl/0" + Math.floor(totalreq + 1).toString());
@@ -230,10 +168,9 @@ export default function InvoiceForm(props){
 
 
   }; 
-  const handleClose = async () => {
-    
-    setOpen(false)
   
+  const handleClose = async () => {
+    setOpen(false)
   };
 
   const handleExpand =()=>{
@@ -247,36 +184,117 @@ export default function InvoiceForm(props){
     }
       
   }
- useEffect(()=>{
 
-
- },[index])
-
-
- 
   function onDocumentLoadSuccess({numPages}){
     setNumPages(numPages);
     setPageNumber(1);
   }
+
   useEffect(()=>{
     setDisplay(true)
-
   })
+
   function incIndex(){
     setIndex(index+1)
    /*  console.log("incremented: ",index) */
   }
+
   function decIndex(){
     setIndex(index-1)
     /* console.log("Decremented: ",index) */
   }
 
-  
-
   function backButton(){
    setOpenBack(true)
   }
-   //console.log(tableData[0].company_name)
+
+  const handleRowClick=(x)=>{
+    setEditIndex(x)
+    setOpenEditCard(true)
+    setTempDes(editedDes)
+    setTempAmount(editedAmount)
+   
+}
+
+  function closeEdit(){
+    setOpenEditCard(false)
+    setEditedDes(tempDes);
+    setEditedAmount(tempAmount);
+   }
+
+  function closeTaxTotal(){
+    setAddedTaxTotal(false)
+  }
+  function saveEdit(){
+    setIsChanged(true)
+    setOpenEditCard(false)
+  }
+   
+  function openAddItem(){
+    setOpenAdd(true)
+  }
+   
+  function addItem(){
+    setOpenAdd(false)
+    const DesData=[...editedDes,userGivendes]
+    const AmountData=[...editedAmount,userGivenAmount]
+    setEditedDes(DesData)   
+    setEditedAmount(AmountData)
+   }
+
+  function closeAddItems(){
+    setOpenAdd(false)
+   }
+
+  function deleteRow(){
+
+      let deletedDes=[...editedDes]
+      deletedDes.splice(editIndex,1)
+      setEditedDes(deletedDes)
+
+      let deletedAmount=[...editedAmount]
+      deletedAmount.splice(editIndex,1)
+      setEditedAmount(deletedAmount)
+
+      setOpenEditCard(false)
+   }
+
+  function editTaxTotal(){
+      setAddedTaxTotal(true)
+   }
+
+  const handleAddDeacriptionChange=(event)=>{
+      userGivendes=event.target.value
+   }
+
+  const handleAddAmountChange=(event)=>{
+      userGivenAmount=event.target.value
+      
+  }
+
+  const handleDescriptionChange = (event) => {
+    const updatedArray = [...editedDes]; 
+    updatedArray[editIndex] = event.target.value; 
+    setEditedDes(updatedArray);
+  }
+
+  const handleAmountChange = (event) => {
+    const updatedArray = [...editedAmount]; 
+    updatedArray[editIndex] = event.target.value; 
+    setEditedAmount(updatedArray);
+  }
+
+  const handleTaxChange=(event)=>{
+    const updatedValue = event.target.value;
+    setTax(updatedValue);
+  }
+
+  const handleTotalChange=(event)=>{
+    const updatedValue = event.target.value;
+    setTotal(updatedValue);
+  }
+
+   /* This `useEffect()` is executed only when there is changes on tableDta here all the initial values are assigned through state variable*/
    useEffect(()=>{
     if (tableData && tableData.length > 0) {
      
@@ -287,66 +305,73 @@ export default function InvoiceForm(props){
       setPhoneNo((prevPhoneNo) => prevPhoneNo.concat(tableData.map((item) => item.phone_number)))
       setDes((prevDes) => prevDes.concat(tableData.map((item) => item.bill_of_materials[0].description)))
       setCategory((prevCategory) => prevCategory.concat(tableData.map((item) => item.category)))
-      setTotal((prevTotal) => prevTotal.concat(tableData.map((item) => item.total)))
       setDiscount((prevDiscount) => prevDiscount.concat(tableData.map((item) => item.discount)))
       setPrice((prevPrice)=>prevPrice.concat(tableData.map((item)=>item.bill_of_materials[0].unit_price)))
-     
-
+      setEditedDes(bill_of_materials.bill_of_materials[0].description)
+      setEditedAmount(bill_of_materials.bill_of_materials[0].unit_price)
+      setTotal(bill_of_materials.total)
+      if(!bill_of_materials.tax){
+        setTax(0)
+      }else{
+        setTax(bill_of_materials.tax)
+      }
     }  
    }, [tableData])
    
-   /* console.log("props of",tableData.company_name) */
-  
+   
+   /************************************____Return statement____******************************************/
 
     return(
         /************ main div **************/
         <Box sx={{width:"100%"}}>
-        <div className="main-div"> 
-          
-           
+          <div className="main-div"> 
+
+          {/* 
+            1)To make this code responsive for both large and small screens we divided view for both large screen and small screen respectively.
+            2)Through @media the respective views are rendered.
+            3) <div> of large-screen is rendered when px >= 1160 and <div> of small-screen is rendered when px < 1160
+          */}
+
+             {/* Rendered if the screen is large */}
           <div className="large-screen">
-          <div className="loader">
-          {loading===true? (<Box sx={{ width: '100%' }}>
+            
+            {/* Loading bar */}
+            <div className="loader">
+              {loading===true? (<Box sx={{ width: '100%' }}> <LinearProgress /></Box>):(<> </>)}
+            </div>
 
-          <LinearProgress />
-                  </Box>):(<>
-                    
-
-                  </>)
-                  }
-          </div>
-              <SplitPane split="vertical" minSize={700} maxSize={900} defaultSize={900} >
+            {/* In order to make the split screen view , SplitPane library is used */}
+            <SplitPane split="vertical" minSize={700} maxSize={900} defaultSize={900} >
                 <Pane className="form-img">
                   <Grid container>
-                    {/* side images from the invoice */}
+                   {/* back button */}
                     <Grid item xs={1} sm={1} >
                       <div className="sidenav">
-                        {/* back button */}
-                        
                         <IconButton onClick={backButton}
                            size="large"
                            edge="start"
                            color="primary"
                            variant="contained"
                            aria-label="menu"
-                           
-                            sx={{ ml: 4, bgcolor:'whitesmoke', mt:4}}>
-                        <ArrowBackTwoToneIcon />
+                           sx={{ ml: 4, bgcolor:'whitesmoke', mt:4}}>
+                           <ArrowBackTwoToneIcon />
                         </IconButton>
-                    
                       </div>
                     </Grid>
 
-
-
-                    {/* main image of invoice */}
+                    {/* image of invoice */}
                     <Grid item xs={12} sm={11} >
-                      <div className="image-shower"  key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}>
-                     
-                      <Box
+                      {/* 
+                          1)For almost all feilds `key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))` is used.
+                          2)Because if state changes the values are not updated in some fields.
+                          3)To solve this some key with random math function is given, so that is components re-renders key also re-renders
+                            and so the fields are updated when next file is selected.
+                          4)Never remove `key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))` from the code
+                      */}
+                    <div className="image-shower"  key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}>
                         
+                      <Box
                          sx={{
-          
                             display: 'flex',
                             flexWrap: 'wrap',
                             justifyContent:"center",
@@ -356,48 +381,39 @@ export default function InvoiceForm(props){
                                   height: "742px",
                                 },
                               }}>
+                        {/* invoice image */}
                         <div>
-                       <img
-                            
+                          <img
                            src={img}
                            alt=""
                            style={{ width: '100%', height: '100%' }} /> 
-                           
                         </div>
                         
-                           
-                           
-                       
+                        {/* Navigation to next file */}
                         <div className="fileNav-btn">
-                     
-                        <Button sx={{ marginRight: '5px' }}
-                        onClick={decIndex}  disabled={index==0?true:false}>
-                        <IconButton 
-                            size="small"
-                            sx={{color:'Black'}}>
-                        <KeyboardArrowLeftRoundedIcon /></IconButton>Previous file
-                        </Button>
+
+                          <Button sx={{ marginRight: '5px' }} onClick={decIndex}  disabled={index==0?true:false}>
+                            <IconButton 
+                              size="small"
+                              sx={{color:'Black'}}>
+                            <KeyboardArrowLeftRoundedIcon /> 
+                            </IconButton>Previous file
+                          </Button>
                         
-                        
-                        <Button sx={{ marginLeft: '290px' }} disabled={index===tableData.length-1 ? true: false}
-                            onClick={incIndex}
-                        >Next file
+                        <Button sx={{ marginLeft: '290px' }} disabled={index===tableData.length-1 ? true: false} onClick={incIndex}>Next file
                           <IconButton 
                             size="small"
                             sx={{color:'Black'}}>
-                        <KeyboardArrowRightRoundedIcon /></IconButton>
+                          <KeyboardArrowRightRoundedIcon />
+                          </IconButton>
                         </Button>
-                      </div>
+                        </div>
                      
                       </Box>
-                      
-                      </div>
-                     
-
-                      
-                    </Grid>
+                    </div>
                   </Grid>
-                </Pane> 
+                </Grid>
+              </Pane> 
 
 
                 {/* Results shown here */}
@@ -408,11 +424,136 @@ export default function InvoiceForm(props){
                         <h3>{image[index].name}</h3>
                       </div>
                       <hr></hr> 
-                      {/* General info */}
-                     
-                     
 
-                      <Accordion defaultExpanded>
+                  {/* General info */}
+                      
+                  {openEditCard?
+                  <Grid item xs={12} sm={12}>
+                    <div className="centered-container">
+                      <div className="editCard" >
+                        <Card sx={{ minWidth: 275, backgroundColor: 'white' }}>
+                          <CardContent>
+                            <IconButton onClick={closeEdit}
+                              size="small"
+                              edge="start"
+                              color="primary"
+                              variant="contained"
+                              aria-label="menu"
+                              sx={{  bgcolor:'whitesmoke',marginBottom:"2px"}}>
+                          <CancelIcon />
+                        </IconButton>
+                      <TextField 
+                        defaultValue={editedDes[editIndex]}
+                        id="fromAddress" 
+                        label="Description" 
+                        variant="outlined"
+                        multiline
+                        maxRows={3}
+                        autoFocus
+                        margin="dense"
+                        type="text"
+                        fullWidth
+                        color="primary" focused
+                        onChange={handleDescriptionChange}
+                      />
+                      <TextField 
+                        defaultValue={editedAmount[editIndex]}
+                        id="fromAddress" 
+                        label="Amount" 
+                        variant="outlined"
+                        multiline
+                        maxRows={3}
+                        autoFocus
+                        margin="dense"
+                        type="text"
+                        fullWidth
+                        color="primary" focused
+                       onChange={handleAmountChange}
+                     />
+                      </CardContent>
+                      <CardActions>
+                        <Tooltip title="Save changes">
+                          <IconButton onClick={saveEdit}
+                            size="small"
+                            edge="start"
+                            color="primary"
+                            variant="contained"
+                            aria-label="menu"
+                            sx={{ ml:'45%', bgcolor:'whitesmoke',marginBottom:"5px"}}>
+                            <SaveIcon />
+                          </IconButton>
+                        </Tooltip>
+
+                      <Tooltip title="Delete this row">
+                        <IconButton onClick={deleteRow}
+                          size="small"
+                          edge="start"
+                          color="error"
+                          variant="contained"
+                          aria-label="menu"
+                          sx={{ ml:'45%', bgcolor:'whitesmoke',marginBottom:"5px"}}>
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </CardActions>
+               </Card>
+           </div>
+           </div></Grid>
+           :
+            <>{addedTaxTotal?<>
+                         <Grid item xs={12} sm={12}>
+           <div className="centered-container">
+           <div className="editCard" >
+           <Card sx={{ minWidth: 275, backgroundColor: 'white' }}>
+             <CardContent>
+             
+             <TextField 
+                      defaultValue={tax}
+                      id="tax" 
+                      label="Tax in %" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused
+                      onChange={handleTaxChange}
+                      />
+             <TextField 
+                      defaultValue={total}
+                      id="total" 
+                      label="Total Amount" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused
+                      onChange={handleTotalChange}
+                     />
+            
+             </CardContent>
+             <CardActions>
+             <IconButton onClick={closeTaxTotal}
+                           size="small"
+                           edge="start"
+                           color="primary"
+                           variant="contained"
+                           aria-label="menu"
+                           
+                            sx={{ ml:'45%', bgcolor:'whitesmoke',marginBottom:"5px"}}>
+                        <SaveIcon />
+                        </IconButton>
+             </CardActions>
+         </Card>
+           </div>
+           </div></Grid>
+
+            </>:<><Accordion defaultExpanded>
                         <AccordionSummary onClick={handleExpand}
                           expandIcon={<ExpandMoreIcon />}
                           aria-controls="panel1a-content"
@@ -423,7 +564,8 @@ export default function InvoiceForm(props){
                                     <div className="tag">
                                   <Stack direction="row" spacing={1}>
                                     <Chip
-                                      avatar={<Avatar alt="catagory" src={tag}  />}
+                                      avatar={<Avatar><SellIcon/></Avatar>}
+                                      fontSize="small"
                                       label={category[index]}
                                       color="primary" />
                                   </Stack>
@@ -529,11 +671,13 @@ export default function InvoiceForm(props){
                       </div>
                      )}
                       </AccordionDetails>
-                      </Accordion>
+                      </Accordion></>}
+             
+                      </> }
+
+                    
                       
-                      {/* <ul class="tags blue">
-                          <li><a href="#">Infrastructure <span>31</span></a></li> 
-                      </ul> */}
+                   
                      
                      
                    
@@ -541,17 +685,80 @@ export default function InvoiceForm(props){
                       
                          
                          
+                       {openAdd?<>
+                        <Grid item xs={12} sm={12}>
+                        <div className="centered-container">
+                          <div className="editCard" >
+                          <Card sx={{ minWidth: 275, backgroundColor: 'white' }}>
+                          <CardContent>
+                            <IconButton onClick={closeAddItems}
+                                size="small"
+                                edge="start"
+                                color="primary"
+                                variant="contained"
+                                aria-label="menu"
+                           
+                            sx={{  bgcolor:'whitesmoke',marginBottom:"2px"}}>
+                        <CancelIcon />
+                        </IconButton>
+             <TextField 
+                      
+                      label="Description" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused
+                      onChange={handleAddDeacriptionChange}
+                      />
+             <TextField 
+                      
+                      label="Amount" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused
+                      onChange={handleAddAmountChange}
+                     />
+            
+             </CardContent>
+             <CardActions>
+               <Button size="small" variant="contained" color="primary" sx={{ ml:'45%'}} onClick={addItem}>ADD</Button>
+             </CardActions>
+         </Card>
+           </div>
+           </div></Grid>
                        
-                        <Grid container>
+                       </>:<>
+                       <Grid container>
                           <Grid item sm={12}>
-                          <div className="heading">
-                          <h5>Line items:</h5>
-                        </div>
+                          <Stack direction="row" spacing={1}>
+                            <div className="heading" sx={{marginBottom:"5px",marginTop:"5px"}}>
+                              <h5  >Line Items: </h5></div>
+                                <div className="tag">
+                                  <Stack direction="row" spacing={1}>
+                                  <Chip
+                                      avatar={<Avatar><AddIcon/></Avatar>}
+                                      label="Add new item"
+                                      color="primary" 
+                                      onClick={openAddItem}
+                                      sx={{marginBottom:"5px",marginTop:"3px"}}
+                                      />
+                                  </Stack>  
+                                </div>
+                                  </Stack> 
                           </Grid>
                         
                           <Grid item sm={12}>
-                          <div style={{ height: height}} className="table-container" id="customers">
-                          <table style={{display: "block", height: height}}>
+                          <div style={{ height: height}}  className="table-container" id="customers">
+                          <table style={{display: "block", height: height,tableLayout: 'fixed'}}>
                               <thead>
                                 <tr>
                                   <td><h6 style={{fontWeight:"bold"}}>S:NO</h6></td>
@@ -559,17 +766,17 @@ export default function InvoiceForm(props){
                                   <td><h6 style={{fontWeight:"bold"}}>Amount</h6></td>
                                 </tr>
                               </thead>
-                              <tbody key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}>
-                              {bill_of_materials.bill_of_materials[0].description.map((item, i) => (
-                                <tr key={i} >
+                              <tbody >
+                              {editedDes.map((item, i) => (
+                                <tr key={i} onClick={()=>handleRowClick(i)} >
                                   <td>{i+1}</td>
-                                  <td>{bill_of_materials.bill_of_materials[0].description[i]}</td>
-                                  <td>{bill_of_materials.bill_of_materials[0].unit_price[i]}</td>
+                                  <td>{editedDes[i]} </td>
+                                  <td>{editedAmount[i]}</td>
                                 </tr>))}
-                              <tr style={{textAlign:"right"}}>
+                              <tr style={{textAlign:"right"}} onClick={editTaxTotal}>
                                 <td></td>
                                 <td>Total with {tax}% of tax:</td>
-                                <td>{bill_of_materials.total}</td>
+                                <td>{total}</td>
                               </tr>  
                                 
                               </tbody>
@@ -578,6 +785,8 @@ export default function InvoiceForm(props){
                           </Grid>
                         </Grid>
                     
+                       </>}
+                        
                           
                         <Button variant="contained" color="primary" sx={{ ml:'40%', marginTop:3}} onClick={handleClickOpen}>
                             Submit
@@ -644,11 +853,11 @@ export default function InvoiceForm(props){
 
 
 
-            </div>
+          </div>
 
 
             {/* Rendered if the screen is small */} 
-            <div className="small-screen">
+          <div className="small-screen">
               <Grid container spacing={2}>
                 
                 <Grid item xs={12} sm={12}>
@@ -719,12 +928,10 @@ export default function InvoiceForm(props){
                       </Box>
                       
                       </div>
-                     
-
-                      
                     </Grid>
                   </Grid>
                 </Grid>
+                
                 <Grid item xs={12} sm={12}>
                 <Grid item xs={12} sm={12}>
                      <div className="results">
@@ -734,9 +941,139 @@ export default function InvoiceForm(props){
                       <hr></hr> 
                       {/* General info */}
                      
-                     
+                      
+                 
+                      {openEditCard?
+                      <Grid item xs={12} sm={12}>
+           <div className="centered-container">
+           <div className="editCard" >
+           <Card sx={{ minWidth: 275, backgroundColor: 'white' }}>
+             <CardContent>
+             <IconButton onClick={closeEdit}
+                           size="small"
+                           edge="start"
+                           color="primary"
+                           variant="contained"
+                           aria-label="menu"
+                           
+                            sx={{  bgcolor:'whitesmoke',marginBottom:"2px"}}>
+                        <CancelIcon />
+                        </IconButton>
+             <TextField 
+                      defaultValue={editedDes[editIndex]}
+                      id="fromAddress" 
+                      label="Description" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused
+                      onChange={handleDescriptionChange}
+                      />
+             <TextField 
+                      defaultValue={editedAmount[editIndex]}
+                      id="fromAddress" 
+                      label="Amount" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused
+                      onChange={handleAmountChange}
+                     />
+            
+             </CardContent>
+             <CardActions>
+               
+              <Tooltip title="Save changes">
+               <IconButton onClick={saveEdit}
+                           size="small"
+                           edge="start"
+                           color="primary"
+                           variant="contained"
+                           aria-label="menu"
+                           
+                            sx={{ ml:'45%', bgcolor:'whitesmoke',marginBottom:"5px"}}>
+                        <SaveIcon />
+                        </IconButton>
+              </Tooltip>      
+              <Tooltip title="Delete this row">
+               <IconButton onClick={deleteRow}
+                           size="small"
+                           edge="start"
+                           color="error"
+                           variant="contained"
+                           aria-label="menu"
+                           
+                            sx={{ ml:'45%', bgcolor:'whitesmoke',marginBottom:"5px"}}>
+                        <DeleteIcon />
+                        </IconButton>
+              </Tooltip>
+             </CardActions>
+         </Card>
+           </div>
+           </div></Grid>
+           :
+            <>{addedTaxTotal?<>
+                         <Grid item xs={12} sm={12}>
+           <div className="centered-container">
+           <div className="editCard" >
+           <Card sx={{ minWidth: 275, backgroundColor: 'white' }}>
+             <CardContent>
+           
+             <TextField 
+                      defaultValue={tax}
+                      id="tax" 
+                      label="Tax in %" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused
+                      onChange={handleTaxChange}
+                      />
+             <TextField 
+                      defaultValue={total}
+                      id="total" 
+                      label="Total Amount" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused
+                      onChange={handleTotalChange}
+                     />
+            
+             </CardContent>
+             <CardActions>
+             <IconButton onClick={closeTaxTotal}
+                           size="small"
+                           edge="start"
+                           color="primary"
+                           variant="contained"
+                           aria-label="menu"
+                           
+                            sx={{ ml:'45%', bgcolor:'whitesmoke',marginBottom:"5px"}}>
+                        <SaveIcon />
+                        </IconButton>
+             </CardActions>
+         </Card>
+           </div>
+           </div></Grid>
 
-                      <Accordion defaultExpanded>
+            </>:<><Accordion defaultExpanded>
                         <AccordionSummary onClick={handleExpand}
                           expandIcon={<ExpandMoreIcon />}
                           aria-controls="panel1a-content"
@@ -747,9 +1084,10 @@ export default function InvoiceForm(props){
                                     <div className="tag">
                                   <Stack direction="row" spacing={1}>
                                     <Chip
-                                      avatar={<Avatar alt="catagory" src={tag}  />}
+                                      avatar={<Avatar><SellIcon/></Avatar>}
+                                      fontSize="small"
                                       label={category[index]}
-                                      variant="outlined"/>
+                                      color="primary" />
                                   </Stack>
                       
                       </div>
@@ -759,8 +1097,8 @@ export default function InvoiceForm(props){
                         {display==true ?
                      (
                       <>
-                          <Grid container={'true'} item sx={12}>
-                      <Grid item={'true'} md={4}>
+                      <Grid container spacing={1}>
+                      <Grid item sm={4}>
                       <TextField 
                       defaultValue={invoiceNo[index]}
                       key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
@@ -773,7 +1111,7 @@ export default function InvoiceForm(props){
                       color="primary" focused/>
                       </Grid>
 
-                      <Grid item={'true'} md={4}>
+                      <Grid item sm={4}>
                       <TextField 
                       defaultValue={phoneNo[index]}   
                       key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}                   
@@ -786,18 +1124,18 @@ export default function InvoiceForm(props){
                       color="primary" focused/>
                       </Grid>
 
-                      <Grid item={'true'}  md={4}>
+                      <Grid item  sm={4}>
                       
                       <div className="date">
-                      <LocalizationProvider dateAdapter={AdapterDayjs} margin="dense" color="primary">
+                      <LocalizationProvider dateAdapter={AdapterDayjs} >
                         <DatePicker 
                           label="Date"
                           value={date}
-                           autoFocus
+                          autoFocus
                           variant="outlined"
                           margin="dense"
-                          id="date"
-                          onChange={(newValue) => setDate(newValue)}/>
+                          onChange={(newValue) => setDate(newValue)}
+                          />
                       </LocalizationProvider></div>
                       </Grid>
                       </Grid> 
@@ -850,29 +1188,93 @@ export default function InvoiceForm(props){
                      ):(
 
                       <div>
-
                       </div>
                      )}
                       </AccordionDetails>
-                      </Accordion>
+                      </Accordion></>}
+             
+                      </> }
+
                       
                       {/* <ul class="tags blue">
                           <li><a href="#">Infrastructure <span>31</span></a></li> 
                       </ul> */}
                      
                      
-                   
-                        <div className="heading">
-                          <h5>Line items:</h5>
-                        </div>
+                     {openAdd?<>
+                        <Grid item xs={12} sm={12}>
+                        <div className="centered-container">
+                          <div className="editCard" >
+                          <Card sx={{ minWidth: 275, backgroundColor: 'white' }}>
+                          <CardContent>
+                            <IconButton onClick={closeAddItems}
+                                size="small"
+                                edge="start"
+                                color="primary"
+                                variant="contained"
+                                aria-label="menu"
+                           
+                            sx={{  bgcolor:'whitesmoke',marginBottom:"2px"}}>
+                        <CancelIcon />
+                        </IconButton>
+             <TextField 
                       
-                         
-                         
+                      label="Description" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused
+                      onChange={handleAddDeacriptionChange}
+                      />
+             <TextField 
+                      
+                      label="Amount" 
+                      variant="outlined"
+                      multiline
+                      maxRows={3}
+                      autoFocus
+                      margin="dense"
+                      type="text"
+                      fullWidth
+                      color="primary" focused
+                      onChange={handleAddAmountChange}
+                     />
+            
+             </CardContent>
+             <CardActions>
+               <Button size="small" variant="contained" color="primary" sx={{ ml:'45%'}} onClick={addItem}>ADD</Button>
+             </CardActions>
+         </Card>
+           </div>
+           </div></Grid>
                        
-                 
-                    
-                        <div style={{width: 'auto', height: height}} className="table-container" id="customers">
-                          <table style={{display: "block", height: height}}>
+                       </>:<>
+                       <Grid container>
+                          <Grid item sm={12}>
+                          <Stack direction="row" spacing={1}>
+                            <div className="heading" sx={{marginBottom:"5px",marginTop:"5px"}}>
+                              <h5  >Line Items: </h5></div>
+                                <div className="tag">
+                                  <Stack direction="row" spacing={1}>
+                                  <Chip
+                                      avatar={<Avatar><AddIcon/></Avatar>}
+                                      label="Add new item"
+                                      color="primary" 
+                                      onClick={openAddItem}
+                                      sx={{marginBottom:"5px",marginTop:"3px"}}
+                                      />
+                                  </Stack>  
+                                </div>
+                                  </Stack> 
+                          </Grid>
+                        
+                          <Grid item sm={12}>
+                          <div style={{ height: height}}  className="table-container" id="customers">
+                          <table style={{display: "block", height: height,tableLayout: 'fixed'}}>
                               <thead>
                                 <tr>
                                   <td><h6 style={{fontWeight:"bold"}}>S:NO</h6></td>
@@ -880,22 +1282,26 @@ export default function InvoiceForm(props){
                                   <td><h6 style={{fontWeight:"bold"}}>Amount</h6></td>
                                 </tr>
                               </thead>
-                              <tbody key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}>
-                              {bill_of_materials.bill_of_materials[0].description.map((item, i) => (
-                                <tr key={i} >
+                              <tbody >
+                              {editedDes.map((item, i) => (
+                                <tr key={i} onClick={()=>handleRowClick(i)} >
                                   <td>{i+1}</td>
-                                  <td>{bill_of_materials.bill_of_materials[0].description[i]}</td>
-                                  <td>{bill_of_materials.bill_of_materials[0].unit_price[i]}</td>
+                                  <td>{editedDes[i]} </td>
+                                  <td>{editedAmount[i]}</td>
                                 </tr>))}
-                              <tr style={{textAlign:"right"}}>
+                              <tr style={{textAlign:"right"}} onClick={editTaxTotal}>
                                 <td></td>
                                 <td>Total with {tax}% of tax:</td>
-                                <td>{bill_of_materials.total}</td>
+                                <td>{total}</td>
                               </tr>  
                                 
                               </tbody>
                             </table>
                           </div>
+                          </Grid>
+                        </Grid>
+                    
+                       </>}
                         <Button variant="contained" color="primary" sx={{ ml:'40%', marginTop:3}} onClick={handleClickOpen}>
                             Submit
                           <IconButton 
@@ -958,9 +1364,9 @@ export default function InvoiceForm(props){
                 </Grid>
                 </Grid>
 
-              </div>
+          </div>
 
         
-        </div>
+          </div>
         </Box>);
 }
