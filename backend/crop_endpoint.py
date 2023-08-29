@@ -23,7 +23,7 @@ lang_input_glob = 'english'
 croprouter = APIRouter()
 @croprouter.post('/crop')    
 async def crop(request:Request):
-    print("inside crop")
+    #print("inside crop") 
     fileslist = await request.json()
     image = fileslist['file_input']
     base_str = image

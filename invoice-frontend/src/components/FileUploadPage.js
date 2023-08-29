@@ -26,18 +26,29 @@ import InvoiceForm from "./invoiceForm.js";
 import uploadGIF from "../images/loader.gif";
 import axios, * as others from "axios";
 import InvoiceData from './InvoiceData';
+import { Navigate } from "react-router-dom";
 
+
+import { withRouter } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
+
+
+const history = createBrowserHistory();
 export default class FileUploadPage extends React.Component
 {      
+     
     constructor(props){
         super(props)
-
+       
         this.state={
            opened:false,
            uploadedFiles:[],
            resData:undefined,
            loader:false,
-           fileBase:[]
+           fileBase:[],
+           back:false,
+           backToParent:[],
+           openAlert:false
         }
      }
     
@@ -46,14 +57,24 @@ export default class FileUploadPage extends React.Component
             opened:false
          })
     }
+    handleNavigate = () => {
+      // Navigate to the "/dashboard" route
+      this.setState(
+        {
+          back:true
+        }
+      )
+     
+    };
+  
  
     uploadFiles=(file)=>{
 
         const newFiles = file;
-        console.log(newFiles);        
+       /*  console.log(newFiles);     */    
         this.setState((prevState) => ({ uploadedFiles: [...prevState.uploadedFiles, ...newFiles] }));
        
-        console.log(this.state.uploadedFiles)
+       /*  console.log(this.state.uploadedFiles) */
      }
     // File upload icon selection
     getFileIcon = (fileType) => {
@@ -71,14 +92,15 @@ export default class FileUploadPage extends React.Component
 
       handleClose=()=>{
         this.setState({
-            opened:false
+            opened:false,
+            openAlert:false
          })
     }
     //uploaded file deletion
      deleteFiles=(index)=>{
         const updatedFiles=[...this.state.uploadedFiles]
         updatedFiles.splice(index,1)
-        console.log("locally updated"+updatedFiles)
+       /*  console.log("locally updated"+updatedFiles) */
         this.setState({
             uploadedFiles:updatedFiles
         }) 
@@ -134,28 +156,19 @@ export default class FileUploadPage extends React.Component
                       },
                     })
                     .then((response) => {
-                      console.log(response.message)
+                     /*  console.log(response.message) */
                       let data = response.data.response;
-                      console.log("response", data);
-                      
+                     /*  console.log("response", data);
+                       */
                       this.setState({
                         resData:data
                       })
                     })
                     .catch((error)=> {
                       
-                      toast.error("Something Went Wrong. Try again", {
-                        position: "bottom-left",
-                        autoClose: 2000,
-                        hideProgressBar: true,
-                        closeOnClick: true,
-                        pauseOnHover: true,
-                        draggable: true,
-                        progress: undefined,
-                        theme: "colored",
-                        });
-                        
+                      
                         this.setState({
+                            openAlert:true,
                             uploadedFiles:[], 
                             loader:false
                         })
@@ -175,12 +188,18 @@ export default class FileUploadPage extends React.Component
               });
     }
      
-    
+    updateParentState = () => {
+      this.setState({ resData:undefined, fileBase:[] ,loader:false,uploadedFiles:[]});
+    };
     
 render(){  
 return (
+  <Box sx={{ display:"block" }}>
     <div className="main">
         {/* if !resData and fileBase are empty render outerPart-1 else outerPart-2 */}    
+        { this.state.back===true?<Navigate to="/dashboard" replace={true} />:<>
+        
+        </>}
         {!this.state.resData && this.state.fileBase ? (
         /* outerPart-1 */    
         <>
@@ -189,30 +208,33 @@ return (
         <>
         {/*  innerPart-1  */}  
          <div className='uploadpage'>
-
-                <div className='navbar'>
-                        <IconButton 
+            <Grid container >
+              <Grid item  sm={1}>
+              <div className='navbar'>
+                        <IconButton onClick={this.handleNavigate}
                             size="large"
                             edge="start"
                             color="primary"
                             variant="contained"
                             aria-label="menu"
 
-                            sx={{ ml: 2, bgcolor:'whitesmoke'}}>
+                            sx={{ ml: 2, bgcolor:'whitesmoke',mt:5}}>
 
                         <ArrowBackIcon />
 
                         </IconButton>
                 </div> 
-                <div className='form'>
+              </Grid>
+              <Grid item  sm={11}>
+              <div className='form'>
                     <div className='wborder'>
                       <br></br>
                     <div className="title">Upload</div>
                         <div className="file-card">
                             <div className="file-inputs">
                             {/* // drag and drop */}
-                            <Grid container>
-                            <Grid item >
+                            <Grid item container={true}>
+                            <Grid item={true} sm={12}>
                                 <DragAndDropFileInput onFileSelected={this.uploadFiles} /> 
                             </Grid>
                             </Grid>                             
@@ -262,12 +284,22 @@ return (
                              </Snackbar>
                             </Stack>  
 
+
+                            <Snackbar open={this.state.openAlert} autoHideDuration={6000} onClose={this.handleClose}>
+                              <Alert onClose={this.handleClose} severity="error" sx={{ width: '100%' }}>
+                                  Somthing went wrong! please try again.
+                              </Alert>
+      </Snackbar>
             </div>
             <br></br>
             <br></br>
             <br></br>
             <br></br>
             </div>
+              </Grid>
+            </Grid>
+               
+               
             </div>
             
         
@@ -291,10 +323,13 @@ return (
       
         /* outerPart-2 */    
         (
-            <InvoiceForm images={this.state.fileBase} responsedata={this.state.resData} ></InvoiceForm>
+            <InvoiceForm images={this.state.fileBase} responsedata={this.state.resData} updateParentState={this.updateParentState} ></InvoiceForm>
         )}
         
     
-    </div>
+    </div></Box>
   );
-}}
+}
+
+
+}

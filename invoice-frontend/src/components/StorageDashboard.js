@@ -5,7 +5,7 @@ import { PieChart, Pie, Legend, Sector, Cell, ResponsiveContainer, BarChart, Bar
   Area} from 'recharts';
 import user from "../images/user.png";
 import Nav from "./reusable/navBar";
-
+import URI from "../utils/request";
 function StorageDashboard() {
 
   // var userCredentials = JSON.parse(localStorage.getItem("userCredentials"))
@@ -14,7 +14,7 @@ function StorageDashboard() {
   const [PieChartValue, setPieChartValue] = useState([]);
   const [LineChartValue, setLineChartValue] = useState([]);
   const [RecentActivity,setRecentActivity] = useState([]);
-  var URI = "http://172.174.180.163:5000/"
+ 
 
     const fetchPiechartData = async(username)=>{
         await axios.post(URI+"stats/StorageDetails",{
@@ -22,13 +22,13 @@ function StorageDashboard() {
         })
         .then(function (response) {
                 var ChartData = response.data;
-                console.log(ChartData);
+               /*  console.log(ChartData); */
                 setPieChartValue(response.data);
-                console.log(response.data);
+               /*  console.log(response.data); */
                 
               })
-              .catch(function (response) {
-                console.log(response);
+              .catch(function (error) {
+                console.log(error);
               });
             }
   useEffect(() => {
@@ -99,12 +99,12 @@ function StorageDashboard() {
       .then(function (response) {
 
        setRecentActivity(response.data);
-        console.log(response.data);
+      /*   console.log(response.data); */
       
         
       })
       .catch(function (response) {
-        console.log(response);
+         console.log(response); 
       });
     }
 

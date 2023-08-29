@@ -148,7 +148,7 @@ def predict(file_input,lang_input):
     # image3 = cv2.cvtColor(image3, cv2.COLOR_RGB2BGR)
     # cv2.imwrite("sample.png",image2)
     #print("image2",image2)
-    print("model selected: ",creds.modelToLoad)
+    #print("model selected: ",creds.modelToLoad)
     values, img = start("best_1000.pt", image2)
     COLORS = np.random.uniform(0, 255, size=(len(classes), 3))
     dw = image2.shape[1]
@@ -196,7 +196,7 @@ def predict(file_input,lang_input):
             predicted_response['invoice_number'] = invoice_number(cropped_image,lang_input)
         elif label == 'date':
             date_res = date_extract(cropped_image,lang_input)
-            print("date_res",date_res)
+            """ print("date_res",date_res) """
             if list(date_res.keys())[0]=="invoice_date":
                predicted_response['invoice_date'] = date_res['invoice_date']
             if list(date_res.keys())[0]=="due_date":

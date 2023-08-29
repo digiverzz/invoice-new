@@ -4,7 +4,10 @@ span.Resizer.vertical{
   background: black;
 }
 
-
+.main-div{
+  display: flex;
+  min-height: 50vh
+}
 
 .large-screen{
   display:block
@@ -28,7 +31,13 @@ span.Resizer.vertical{
 
 .image-shower{
   background-color:rgba(162, 155, 155, 0.239);
-  height:1200px;
+  height:max-content;
+  padding-top: 20px;
+  overflow: 'auto'
+}
+.img-show{
+  background-color:rgba(162, 155, 155, 0.239);
+  height:1000px;
   padding-top: 20px;
   overflow: 'auto'
 }
@@ -43,10 +52,11 @@ span.Resizer.vertical{
 }
 
 .date{
-  top: 200px;
+margin-top: 8px;
+
 }
 
-@media only screen and (max-width: 1000px) {
+@media only screen and (max-width: 1160px) {
   .large-screen{
     display:none
   }
@@ -72,8 +82,10 @@ span.Resizer.vertical{
 }
 
 
-
-
+.blur {
+  backdrop-filter: blur(8px); /* Add the blur effect */
+  pointer-events: none; /* This allows click events to pass through the blurred container */
+}
 
 
 
@@ -81,6 +93,7 @@ span.Resizer.vertical{
   margin: 50px auto;
   width: 380px;
 }
+
 
 .tag {
   size: 5px;
@@ -224,18 +237,48 @@ span.Resizer.vertical{
 
 
 .table-container {
-  width: 100%;
-  height: auto;
-  overflow-x: auto; /* Add horizontal scrollbar if needed */
-}
+  table-layout: fixed;
+  overflow-x:auto; 
+  width: 100vh;
+} 
 
-.table-container .MuiDataGrid-root {
-  /* Add any additional styles for the DataGrid here */
-}
 
-@media (max-width: 600px) {
-  /* Adjust styles for screens with width 600px or smaller */
+
+@media (max-width: 1000px) {
+  
   .table-container .MuiDataGrid-root {
-    font-size: 12px; /* Decrease font size for better visibility on small screens */
+    font-size: 12px; 
   }
+}
+
+.large-screen {
+  width: 100%; /* Full width of the parent container */
+  max-width: 100%; 
+}
+
+#customers {
+  font-family: Arial, Helvetica, sans-serif;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+#customers td, #customers th {
+  border: 1.5px solid #0000FF;
+  padding: 8px;
+}
+
+#customers tr:nth-child(even){background-color: #f2f2f2;}
+
+#customers tr:hover {background-color: #ddd;}
+
+
+
+.editCard {
+  /* Add any additional styling for your card */
+   /* Adjust the width as needed */
+  padding: 20px;
+}
+
+table {
+  table-layout: fixed;
 }

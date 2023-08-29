@@ -44,8 +44,8 @@ function Login() {
     useEffect(()=>{
      if (localStorage.getItem('uid')){
         navigate('/dashboard')
-      } 
-      /* localStorage.clear() */
+      }  
+       /* localStorage.clear()  */
      
     },[]);
     //   const themeDark = createTheme({
@@ -66,11 +66,11 @@ function Login() {
     const handleSubmit = async (event) => {
       event.preventDefault();
       const data = new FormData(event.currentTarget);
-      console.log(event.currentTarget)
+     /*  console.log(event.currentTarget)
       console.log({
         uid: data.get("uid"),
         password: data.get("password"),
-      }); 
+      });  */
       let res = {
         data: {
           message: "Failure",
@@ -80,7 +80,7 @@ function Login() {
       data.append("uid",data.get("uid"))
       data.append("password",data.get("password"))
       res = await axios.post(URI + "login", data);
-      console.log("login submit res",res)
+     /*  console.log("login submit res",res) */
       if (res.data.message == "Success") {
         setalertcontent("Login Successfull")
         setshowalert(true)

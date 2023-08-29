@@ -306,11 +306,11 @@ function HeadDashboard() {
       formData1.append("l3", temp.l3);
       formData1.append("data", JSON.stringify(data1));
       formData1.append("token", localStorage.getItem("token"));
-      console.log("temp",temp)
+      /* console.log("temp",temp) */
       let res = await axios.post(URI + "update", formData1);
     } catch (error) {
       window.alert("Some thing went wrong please try again");
-      console.log(error);
+     /*  console.log(error); */
       window.location.reload();
     }
     // window.location.reload();
@@ -378,7 +378,7 @@ function HeadDashboard() {
       let res = await axios.post(URI + "update", formData1);
     } catch (error) {
       window.alert("Some thing went wrong please try again");
-      console.log(error);
+     /*  console.log(error); */
       window.location.reload();
     }
     setOpenmodal(false)
@@ -398,7 +398,7 @@ function HeadDashboard() {
     setOpen(false);
   };
   const handlesearch = () =>{
-    console.log("hi at handle search")
+   /*  console.log("hi at handle search") */
     navigate("/filemanager")
   }
   const Item = styled(Paper)(({ theme }) => ({
@@ -731,10 +731,10 @@ function HeadDashboard() {
         });
       }
       setWholeData(res.data);
-      console.log("response data",res.data)
+     /*  console.log("response data",res.data) */
         const tempTable = [];
         for(let i=0;i<res['data'].length;i++){
-          console.log(JSON.parse(res['data'][i].data).category)
+         /*  console.log(JSON.parse(res['data'][i].data).category) */
           const cat = JSON.parse(res['data'][i].data).category
           const parseddata = JSON.parse(res['data'][i].data)
           tempTable.push({
@@ -770,7 +770,7 @@ function HeadDashboard() {
                 },
               ],
           })
-          console.log(tempTable)
+         /*  console.log(tempTable) */
           if(cat=='Automotive'){
             Automotive+=1
           }
@@ -803,7 +803,7 @@ function HeadDashboard() {
           }
         }
 
-      console.log("approved",acctotal)
+     /*  console.log("approved",acctotal) */
       setTabData(tempTable)
       setTotal((acctot + rejtot + pentot).toFixed(2));
       setaccTotal(acctot.toFixed(2));
@@ -1178,7 +1178,7 @@ function HeadDashboard() {
               <StyledTableCell align="left" style={{width: 200}}><Chip label={row.status} color={row.status=="Accepted" ? "success" : row.status=="Rejected" ? "error" : "warning"} /></StyledTableCell>
               <StyledTableCell align="left" style={{width: 200}}>{row.currency}</StyledTableCell>
               <StyledTableCell align="left" style={{width: 200}}><IconButton color="info" onClick={()=>{
-                console.log("button click", row)
+               /*  console.log("button click", row) */
                 handleModal(row)
               }}><FileOpenIcon /></IconButton></StyledTableCell>
             </StyledTableRow>

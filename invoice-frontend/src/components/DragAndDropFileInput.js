@@ -37,7 +37,7 @@ function DragAndDropFileInput({ onFileSelected }) {
       return;
     }
     const file = Array.from(files);
-    console.log(file);
+    /* console.log(file); */
     if(onFileSelected)
       onFileSelected(file);
 
@@ -58,33 +58,47 @@ function DragAndDropFileInput({ onFileSelected }) {
         alignItems: 'center',
         justifyContent:'center',
         cursor: 'pointer',
-        width: '720px',
+        width: '590px',
+        marginLeft:"1em",
         minheight:'200px',
         fontFamily:'sans-serif'
       }}
     >
-      <FontAwesomeIcon icon={faCloudArrowUp} fade  size="2xl" style={{color:'#1e88e5',height:'90'}} />
-      <br></br>
-       <div  style={{fontWeight: 'bold'}}>Drag & drop a file here or</div>
+      <Grid container >
+        <Grid item xs={12}>
+          <div> <FontAwesomeIcon icon={faCloudArrowUp} fade  size="2xl" style={{color:'#1e88e5',height:'90'}} /></div>
+        </Grid>
+       
+        <Grid item xs={12}>
+        <div  style={{fontWeight: 'bold'}}>Drag & drop a file here or</div>
+        </Grid>
+<Button variant="text" color="primary" component="label" sx={{ mr: 2,display:'flex',width:"700px"}}>
+  Browse
+  <input
+    type="file"
+    accept=".jpg, .png, .pdf ,.jpeg"
+    multiple
+    style={{ display: 'none' }}
+    onChange={(event) => {
+      const file = Array.from(event.target.files);
+        onFileSelected(file);
+    }}
+  />
+</Button>
 
-      <Button variant="text" color="primary" component="label" sx={{ mr: 2,display:'flex'}}>
-        Browse
-        <input
-          type="file"
-          accept=".jpg, .png, .pdf ,.jpeg"
-          multiple
-          style={{ display: 'none' }}
-          onChange={(event) => {
-            const file = Array.from(event.target.files);
-              onFileSelected(file);
-          }}
-        />
-      </Button>
-
-            <div style={{color:'gray'}}>
+      
+        <Grid item xs={12}>
+        <div style={{color:'gray'}}>
               <p>Supported formates JPEG, PDF, JPG, PNG </p> </div>
 
-           </div>
+          
+        </Grid>
+      </Grid>
+      </div>
+   
+
+      
+            
   );
 }
 

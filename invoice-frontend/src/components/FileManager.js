@@ -38,9 +38,9 @@ import Typography from "@mui/material/Typography";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { makeStyles } from "@mui/styles";
 import URI from "../utils/request";
-
-import CircularProgress from "@mui/material/CircularProgress";
 import InvoiceData from "./InvoiceData";
+import CircularProgress from "@mui/material/CircularProgress";
+import InvoiceForm from "./invoiceForm";
 
 const placeholders = ["Search for...", "Find...", "Explore..."];
 
@@ -153,7 +153,7 @@ const getExtension = (filename) => {
 };
 
 const fileClick = (file) => {
-  console.log(file["name"]);
+/*   console.log(file["name"]); */
   previewFile(file["name"], file["dataurl"]);
 };
 
@@ -214,7 +214,7 @@ export default function FileManager() {
     const decoder = new TextDecoder("utf-8");
 
     reader.read().then(function processResult(result) {
-      console.log(result);
+      /* console.log(result); */
       if (result.done) {
         return;
       }
@@ -227,8 +227,8 @@ export default function FileManager() {
           if (item.name == data["filename"]) {
             var temp = item;
             temp["status"] = "done";
-
-            console.log("status updated...", temp);
+/* 
+            console.log("status updated...", temp); */
             return temp;
           }
           return item;
@@ -267,7 +267,7 @@ export default function FileManager() {
   const sort = () => {
     // setloading(true)
     setTimeout(() => { }, 300);
-    console.log("sorting...", currentfield, isdesc);
+ /*    console.log("sorting...", currentfield, isdesc); */
     const changer = isdesc ? -1 : 1;
 
     setfileList(
@@ -285,7 +285,7 @@ export default function FileManager() {
   };
 
   const searching = async (e) => {
-    console.log(e.target.value);
+  /*   console.log(e.target.value); */
     setloading(true)
     var temp = [];
     const response = await axios.post(URI + "elastic/search", {
@@ -305,7 +305,7 @@ export default function FileManager() {
   };
 
   async function fetchData() {
-    console.log("inside fetchData");
+   /*  console.log("inside fetchData"); */
     setloading(true);
     try {
       const response = await axios.post(
@@ -335,7 +335,7 @@ export default function FileManager() {
 
       // console.log("setted false")
     } catch (error) {
-      console.error(error);
+   /*    console.error(error); */
     }
   }
   useEffect(() => {
@@ -352,13 +352,13 @@ export default function FileManager() {
   }, []);
 
   useEffect(() => {
-    console.log("change filter...", currentfield, isdesc);
+ 
     sort();
   }, [currentfield, isdesc]);
 
   useEffect(() => {
     if (uploadedFile.length > 0) {
-      console.log("change in uploaded file", uploadedFile);
+     /*  console.log("change in uploaded file", uploadedFile); */
       fetchData();
     }
   }, [uploadedFile]);
@@ -400,7 +400,7 @@ export default function FileManager() {
   };
 
   const handleuploadmul = (e) => {
-    console.log(e.target.files);
+   /*  console.log(e.target.files); */
     const files = Array.from(e.target.files);
     const filesasdict = [];
     const dataUrls = [];
@@ -429,7 +429,7 @@ export default function FileManager() {
           });
           // axios.post("http://127.0.0.1:5000/elastic/upload",{"filename":FileName,"dataurl":dataUrls,"size":FileSize,"username":"emp001","status":"pending"})
           setuploadedFile(filesasdict);
-          console.log(FileName);
+         /*  console.log(FileName); */
           // navigate('/dashboard');
         }
       };
@@ -442,7 +442,7 @@ export default function FileManager() {
     // setCurrentName(name)
   };
   const handleClosesort = async (fname, index) => {
-    console.log("sorting....");
+   /*  console.log("sorting...."); */
     setfieldName((fieldName) => {
       var temp = fieldName;
       temp[index] = temp[0];
@@ -486,7 +486,7 @@ export default function FileManager() {
   const handleDelete = async () => {
     setAnchorEl(false);
     setloading(true);
-    console.log(currentName, fileList);
+   /*  console.log(currentName, fileList); */
 
     const response = await axios.post(URI + "elastic/delete", {
       filename: currentName,
@@ -499,14 +499,16 @@ export default function FileManager() {
         // console.log(item)
         return item.name != currentName;
       });
-      console.log(remp);
+      /* console.log(remp); */
       return remp;
     });
     // setSeed(Math.random())
     setloading(false);
     // window.location.reload(false);
   };
-
+ const updateParentState = () => {
+     setResdata([])
+  };
   const placeholder = placeholders[placeholderIndex];
   return (
     <>
@@ -928,7 +930,7 @@ export default function FileManager() {
           </Menu>
         </Box>
       ) : (
-        <InvoiceData images={fileBase} responsedata={resData} />
+        <InvoiceForm images={fileBase} responsedata={resData} updateParentState={updateParentState} />
       )}
     </>
   );

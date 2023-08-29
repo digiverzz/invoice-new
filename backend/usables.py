@@ -233,7 +233,7 @@ async def elastic_upload(username:str,status:str,filename:list,Size:list,dataurl
 def predict_from_mail():
     data = fetchMail()
     response = []
-    uri = "mongodb+srv://digiverz:digiverz@cluster0.ngqcelw.mongodb.net/?retryWrites=true&w=majority"
+    uri = creds.uri
     client = pymongo.MongoClient(uri)
     database = client['invoice']
     #print("data",len(data))
@@ -282,7 +282,7 @@ def UploadFileHdfs(file,filename):
     path = os.getenv('hdfspath')
     def do():
         creds.hdfs.create_file(path+f'/{filename}',file)
-        print(f"{filename} saved in hdfs..")
+        """ print(f"{filename} saved in hdfs..") """
         event.set()
     
     event = threading.Event()
@@ -291,7 +291,7 @@ def UploadFileHdfs(file,filename):
     thread.start()
     event.wait(timeout=2)
     if not event.is_set():
-        print(f"Failed to save {filename} in hdfs..")
+       """  print(f"Failed to save {filename} in hdfs..") """
 
 
 def dataurltobytes(url):

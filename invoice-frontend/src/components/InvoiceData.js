@@ -57,7 +57,7 @@ import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 
 export default function InvoiceData(props) {
-  console.log("props", props);
+  /* console.log("props", props); */
   const [itemdata, setItemData] = useState([]);
   //table
   const [tableData, setTableData] = useState(() => props.responsedata);
@@ -95,7 +95,7 @@ export default function InvoiceData(props) {
   };
 
   const handleClickOpen = () => {
-    console.log("row", selectedRow);
+   /*  console.log("row", selectedRow); */
     setOpen(true);
     setAnchorEl(null);
   };
@@ -108,11 +108,11 @@ export default function InvoiceData(props) {
   };
 
   const saveeditedRow = async () => {
-    console.log("tableclickedrow", tableData[indexupdate][indexupdate2]);
+ /*    console.log("tableclickedrow", tableData[indexupdate][indexupdate2]); */
     tableData[indexupdate][indexupdate2] = selectedRow;
     setTableData([...tableData]);
     props.responsedata[indexupdate][selectedRow.label] = selectedRow.text;
-    console.log("tabledata after edit", tableData);
+   /*  console.log("tabledata after edit", tableData); */
     setOpen(false);
   };
   const base64toBlob = (data) => {
@@ -379,11 +379,11 @@ export default function InvoiceData(props) {
     tempaddrow[customlabel] = customvalue;
     tempaddrowtabledata["label"] = customlabel;
     tempaddrowtabledata["text"] = customvalue;
-    console.log("tempaddrow", tempaddrow);
-    console.log("tempaddrowtabledata", tempaddrowtabledata);
+  /*   console.log("tempaddrow", tempaddrow);
+    console.log("tempaddrowtabledata", tempaddrowtabledata); */
     props.responsedata[addIndexupdate]["custom"].push(tempaddrow);
     tableData[addIndexupdate].push(tempaddrowtabledata);
-    console.log("response after row added", props.responsedata);
+   /*  console.log("response after row added", props.responsedata); */
     setOpencreatemodal(false);
   };
 
@@ -394,13 +394,13 @@ export default function InvoiceData(props) {
   };
 
   const handleImagecropped = (croppedImage) => {
-    console.log("croppedImage", croppedImage);
+ /*    console.log("croppedImage", croppedImage); */
     setCroppedImage(croppedImage);
     selectedRow["text"] = croppedImage;
     tableData[indexupdate][indexupdate2] = selectedRow;
     setTableData([...tableData]);
     props.responsedata[indexupdate][selectedRow.label] = selectedRow.text;
-    console.log("tabledata after edit", tableData);
+  /*   console.log("tabledata after edit", tableData); */
   };
 
   return (
@@ -708,7 +708,7 @@ export default function InvoiceData(props) {
                       onRowClicked={(e) => {
                         handleButtonClick(e, invoicetabledata[page]);
                         setTableIndexupdate(i);
-                        console.log("tableindexupdate", tableindexupdate);
+                     /*    console.log("tableindexupdate", tableindexupdate); */
                       }}
                     />
                     <Dialog

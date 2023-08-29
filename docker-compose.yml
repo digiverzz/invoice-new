@@ -2,6 +2,7 @@ version: "3.9"
 services:
   server:
     build:  ./backend
+    restart: always
     command: uvicorn app:app --root-path / --proxy-headers --host 0.0.0.0 --port 5000
     ports: 
     - "5000:5000"
@@ -11,6 +12,7 @@ services:
       FLASK_ENV: development
   web:
     build: ./invoice-frontend
+    restart: always
     ports: 
       - "3000:3000"
     # volumes: 
