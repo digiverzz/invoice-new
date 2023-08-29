@@ -57,7 +57,7 @@ import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 export default function InvoiceForm(props){
   
   /***********************____Defining let,const,state & var____****************************/
-  console.log(props.responsedata);
+
   /* Used to navigate through react component */
   const navigate = useNavigate();
   /* States used in this component */
@@ -273,7 +273,7 @@ export default function InvoiceForm(props){
   const handleAddAmountChange=(event)=>{
       
       userGivenAmount=parseFloat(event.target.value)
-      console.log(typeof(handleAddAmountChange));
+     
   }
 
   const handleDescriptionChange = (event) => {
