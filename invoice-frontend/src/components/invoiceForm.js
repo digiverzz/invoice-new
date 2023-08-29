@@ -7,6 +7,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs'
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import { parse } from 'date-fns';
 import './invoiceFormStyles.css';
 import 'split-pane-react/esm/themes/default.css'
 import AppBar from '@mui/material/AppBar';
@@ -48,13 +49,15 @@ import AddIcon from '@mui/icons-material/Add';
 import SellIcon from '@mui/icons-material/Sell';
 import SaveIcon from '@mui/icons-material/Save';
 import DeleteIcon from '@mui/icons-material/Delete';
+import { type } from "jquery";
+import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 
 
 /***********************InvoiceForm component using function approach****************************/
 export default function InvoiceForm(props){
   
   /***********************____Defining let,const,state & var____****************************/
-
+  console.log(props.responsedata);
   /* Used to navigate through react component */
   const navigate = useNavigate();
   /* States used in this component */
@@ -68,7 +71,7 @@ export default function InvoiceForm(props){
   const [phoneNo,setPhoneNo]=useState([])
   const [des,setDes]=useState([])
   const [category,setCategory]=useState([])
-  const [date, setDate] = useState(dayjs(new Date()));
+  const [date, setDate] = useState(null);
   const [display,setDisplay]=useState(false)
   const [numPages, setNumPages] = useState(null);
   const [pageNumber, setPageNumber] = useState(1);
@@ -196,12 +199,12 @@ export default function InvoiceForm(props){
 
   function incIndex(){
     setIndex(index+1)
-   /*  console.log("incremented: ",index) */
+   
   }
 
   function decIndex(){
     setIndex(index-1)
-    /* console.log("Decremented: ",index) */
+   
   }
 
   function backButton(){
@@ -268,8 +271,9 @@ export default function InvoiceForm(props){
    }
 
   const handleAddAmountChange=(event)=>{
-      userGivenAmount=event.target.value
       
+      userGivenAmount=parseFloat(event.target.value)
+      console.log(typeof(handleAddAmountChange));
   }
 
   const handleDescriptionChange = (event) => {
@@ -280,7 +284,7 @@ export default function InvoiceForm(props){
 
   const handleAmountChange = (event) => {
     const updatedArray = [...editedAmount]; 
-    updatedArray[editIndex] = event.target.value; 
+    updatedArray[editIndex] = parseFloat(event.target.value); 
     setEditedAmount(updatedArray);
   }
 
@@ -296,8 +300,9 @@ export default function InvoiceForm(props){
 
    /* This `useEffect()` is executed only when there is changes on tableDta here all the initial values are assigned through state variable*/
    useEffect(()=>{
+    
     if (tableData && tableData.length > 0) {
-     
+      
       setcompanyName((prevCompanyNames) => prevCompanyNames.concat(tableData.map((item) => item.company_name)))
       setFromAddress((prevFromAddress) => prevFromAddress.concat(tableData.map((item) => item.from_address)))
       setToAddress((prevToAddress) => prevToAddress.concat(tableData.map((item) => item.to_address)))
@@ -308,16 +313,43 @@ export default function InvoiceForm(props){
       setDiscount((prevDiscount) => prevDiscount.concat(tableData.map((item) => item.discount)))
       setPrice((prevPrice)=>prevPrice.concat(tableData.map((item)=>item.bill_of_materials[0].unit_price)))
       setEditedDes(bill_of_materials.bill_of_materials[0].description)
-      setEditedAmount(bill_of_materials.bill_of_materials[0].unit_price)
-      setTotal(bill_of_materials.total)
+    
+      const editedAmountFloats = bill_of_materials.bill_of_materials[0].unit_price.map(amountStr => {
+        const amountWithoutCommas = amountStr.replace(/[^0-9.]/g, '');
+        return parseFloat(amountWithoutCommas); 
+      });
+      setEditedAmount(editedAmountFloats);  
+      const initialValue = 0;
+      setTotal(editedAmount.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue))
+      
       if(!bill_of_materials.tax){
         setTax(0)
       }else{
         setTax(bill_of_materials.tax)
       }
+      if(!bill_of_materials.invoice_date){
+         setDate(dayjs(new Date()))
+      }
+      else{
+        let invoiceDate = dayjs(bill_of_materials.invoice_date, 'DD/MM/YYYY');
+        setDate(invoiceDate);
+      }
     }  
    }, [tableData])
    
+  useEffect(()=>{
+   
+      const initialValue = 0;
+      setTotal(editedAmount.reduce((accumulator, currentValue) => accumulator + currentValue, initialValue))
+  },[editedAmount])
+
+   if(editedAmount.length <editedDes.length){
+    let trim=editedDes.length - editedAmount.length 
+    if (trim > 0) {
+      editedDes.splice(-trim); // Remove 'trim' number of elements from the end
+    }
+  }
+ 
    
    /************************************____Return statement____******************************************/
 
@@ -578,7 +610,7 @@ export default function InvoiceForm(props){
                      (
                       <>
                       <Grid container spacing={1}>
-                      <Grid item sm={4}>
+                      <Grid item sm={6}>
                       <TextField 
                       defaultValue={invoiceNo[index]}
                       key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
@@ -588,10 +620,10 @@ export default function InvoiceForm(props){
                       autoFocus
                       margin="dense"
                       type="text"
-                      color="primary" focused/>
+                      color="primary" fullWidth focused/>
                       </Grid>
 
-                      <Grid item sm={4}>
+                      {/* <Grid item sm={4}>
                       <TextField 
                       defaultValue={phoneNo[index]}   
                       key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}                   
@@ -602,9 +634,9 @@ export default function InvoiceForm(props){
                       margin="dense"
                       type="text"
                       color="primary" focused/>
-                      </Grid>
+                      </Grid> */}
 
-                      <Grid item  sm={4}>
+                      <Grid item  sm={6}>
                       
                       <div className="date">
                       <LocalizationProvider dateAdapter={AdapterDayjs} >
@@ -697,7 +729,7 @@ export default function InvoiceForm(props){
                                 color="primary"
                                 variant="contained"
                                 aria-label="menu"
-                           
+                                
                             sx={{  bgcolor:'whitesmoke',marginBottom:"2px"}}>
                         <CancelIcon />
                         </IconButton>
@@ -743,22 +775,30 @@ export default function InvoiceForm(props){
                             <div className="heading" sx={{marginBottom:"5px",marginTop:"5px"}}>
                               <h5  >Line Items: </h5></div>
                                 <div className="tag">
-                                  <Stack direction="row" spacing={1}>
-                                  <Chip
-                                      avatar={<Avatar><AddIcon/></Avatar>}
-                                      label="Add new item"
-                                      color="primary" 
-                                      onClick={openAddItem}
-                                      sx={{marginBottom:"5px",marginTop:"3px"}}
-                                      />
-                                  </Stack>  
+                                <Stack direction="row" spacing={1}>
+                                <Tooltip title="Add new Item">
+                                <IconButton onClick={openAddItem}
+                                size="small"
+                                edge="start"
+                                color="primary"
+                                variant="contained"
+                                aria-label="menu"
+                                
+                            sx={{ color:"primary",marginLeft:"2px"}}>
+                        <AddCircleOutlineIcon />
+                        </IconButton></Tooltip></Stack> 
                                 </div>
                                   </Stack> 
                           </Grid>
                         
                           <Grid item sm={12}>
-                          <div style={{ height: height}}  className="table-container" id="customers">
-                          <table style={{display: "block", height: height,tableLayout: 'fixed'}}>
+                          <div style={{ height: height }}  className="table-container" id="customers">
+                          <table style={{ height: height,width:'100%'}}>
+                          <colgroup>
+                            <col style={{ width: '10%' }} /> 
+                            <col style={{ width: '80%' }} />
+                            <col style={{ width: '15%' }} /> 
+                           </colgroup> 
                               <thead>
                                 <tr>
                                   <td><h6 style={{fontWeight:"bold"}}>S:NO</h6></td>
@@ -1098,7 +1138,7 @@ export default function InvoiceForm(props){
                      (
                       <>
                       <Grid container spacing={1}>
-                      <Grid item sm={4}>
+                      <Grid item sm={6}>
                       <TextField 
                       defaultValue={invoiceNo[index]}
                       key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}
@@ -1108,10 +1148,10 @@ export default function InvoiceForm(props){
                       autoFocus
                       margin="dense"
                       type="text"
-                      color="primary" focused/>
+                      color="primary" fullWidth focused/>
                       </Grid>
 
-                      <Grid item sm={4}>
+                     {/*  <Grid item sm={4}>
                       <TextField 
                       defaultValue={phoneNo[index]}   
                       key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}                   
@@ -1122,9 +1162,9 @@ export default function InvoiceForm(props){
                       margin="dense"
                       type="text"
                       color="primary" focused/>
-                      </Grid>
+                      </Grid> */}
 
-                      <Grid item  sm={4}>
+                      <Grid item  sm={6}>
                       
                       <div className="date">
                       <LocalizationProvider dateAdapter={AdapterDayjs} >
@@ -1135,7 +1175,7 @@ export default function InvoiceForm(props){
                           variant="outlined"
                           margin="dense"
                           onChange={(newValue) => setDate(newValue)}
-                          />
+                          fullWidth />
                       </LocalizationProvider></div>
                       </Grid>
                       </Grid> 
@@ -1260,21 +1300,30 @@ export default function InvoiceForm(props){
                               <h5  >Line Items: </h5></div>
                                 <div className="tag">
                                   <Stack direction="row" spacing={1}>
-                                  <Chip
-                                      avatar={<Avatar><AddIcon/></Avatar>}
-                                      label="Add new item"
-                                      color="primary" 
-                                      onClick={openAddItem}
-                                      sx={{marginBottom:"5px",marginTop:"3px"}}
-                                      />
+                                  <Tooltip title="Add new Item">
+                                <IconButton onClick={openAddItem}
+                                size="small"
+                                edge="start"
+                                color="primary"
+                                variant="contained"
+                                aria-label="menu"
+                                
+                            sx={{ color:"primary",marginLeft:"2px"}}>
+                        <AddCircleOutlineIcon />
+                        </IconButton></Tooltip>
                                   </Stack>  
                                 </div>
                                   </Stack> 
                           </Grid>
                         
-                          <Grid item sm={12}>
-                          <div style={{ height: height}}  className="table-container" id="customers">
-                          <table style={{display: "block", height: height,tableLayout: 'fixed'}}>
+                          
+                          <div style={{ height: height }}  className="table-container" id="customers">
+                          <table style={{ height: height,width:'100%'}}  key={"okayg_" + (10000 + Math.random() * (1000000 - 10000))}>
+                          <colgroup>
+                            <col style={{ width: '10%' }} /> 
+                            <col style={{ width: '80%' }} />
+                            <col style={{ width: '15%' }} /> 
+                           </colgroup> 
                               <thead>
                                 <tr>
                                   <td><h6 style={{fontWeight:"bold"}}>S:NO</h6></td>
@@ -1283,7 +1332,7 @@ export default function InvoiceForm(props){
                                 </tr>
                               </thead>
                               <tbody >
-                              {editedDes.map((item, i) => (
+                              {editedAmount.map((item, i) => (
                                 <tr key={i} onClick={()=>handleRowClick(i)} >
                                   <td>{i+1}</td>
                                   <td>{editedDes[i]} </td>
@@ -1298,7 +1347,7 @@ export default function InvoiceForm(props){
                               </tbody>
                             </table>
                           </div>
-                          </Grid>
+                         
                         </Grid>
                     
                        </>}

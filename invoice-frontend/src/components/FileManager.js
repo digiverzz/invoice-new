@@ -38,7 +38,7 @@ import Typography from "@mui/material/Typography";
 import Tooltip, { tooltipClasses } from "@mui/material/Tooltip";
 import { makeStyles } from "@mui/styles";
 import URI from "../utils/request";
-
+import InvoiceData from "./InvoiceData";
 import CircularProgress from "@mui/material/CircularProgress";
 import InvoiceForm from "./invoiceForm";
 

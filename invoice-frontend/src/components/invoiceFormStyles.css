@@ -6,7 +6,7 @@ span.Resizer.vertical{
 
 .main-div{
   display: flex;
-  height: 50vh
+  min-height: 50vh
 }
 
 .large-screen{
@@ -237,10 +237,10 @@ margin-top: 8px;
 
 
 .table-container {
-
-  overflow-x: auto; /* Add horizontal scrollbar if needed */
+  table-layout: fixed;
+  overflow-x:auto; 
   width: 100vh;
-}
+} 
 
 
 
@@ -277,4 +277,8 @@ margin-top: 8px;
   /* Add any additional styling for your card */
    /* Adjust the width as needed */
   padding: 20px;
+}
+
+table {
+  table-layout: fixed;
 }
